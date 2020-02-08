@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlDialectInspection -->
+<mapper namespace="com.ocwvar.torii.db.dao.Sv5ProfileDao">
+
+    <!--表名-->
+    <sql id="BASE_TABLE">
+        sdvx_5_profile
+    </sql>
+
+    <!--所有标签名-->
+    <sql id="ALL_COLUMN">
+        refId,packet_point,block_point,blaster_energy,blaster_count,appeal_id,skill_level,skill_base_id,skill_name_id,player_name,player_code
+    </sql>
+
+    <sql id="BASE_COLUMN">
+        refId, player_name, player_code
+    </sql>
+
+    <select id="findByRefId" parameterType="java.lang.String" resultType="com.ocwvar.torii.db.entity.Sv5Profile">
+        SELECT
+        <include refid="ALL_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        WHERE refId=#{rawId}
+    </select>
+
+    <update id="save" parameterType="com.ocwvar.torii.db.entity.Sv5Profile">
+        UPDATE
+        <include refid="BASE_TABLE"/>
+        SET refId = #{refId},
+        packet_point = #{packet_point},
+        block_point = #{block_point},
+        blaster_energy = #{blaster_energy},
+        blaster_count = #{blaster_count},
+        appeal_id = #{appeal_id},
+        skill_level = #{skill_level},
+        skill_base_id = #{skill_base_id},
+        skill_name_id = #{skill_name_id},
+        player_name = #{player_name}
+        WHERE refId = #{refId}
+    </update>
+
+    <insert id="createDefault" parameterType="java.lang.String">
+        INSERT INTO
+        <include refid="BASE_TABLE"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="BASE_COLUMN"/>
+        </trim>
+        <trim prefix=" VALUE(" suffix=")" suffixOverrides=",">
+            #{refId},#{playerName},#{userCode}
+        </trim>
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM
+        <include refid="BASE_TABLE"/>
+        WHERE refId=#{refId}
+    </delete>
+
+</mapper>

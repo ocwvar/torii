@@ -1,0 +1,7 @@
+ext {
+    //使用的JDK版本
+    JDKVersion = 13.0
+
+    //Group 名称
+    GroupID = 'com.ocwvar'
+}

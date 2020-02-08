@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlDialectInspection -->
+<mapper namespace="com.ocwvar.torii.db.dao.Sv5SettingDao">
+
+    <!--表名-->
+    <sql id="BASE_TABLE">
+        sdvx_5_setting
+    </sql>
+
+    <!--所有标签名-->
+    <sql id="ALL_COLUMN">
+        refId,last_music_id,last_music_type,sort_type,narrow_down,headphone,gauge_option,ars_option,early_late_disp,note_option,eff_c_left,eff_c_right,lanespeed,hispeed,draw_adjust
+    </sql>
+
+    <sql id="BASE_COLUMN">
+        refId
+    </sql>
+
+    <select id="findByRefId" parameterType="java.lang.String" resultType="com.ocwvar.torii.db.entity.Sv5Setting">
+        SELECT
+        <include refid="ALL_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        WHERE refId=#{rawId}
+    </select>
+
+    <update id="save" parameterType="com.ocwvar.torii.db.entity.Sv5Setting">
+        UPDATE
+        <include refid="BASE_TABLE"/>
+        SET refId = #{refId},
+        last_music_id = #{last_music_id},
+        last_music_type = #{last_music_type},
+        sort_type = #{sort_type},
+        narrow_down = #{narrow_down},
+        headphone = #{headphone},
+        gauge_option = #{gauge_option},
+        ars_option = #{ars_option},
+        early_late_disp = #{early_late_disp},
+        note_option = #{note_option},
+        eff_c_left = #{eff_c_left},
+        eff_c_right = #{eff_c_right},
+        lanespeed = #{lanespeed},
+        hispeed = #{hispeed},
+        draw_adjust = #{draw_adjust}
+        WHERE refId = #{refId}
+    </update>
+
+    <insert id="createDefault" parameterType="java.lang.String">
+        INSERT INTO
+        <include refid="BASE_TABLE"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="BASE_COLUMN"/>
+        </trim>
+        <trim prefix=" VALUE(" suffix=")" suffixOverrides=",">
+            #{refId}
+        </trim>
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE FROM
+        <include refid="BASE_TABLE"/>
+        WHERE refId=#{refId}
+    </delete>
+
+</mapper>

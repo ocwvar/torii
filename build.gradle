@@ -1,0 +1,37 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.4.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id 'java'
+}
+
+apply from: 'config.gradle'
+
+group = GroupID
+version = '0.0.1-SNAPSHOT'
+sourceCompatibility = JDKVersion
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    //第三方依赖
+    implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.1'
+    implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.2.3.RELEASE'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'com.google.code.gson:gson:2.8.6'
+
+    //模块引用
+    implementation project(':KBin')
+    implementation project(':SUtils')
+
+    runtimeOnly 'mysql:mysql-connector-java'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}

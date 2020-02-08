@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlDialectInspection -->
+<mapper namespace="com.ocwvar.torii.db.dao.CardDao">
+
+    <!--表名-->
+    <sql id="BASE_TABLE">
+        card
+    </sql>
+
+    <!--所有标签名-->
+    <sql id="ALL_COLUMN">
+        rawId, refId, pin
+    </sql>
+
+    <!--插入操作-->
+    <insert id="insert" parameterType="com.ocwvar.torii.db.entity.Card">
+        INSERT INTO
+        <include refid="BASE_TABLE"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">rawId,refId,pin</trim>
+        <trim prefix=" VALUE(" suffix=")" suffixOverrides=",">
+            #{rawId,jdbcType=VARCHAR},#{refId,jdbcType=VARCHAR},#{pin,jdbcType=VARCHAR}
+        </trim>
+    </insert>
+
+    <!--查找操作-->
+    <select id="findByRawId" parameterType="java.lang.String" resultType="com.ocwvar.torii.db.entity.Card">
+        SELECT
+        <include refid="ALL_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        WHERE rawId=#{rawId}
+    </select>
+
+    <select id="findByRefId" parameterType="java.lang.String" resultType="com.ocwvar.torii.db.entity.Card">
+        SELECT
+        <include refid="ALL_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        WHERE refId=#{refId}
+    </select>
+
+    <!--修改操作-->
+    <update id="updatePinByRawId" parameterType="java.lang.String">
+        UPDATE FROM
+        <include refid="BASE_TABLE"/>
+        SET pin=#{pin}
+        WHERE rawId=#{rawId}
+    </update>
+
+    <update id="updatePinByRefId" parameterType="java.lang.String">
+        UPDATE FROM
+        <include refid="BASE_TABLE"/>
+        SET pin=#{pin}
+        WHERE refId=#{refId}
+    </update>
+
+    <!--删除操作-->
+    <delete id="deleteByRawId" parameterType="java.lang.String">
+        DELETE FROM
+        <include refid="BASE_TABLE"/>
+        WHERE
+        rawId =#{rawId}
+    </delete>
+
+    <delete id="deleteByRefId" parameterType="java.lang.String">
+        DELETE FROM
+        <include refid="BASE_TABLE"/>
+        WHERE
+        refId =#{refId}
+    </delete>
+
+</mapper>
