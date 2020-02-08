@@ -210,6 +210,16 @@ public class RequestHandler {
 		enableEvent( event, "ICON_FLOOR_INFECTION" );
 		enableEvent( event, "MATCHING_MODE" );
 		enableEvent( event, "MATCHING_MODE_FREE_IP" );
+		enableEvent( event, "SKILL_ANALYZER_ABLE" );
+		enableEvent( event, "EVENTDATE_ONIGO" );
+		enableEvent( event, "SERIALCODE_JAPAN" );
+		enableEvent( event, "APPEAL_CARD_UNLOCK" );
+		enableEvent( event, "BLASTER_ABLE" );
+		enableEvent( event, "GENERATOR_ABLE" );
+		enableEvent( event, "CREW_SELECT_ABLE" );
+		enableEvent( event, "PLAYERJUDGEADJ_ENABLE" );
+		enableEvent( event, "STANDARD_UNLOCK_ENABLE" );
+		enableEvent( event, "EVENTDATE_APRILFOOL" );
 		enableEvent( event, "OMEGA_ENABLE" );
 		enableEvent( event, "OMEGA_02_ENABLE" );
 		enableEvent( event, "OMEGA_03_ENABLE" );

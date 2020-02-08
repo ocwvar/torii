@@ -1,9 +1,7 @@
 package com.ocwvar.torii;
 
-import com.ocwvar.torii.db.dao.CardDao;
-import com.ocwvar.torii.db.dao.Sv5ProfileDao;
-import com.ocwvar.torii.db.dao.Sv5SettingDao;
-import com.ocwvar.torii.db.entity.Sv5Profile;
+import com.ocwvar.torii.db.dao.*;
+import com.ocwvar.utils.TextUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +21,15 @@ public class DBTest {
 	@Autowired
 	Sv5SettingDao settingDao;
 
+	@Autowired
+	Sv5CourseDao courseDao;
+
+	@Autowired
+	PaseliDao paseliDao;
+
 	@Test
 	public void function() {
-		settingDao.createDefault( "8ABX1AHT05PYGH1D" );
+
 	}
 
 }

@@ -6,8 +6,10 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ocwvar.torii.Config;
 import com.ocwvar.torii.data.StaticContainer;
+import com.ocwvar.torii.db.dao.Sv5CourseDao;
 import com.ocwvar.torii.db.dao.Sv5ProfileDao;
 import com.ocwvar.torii.db.dao.Sv5SettingDao;
+import com.ocwvar.torii.db.entity.Sv5Course;
 import com.ocwvar.torii.db.entity.Sv5Profile;
 import com.ocwvar.torii.db.entity.Sv5Setting;
 import com.ocwvar.torii.utils.IO;
@@ -19,6 +21,8 @@ import com.ocwvar.xml.node.TypeNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 /**
  * 玩家数据处理服务
  */
@@ -27,11 +31,13 @@ public class ProfileService {
 
 	private final Sv5ProfileDao profileDao;
 	private final Sv5SettingDao settingDao;
+	private final Sv5CourseDao courseDao;
 
 	@Autowired
-	public ProfileService( Sv5ProfileDao profileDao, Sv5SettingDao settingDao ) {
+	public ProfileService( Sv5ProfileDao profileDao, Sv5SettingDao settingDao, Sv5CourseDao courseDao ) {
 		this.profileDao = profileDao;
 		this.settingDao = settingDao;
+		this.courseDao = courseDao;
 	}
 
 	/**
@@ -88,16 +94,22 @@ public class ProfileService {
 		Log.getInstance().print( "读取用户段位数据" );
 
 		final Node root = new Node( "skill" );
-		final Node course = new Node( "course" );
-		root.addChildNode( course );
+		final List< Sv5Course > result = this.courseDao.getList( refId );
+		Log.getInstance().print( "用户段位数据量：" + ( result == null ? 0 : result.size() ) );
 
-		course.addChildNode( new TypeNode( "ssnid", "0", "s16" ) );
-		course.addChildNode( new TypeNode( "crsid", "10", "s16" ) );
-		course.addChildNode( new TypeNode( "sc", "26955219", "s32" ) );
-		course.addChildNode( new TypeNode( "ct", "1", "s16" ) );
-		course.addChildNode( new TypeNode( "gr", "4", "s16" ) );
-		course.addChildNode( new TypeNode( "ar", "9999", "s16" ) );
-		course.addChildNode( new TypeNode( "cnt", "1", "s16" ) );
+		if ( result != null && result.size() > 0 ) {
+			for ( Sv5Course data : result ) {
+				final Node course = new Node( "course" );
+				root.addChildNode( course );
+				course.addChildNode( new TypeNode( "ssnid", data.getSeason_id(), "s16" ) );
+				course.addChildNode( new TypeNode( "crsid", data.getCourse_id(), "s16" ) );
+				course.addChildNode( new TypeNode( "sc", data.getScore(), "s32" ) );
+				course.addChildNode( new TypeNode( "ct", data.getClear_type(), "s16" ) );
+				course.addChildNode( new TypeNode( "gr", data.getGrade(), "s16" ) );
+				course.addChildNode( new TypeNode( "ar", data.getAchievement_rate(), "s16" ) );
+				course.addChildNode( new TypeNode( "cnt", data.getCnt(), "s16" ) );
+			}
+		}
 
 		return root;
 	}
@@ -110,7 +122,7 @@ public class ProfileService {
 	 * @return 解锁数据节点
 	 */
 	public Node loadUnlockItem( String refId ) {
-		Log.getInstance().print( "读取用户解锁物品数据，是否强制全解："+Config.FUNCTION_FORCE_UNLOCK_ITEMS );
+		Log.getInstance().print( "读取用户解锁物品数据，是否强制全解：" + Config.FUNCTION_FORCE_UNLOCK_ITEMS );
 
 		final Node item;
 

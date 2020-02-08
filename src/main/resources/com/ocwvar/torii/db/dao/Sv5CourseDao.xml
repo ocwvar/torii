@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlDialectInspection -->
+<mapper namespace="com.ocwvar.torii.db.dao.Sv5CourseDao">
+
+    <sql id="BASE_TABLE">
+        sdvx_5_course
+    </sql>
+
+    <sql id="ALL_COLUMN">
+        season_id,course_id,score,clear_type,grade,achievement_rate,cnt,refId
+    </sql>
+
+    <resultMap id="list_course" type="com.ocwvar.torii.db.entity.Sv5Course">
+        <result column="season_id" property="season_id"/>
+        <result column="course_id" property="course_id"/>
+        <result column="score" property="score"/>
+        <result column="clear_type" property="clear_type"/>
+        <result column="grade" property="grade"/>
+        <result column="achievement_rate" property="achievement_rate"/>
+        <result column="cnt" property="cnt"/>
+        <result column="refId" property="refId"/>
+    </resultMap>
+
+    <select id="getList" parameterType="java.lang.String" resultMap="list_course">
+        SELECT
+        <include refid="ALL_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        WHERE refId=#{refId}
+    </select>
+
+    <select id="get" parameterType="java.lang.String" resultType="com.ocwvar.torii.db.entity.Sv5Course">
+        SELECT
+        <include refid="ALL_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        WHERE refId=#{refId} and
+        season_id=#{season_id} and
+        course_id=#{course_id}
+    </select>
+
+    <insert id="save" parameterType="com.ocwvar.torii.db.entity.Sv5Course">
+        INSERT INTO
+        <include refid="BASE_TABLE"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="ALL_COLUMN"/>
+        </trim>
+        <trim prefix=" VALUE(" suffix=")" suffixOverrides=",">
+            #{season_id},#{course_id},#{score},#{clear_type},#{grade},#{achievement_rate},#{cnt},#{refId}
+        </trim>
+    </insert>
+
+    <update id="update" parameterType="com.ocwvar.torii.db.entity.Sv5Course">
+        UPDATE
+        <include refid="BASE_TABLE"/>
+        SET score=#{score},
+        clear_type=#{clear_type},
+        grade=#{grade},
+        achievement_rate=#{achievement_rate},
+        cnt=#{cnt}
+        WHERE refId=#{refId} and
+        season_id=#{season_id} and
+        course_id=#{course_id}
+    </update>
+
+</mapper>

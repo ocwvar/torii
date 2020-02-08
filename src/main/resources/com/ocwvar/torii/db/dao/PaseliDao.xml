@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlDialectInspection -->
+<mapper namespace="com.ocwvar.torii.db.dao.PaseliDao">
+
+    <sql id="TABLE_PASELI">
+        paseli
+    </sql>
+
+    <sql id="TABLE_PASELI_SEASON">
+        paseli_season
+    </sql>
+
+    <sql id="ALL_PASELI_SEASON_COLUMN">
+        season_id,rawId
+    </sql>
+
+    <sql id="ALL_PASELI_COLUMN">
+        rawId,balance,acid,acname,infinite_balance
+    </sql>
+
+    <sql id="BASE_PASELI_COLUMN">
+        rawId,balance,infinite_balance
+    </sql>
+
+    <select id="findByRawId" resultType="com.ocwvar.torii.db.entity.Paseli">
+        SELECT
+        <include refid="ALL_PASELI_COLUMN"/>
+        FROM
+        <include refid="TABLE_PASELI"/>
+        WHERE rawId=#{rawId}
+    </select>
+
+    <update id="updateBalance">
+        UPDATE
+        <include refid="TABLE_PASELI"/>
+        SET balance=#{balance}
+        WHERE rawId=#{rawId}
+    </update>
+
+    <insert id="createDefault">
+        INSERT INTO
+        <include refid="TABLE_PASELI"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="BASE_PASELI_COLUMN"/>
+        </trim>
+        <trim prefix=" VALUE(" suffix=")" suffixOverrides=",">
+            #{rawId},#{balance},#{infinite_balance}
+        </trim>
+    </insert>
+
+    <insert id="createSeason">
+        INSERT INTO
+        <include refid="TABLE_PASELI_SEASON"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="ALL_PASELI_SEASON_COLUMN"/>
+        </trim>
+        <trim prefix=" VALUE(" suffix=")" suffixOverrides=",">
+            #{season_id},#{rawId}
+        </trim>
+    </insert>
+
+    <select id="findRawIdBySeasonID" parameterType="java.lang.String" resultType="java.lang.String">
+        SELECT rawId FROM
+        <include refid="TABLE_PASELI_SEASON"/>
+        WHERE season_id=#{season_id}
+    </select>
+
+    <delete id="destroySeasonByRawId" parameterType="java.lang.String">
+        DELETE FROM
+        <include refid="TABLE_PASELI_SEASON"/>
+        WHERE rawId=#{rawId}
+    </delete>
+
+    <delete id="destroySeasonBySeasonID" parameterType="java.lang.String">
+        DELETE FROM
+        <include refid="TABLE_PASELI_SEASON"/>
+        WHERE season_id=#{season_id}
+    </delete>
+
+</mapper>

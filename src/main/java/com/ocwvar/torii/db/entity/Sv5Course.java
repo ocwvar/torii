@@ -21,4 +21,62 @@ public class Sv5Course {
 		this.cnt = cnt;
 		this.refId = refId;
 	}
+
+	/**
+	 * @return 段位 SEASON_ID
+	 */
+	public String getSeason_id() {
+		return season_id;
+	}
+
+	/**
+	 * @return 段位课题ID
+	 */
+	public String getCourse_id() {
+		return course_id;
+	}
+
+	/**
+	 * @return 段位课题得分
+	 */
+	public String getScore() {
+		return score;
+	}
+
+	/**
+	 * @return 课题通过类型
+	 */
+	public String getClear_type() {
+		return clear_type;
+	}
+
+	/**
+	 * 1D 2C 3B 4A 5AA 6AAA...
+	 *
+	 * @return 课题通过等级
+	 */
+	public String getGrade() {
+		return grade;
+	}
+
+	/**
+	 * @return 通过率
+	 */
+	public String getAchievement_rate() {
+		return achievement_rate;
+	}
+
+	/**
+	 * @return 未知，可能为考课题次数
+	 */
+	public String getCnt() {
+		return cnt;
+	}
+
+	/**
+	 * @return REF_ID
+	 */
+	public String getRefId() {
+		return refId;
+	}
 }

@@ -15,7 +15,7 @@ public class Error {
 
 	@PostMapping( path = "/error" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
-		Protocol.print( request );
+		//Protocol.print( request );
 		Protocol.commit( 200, null, request, response );
 	}
 

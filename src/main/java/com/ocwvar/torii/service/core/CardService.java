@@ -1,19 +1,25 @@
 package com.ocwvar.torii.service.core;
 
 import com.ocwvar.torii.db.dao.CardDao;
+import com.ocwvar.torii.db.dao.PaseliDao;
 import com.ocwvar.torii.db.entity.Card;
+import com.ocwvar.torii.db.entity.Paseli;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 @Service
-public class CardService implements CardDao {
+public class CardService {
 
 	//卡片数据Dao
 	private final CardDao cardDao;
 
+	//PASELI DAO
+	private final PaseliDao paseliDao;
+
 	@Autowired
-	public CardService( CardDao cardDao ) {
+	public CardService( CardDao cardDao, PaseliDao paseliDao ) {
 		this.cardDao = cardDao;
+		this.paseliDao = paseliDao;
 	}
 
 	/**
@@ -28,39 +34,92 @@ public class CardService implements CardDao {
 		return savedCard != null && savedCard.getPin().equals( pin );
 	}
 
-	@Override
-	public void insert( Card card ) {
+	/**
+	 * 新增卡片数据，此操作将会同时创建 PASELI 数据
+	 *
+	 * @param card 新的卡片数据
+	 */
+	public void insertCard( Card card ) {
 		this.cardDao.insert( card );
+		this.paseliDao.createDefault( card.getRawId(), 1000, 0 );
 	}
 
-	@Override
-	public Card findByRawId( String rawId ) {
+	/**
+	 * 通过 RAW_ID 查找卡片
+	 *
+	 * @param rawId RAW_ID
+	 * @return 卡片数据，查找失败返回 NULL
+	 */
+	public Card findCardByRawId( String rawId ) {
 		return this.cardDao.findByRawId( rawId );
 	}
 
-	@Override
-	public Card findByRefId( String refId ) {
+	/**
+	 * 通过 REF_ID 查找卡片
+	 *
+	 * @param refId REF_ID
+	 * @return 卡片数据，查找失败返回 NULL
+	 */
+	public Card findCardByRefId( String refId ) {
 		return this.cardDao.findByRefId( refId );
 	}
 
-	@Override
-	public void deleteByRawId( String rawId ) {
-		this.cardDao.deleteByRawId( rawId );
+	/**
+	 * 通过 RAW_ID 查找 PASELI 数据
+	 *
+	 * @param rawId RAW_ID
+	 * @return PASELI数据，查找失败返回 NULL
+	 */
+	public Paseli findPaseliByRawId( String rawId ) {
+		return this.paseliDao.findByRawId( rawId );
 	}
 
-	@Override
-	public void deleteByRefId( String refId ) {
-		this.cardDao.deleteByRefId( refId );
+	/**
+	 * 更新 PASELI 账户余额
+	 *
+	 * @param rawId   raw_id
+	 * @param balance 新的余额
+	 */
+	public void updateBalance( String rawId, int balance ) {
+		this.paseliDao.updateBalance( rawId, balance );
 	}
 
-	@Override
-	public void updatePinByRawId( String rawId, String pin ) {
-		this.cardDao.updatePinByRawId( rawId, pin );
+	/**
+	 * 创建新的 Season ，如果已有相同的 raw_id 则会删除
+	 *
+	 * @param rawId     RAW_ID
+	 * @param season_id season_id
+	 */
+	public void createSeason( String rawId, String season_id ) {
+		this.paseliDao.destroySeasonByRawId( rawId );
+		this.paseliDao.createSeason( rawId, season_id );
 	}
 
-	@Override
-	public void updatePinByRefId( String refId, String pin ) {
-		this.cardDao.updatePinByRefId( refId, pin );
+	/**
+	 * 通过 season_id 查找 raw_id
+	 *
+	 * @param season_id season_id
+	 * @return raw_id，查找失败返回 NULL
+	 */
+	public String findRawIdBySeasonID( String season_id ) {
+		return this.paseliDao.findRawIdBySeasonID( season_id );
 	}
 
+	/**
+	 * 删除所有相同 raw_id 的 season 数据
+	 *
+	 * @param rawId rawId
+	 */
+	public void destroySeasonByRawId( String rawId ) {
+		this.paseliDao.destroySeasonByRawId( rawId );
+	}
+
+	/**
+	 * 删除所有相同 season_id 的 season 数据
+	 *
+	 * @param season_id season_id
+	 */
+	public void destroySeasonBySeasonID( String season_id ) {
+		this.paseliDao.destroySeasonBySeasonID( season_id );
+	}
 }

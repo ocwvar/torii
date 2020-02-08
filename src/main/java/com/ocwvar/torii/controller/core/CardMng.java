@@ -85,7 +85,7 @@ public class CardMng {
 	 */
 	private Node inquire( String rawId ) {
 		final Node root = new Node( "response" );
-		final Card savedCard = this.cardService.findByRawId( rawId );
+		final Card savedCard = this.cardService.findCardByRawId( rawId );
 		if ( savedCard == null ) {
 			Log.getInstance().print( "没有注册的卡号，请求进入注册流程" );
 			root.addChildNode(
@@ -141,7 +141,7 @@ public class CardMng {
 
 		//加密的E004卡号
 		final String refId = new A().toKonamiID( rawId );
-		this.cardService.insert( new Card( refId, rawId, pin ) );
+		this.cardService.insertCard( new Card( refId, rawId, pin ) );
 
 		final Node root = new Node( "response" );
 		root.addChildNode(
