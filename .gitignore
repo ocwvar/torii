@@ -36,3 +36,4 @@ out/
 local.gradle
 local.properties
 /DataSample
+/KBin/lib/cachedir/
