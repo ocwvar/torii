@@ -6,6 +6,7 @@ import com.ocwvar.torii.db.entity.Card;
 import com.ocwvar.torii.service.core.CardService;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.Log;
+import com.ocwvar.utils.cardX.A;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.NodeBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +54,7 @@ public class CardMng {
 		final String method = info.getAttribute( "method" );
 		final String pin = info.getAttribute( "pass" );
 		final String refID = info.getAttribute( "refid" );
+		final String pin_getrefid = info.getAttribute( "passwd" );
 
 		Node responseNode = null;
 		switch ( method ) {
@@ -67,7 +69,8 @@ public class CardMng {
 				break;
 
 			case "getrefid":
-				responseNode = getrefid( rawId, pin );
+				Log.getInstance().print( "触发创建账号流程，卡号:" + rawId + " PIN:" + pin_getrefid );
+				responseNode = getrefid( rawId, pin_getrefid );
 				break;
 		}
 
@@ -130,12 +133,26 @@ public class CardMng {
 	/**
 	 * 处理 getrefid 事件
 	 *
-	 * @param cardNumber E004卡号
-	 * @param pin        PIN码
+	 * @param rawId E004卡号
+	 * @param pin   PIN码
 	 * @return 返回的内容
 	 */
-	private Node getrefid( String cardNumber, String pin ) {
-		return null;
+	private Node getrefid( String rawId, String pin ) {
+
+		//加密的E004卡号
+		final String refId = new A().toKonamiID( rawId );
+		this.cardService.insert( new Card( refId, rawId, pin ) );
+
+		final Node root = new Node( "response" );
+		root.addChildNode(
+				new NodeBuilder( "cardmng" )
+						.addAttribute( "dataid", refId )
+						.addAttribute( "refid", refId )
+						.build()
+		);
+
+		Log.getInstance().print( "新卡片注册完成，REF_ID：" + refId );
+		return root;
 	}
 
 }
