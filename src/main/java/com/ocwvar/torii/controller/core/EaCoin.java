@@ -75,7 +75,7 @@ public class EaCoin {
 		}
 
 		final Node root;
-		final Node call = Protocol.decrypt( request, true );
+		final Node call = Protocol.decrypt( request );
 		final Node call_eacoin = ( Node ) call.getFirstChildNode();
 		final String pcbid = call.getAttribute( "srcid" );
 
@@ -89,6 +89,11 @@ public class EaCoin {
 				root = checkin( call_eacoin );
 				break;
 
+			case "checkout":
+				Log.getInstance().print( "进入 PASELI SEASON 销毁流程" );
+				root = checkout( call_eacoin );
+				break;
+
 			case "consume":
 				Log.getInstance().print( "进入 PASELI 消费处理流程" );
 				root = consume( call_eacoin );
@@ -96,6 +101,7 @@ public class EaCoin {
 		}
 
 		Protocol.encryptAndCommit( root, request, response );
+		Log.getInstance().print( "已处理完成节点：EACOIN PASELI" );
 	}
 
 	/**
@@ -143,7 +149,7 @@ public class EaCoin {
 		eacoin.addChildNode( new TypeNode( "acstatus", "1", "u8" ) );
 		eacoin.addChildNode( new TypeNode( "acid", paseli.getAcid() ) );
 		eacoin.addChildNode( new TypeNode( "acname", paseli.getAcname() ) );
-		eacoin.addChildNode( new TypeNode( "balance", paseli.isInfiniteBalance() ? "9999" : paseli.getBalance(), "s32" ) );
+		eacoin.addChildNode( new TypeNode( "balance", paseli.isInfiniteBalance() ? "99999" : paseli.getBalance(), "s32" ) );
 		eacoin.addChildNode( new TypeNode( "sessid", seasonId ) );
 		this.cardService.createSeason( cardid.getContentValue(), seasonId );
 
@@ -151,7 +157,27 @@ public class EaCoin {
 	}
 
 	/**
+	 * 处理 checkout 事件
+	 *
+	 * @param call_eacoin 请求数据
+	 * @return 响应数据
+	 */
+	private Node checkout( Node call_eacoin ) {
+		final Node sessid = ( Node ) call_eacoin.indexChildNode( "sessid" );
+		if ( sessid != null && !TextUtils.isEmpty( sessid.getContentValue() ) ) {
+			this.cardService.destroySeasonBySeasonID( sessid.getContentValue() );
+		}
+
+		final Node root = new Node( "response" );
+		root.addChildNode( new Node( "eacoin" ) );
+
+		return root;
+	}
+
+	/**
 	 * 处理 consume 事件
+	 * <p>
+	 * PASELI 消费扣费处理
 	 *
 	 * @param call_eacoin 请求数据
 	 * @return 响应数据
@@ -188,7 +214,7 @@ public class EaCoin {
 		if ( paseli.isInfiniteBalance() ) {
 			//无限 PASELI 账户
 			eacoin.addChildNode( new TypeNode( "acstatus", "0", "u8" ) );
-			eacoin.addChildNode( new TypeNode( "balance", "114514", "s32" ) );
+			eacoin.addChildNode( new TypeNode( "balance", "99999", "s32" ) );
 			need2UpdateBalance = false;
 		} else {
 			//计算扣费

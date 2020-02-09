@@ -2,8 +2,11 @@ package com.ocwvar.torii.controller.game.kfc;
 
 import com.ocwvar.torii.controller.game.kfc.c2019100800.RequestHandler;
 import com.ocwvar.torii.service.game.kfc.ProfileService;
+import com.ocwvar.torii.utils.IO;
 import com.ocwvar.torii.utils.protocol.Protocol;
+import com.ocwvar.utils.Log;
 import com.ocwvar.xml.node.Node;
+import com.ocwvar.xml.node.NodeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +28,6 @@ public class KFCRouter {
 		this.profileService = profileService;
 	}
 
-	@SuppressWarnings( "SwitchStatementWithTooFewBranches" )
 	@PostMapping( path = "torii/sdvx/{model}/game/{func}" )
 	public void function(
 			@PathVariable String model,
@@ -38,57 +40,75 @@ public class KFCRouter {
 		Node call = Protocol.decrypt( request );
 		Node root = null;
 
+		//noinspection SwitchStatementWithTooFewBranches
 		switch ( modelValues[ modelValues.length - 1 ] ) {
 			case "2019100800":
-			case "2019020600":
 				switch ( func ) {
 					case "sv5_exception":
 						root = RequestHandler.handle_sv5_exception( call );
 						break;
 
 					case "sv5_common":
-					case "sv4_common":
 						root = RequestHandler.handle_sv5_common( call );
-						//Protocol.commitWithDumpXml( "H:\\IdeaProjects\\BServer\\DataTesting\\sample\\sv4_common\\response_lite.xml", request, response );
-						//Protocol.commitWithDumpXml( "F:\\Users\\ocwvar\\Desktop\\t1_common.xml", request, response );
 						break;
 
 					case "sv5_load":
-					case "sv4_load":
 						root = RequestHandler.handle_sv5_load( call, this.profileService );
-						//Protocol.commitWithDumpXml( "F:\\Users\\ocwvar\\Desktop\\sv5_load_checked.xml", request, response );
-						//Protocol.commitWithDumpXml( "F:\\Users\\ocwvar\\Desktop\\t1_load.xml", request, response );
 						break;
 
-					case "sv4_frozen":
 					case "sv5_frozen":
 						root = RequestHandler.handle_sv5_frozen( call );
 						break;
 
 					case "sv5_hiscore":
-					case "sv4_hiscore":
 						root = RequestHandler.handle_sv5_hiscore( call );
 						break;
 
 					case "sv5_shop":
-					case "sv4_shop":
 						root = RequestHandler.handle_sv5_shop( call );
 						break;
 
 					case "sv5_load_m":
-					case "sv4_load_m":
-						root = RequestHandler.handle_sv5_load_m( call );
+						root = RequestHandler.handle_sv5_load_m( call, this.profileService );
 						break;
 
 					case "sv5_load_r":
-					case "sv4_load_r":
 						root = RequestHandler.handle_sv5_load_r( call );
+						break;
+
+					case "sv5_play_s":
+						root = RequestHandler.handle_play_s( call );
+						break;
+
+					case "sv5_play_e":
+						root = RequestHandler.handle_play_e( call );
+						break;
+
+					case "sv5_save":
+						root = RequestHandler.handle_sv5_save( call, this.profileService );
+						break;
+
+					case "sv5_save_e":
+						root = RequestHandler.handle_sv5_save_e( call );
+						break;
+
+					case "sv5_save_c":
+						root = RequestHandler.handle_sv5_save_c( call, this.profileService );
+						break;
+
+					case "sv5_save_m":
+						root = RequestHandler.handle_sv5_save_m( call, this.profileService );
+						break;
+
+					case "sv5_buy":
+						root = RequestHandler.handle_sv5_buy( call, this.profileService );
 						break;
 				}
 				break;
 		}
 
 		Protocol.encryptAndCommit( root, request, response );
+		Log.getInstance().print( "已处理完成节点：" + func );
 	}
 
 }

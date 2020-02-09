@@ -48,7 +48,7 @@ public class CardMng {
 
 	@PostMapping( path = "/torii/cardmng/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
-		final Node info = ( Node ) Protocol.decrypt( request ).getFirstChildNode();
+		final Node info = ( Node ) Protocol.decrypt( request, true ).getFirstChildNode();
 
 		final String rawId = info.getAttribute( "cardid" );
 		final String method = info.getAttribute( "method" );
@@ -75,6 +75,7 @@ public class CardMng {
 		}
 
 		Protocol.encryptAndCommit( responseNode, request, response );
+		Log.getInstance().print( "已处理完成节点：CARD MANAGER" );
 	}
 
 	/**

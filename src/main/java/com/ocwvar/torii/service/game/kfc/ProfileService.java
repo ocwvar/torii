@@ -6,14 +6,11 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ocwvar.torii.Config;
 import com.ocwvar.torii.data.StaticContainer;
-import com.ocwvar.torii.db.dao.Sv5CourseDao;
-import com.ocwvar.torii.db.dao.Sv5ProfileDao;
-import com.ocwvar.torii.db.dao.Sv5SettingDao;
-import com.ocwvar.torii.db.entity.Sv5Course;
-import com.ocwvar.torii.db.entity.Sv5Profile;
-import com.ocwvar.torii.db.entity.Sv5Setting;
+import com.ocwvar.torii.db.dao.*;
+import com.ocwvar.torii.db.entity.*;
 import com.ocwvar.torii.utils.IO;
 import com.ocwvar.utils.Log;
+import com.ocwvar.utils.annotation.NotNull;
 import com.ocwvar.utils.annotation.Nullable;
 import com.ocwvar.xml.node.ArrayTypeNode;
 import com.ocwvar.xml.node.Node;
@@ -29,15 +26,21 @@ import java.util.List;
 @Service
 public class ProfileService {
 
+	private final Sv5ProfileParamDao profileParamDao;
+	private final UnlockItemDao unlockItemDao;
 	private final Sv5ProfileDao profileDao;
 	private final Sv5SettingDao settingDao;
 	private final Sv5CourseDao courseDao;
+	private final Sv5ScoreDao scoreDao;
 
 	@Autowired
-	public ProfileService( Sv5ProfileDao profileDao, Sv5SettingDao settingDao, Sv5CourseDao courseDao ) {
+	public ProfileService( Sv5ProfileParamDao profileParamDao, UnlockItemDao unlockItemDao, Sv5ProfileDao profileDao, Sv5SettingDao settingDao, Sv5CourseDao courseDao, Sv5ScoreDao scoreDao ) {
+		this.profileParamDao = profileParamDao;
+		this.unlockItemDao = unlockItemDao;
 		this.profileDao = profileDao;
 		this.settingDao = settingDao;
 		this.courseDao = courseDao;
+		this.scoreDao = scoreDao;
 	}
 
 	/**
@@ -62,14 +65,73 @@ public class ProfileService {
 	}
 
 	/**
+	 * 通过 REF_ID 获取所有成绩
+	 *
+	 * @param refId REF_ID
+	 * @return 成绩列表
+	 */
+	public List< Sv5Score > getAllScore( @NotNull String refId ) {
+		return this.scoreDao.findAllScoreByRefId( refId );
+	}
+
+	/**
+	 * 保存成绩，如果没有已存在的记录，则新建，否则更新成绩数据
+	 *
+	 * @param score 成绩对象
+	 */
+	public void saveScore( @NotNull Sv5Score score ) {
+		//检查是否存在旧的记录
+		final Sv5Score old = this.scoreDao.findScore( score.getRefId(), score.getMusic_id(), score.getMusic_type() );
+		if ( old != null ) {
+			//仅更新记录
+			this.scoreDao.update( score );
+			return;
+		}
+
+		this.scoreDao.createNew( score );
+	}
+
+	/**
+	 * 保存段位成绩，如果没有已存在的记录，则新建，否则更新成绩数据
+	 *
+	 * @param course 段位数据
+	 */
+	public void saveCourse( @NotNull Sv5Course course ) {
+		final Sv5Course old = this.courseDao.get( course.getRefId(), course.getSeason_id(), course.getCourse_id() );
+		if ( old != null ) {
+			this.courseDao.update( course );
+		}
+
+		this.courseDao.save( course );
+	}
+
+	/**
 	 * 保存操作
 	 *
 	 * @param profile 数据对象
 	 * @param setting 设置对象
 	 */
-	public void save( Sv5Profile profile, Sv5Setting setting ) {
+	public void saveProfile( Sv5Profile profile, Sv5Setting setting ) {
 		this.settingDao.save( setting );
 		this.profileDao.save( profile );
+	}
+
+	/**
+	 * 保存操作
+	 *
+	 * @param profile 数据对象
+	 */
+	public void saveProfile( Sv5Profile profile ) {
+		this.profileDao.save( profile );
+	}
+
+	/**
+	 * 保存解锁物品
+	 *
+	 * @param unlockItem 物品数据
+	 */
+	public void saveUnlockItem( UnlockItem unlockItem ) {
+		this.unlockItemDao.add( unlockItem );
 	}
 
 	/**
@@ -79,9 +141,79 @@ public class ProfileService {
 	 * @param playerName 玩家名称
 	 * @param playerCode 玩家代码
 	 */
-	public void createDefault( String refId, String playerName, String playerCode ) {
+	public void createDefaultProfile( String refId, String playerName, String playerCode ) {
 		this.profileDao.createDefault( refId, playerName, playerCode );
 		this.settingDao.createDefault( refId );
+	}
+
+	/**
+	 * 保存配置文件的参数，如果不存在则新建，否则修改已存在的 param 字段
+	 *
+	 * @param param 需要保存的参数
+	 */
+	public void saveProfileParam( Sv5ProfileParam param ) {
+		final Sv5ProfileParam old = this.profileParamDao.findById( param.getRefId(), param.getId() );
+		if ( old == null ) {
+			this.profileParamDao.save( param );
+			return;
+		}
+
+		old.setParam( param.getParam() );
+		old.setType( param.getType() );
+
+		this.profileParamDao.updateParam( old );
+	}
+
+	/**
+	 * 读取所有配置参数
+	 *
+	 * @param refId REF_ID
+	 * @return 配置参数列表
+	 */
+	public List< Sv5ProfileParam > loadAllProfileParam( String refId ) {
+		return this.profileParamDao.getAllByRefId( refId );
+	}
+
+	/**
+	 * 读取所有成绩
+	 *
+	 * @param refId REF_ID
+	 * @return 成绩数据节点
+	 */
+	public Node loadScoreNode( String refId ) {
+		final List< Sv5Score > result = this.scoreDao.findAllScoreByRefId( refId );
+		final Node music = new Node( "music" );
+
+		for ( Sv5Score score : result ) {
+			final Node info = new Node( "info" );
+			music.addChildNode( info );
+			info.addChildNode( new ArrayTypeNode(
+					"param",
+					"u32",
+					score.getMusic_id(),
+					score.getMusic_type(),
+					"0",
+					"0",
+					"0",
+					"0",
+					"0",
+					"0",
+					"0",
+					"0",
+					score.getScore(),
+					score.getClear_type(),
+					score.getScore_grade(),
+					"0",
+					"0",
+					"0",
+					"0",
+					"0",
+					"0",
+					"0"
+			) );
+		}
+
+		return music;
 	}
 
 	/**
@@ -90,7 +222,7 @@ public class ProfileService {
 	 * @param refId REF_ID
 	 * @return 段位成绩数据节点
 	 */
-	public Node loadCourseHistory( String refId ) {
+	public Node loadCourseHistoryNode( String refId ) {
 		Log.getInstance().print( "读取用户段位数据" );
 
 		final Node root = new Node( "skill" );
@@ -116,12 +248,11 @@ public class ProfileService {
 
 	/**
 	 * 读取解锁的 ITEM ，包含头像卡、领航员、歌曲
-	 * TODO 目前为直接读取全解数据，日后需要添加读取保存的数据
 	 *
 	 * @param refId REF_ID
 	 * @return 解锁数据节点
 	 */
-	public Node loadUnlockItem( String refId ) {
+	public Node loadUnlockItemNode( String refId ) {
 		Log.getInstance().print( "读取用户解锁物品数据，是否强制全解：" + Config.FUNCTION_FORCE_UNLOCK_ITEMS );
 
 		final Node item;
@@ -165,6 +296,17 @@ public class ProfileService {
 			return item;
 		} else {
 			item = new Node( "item" );
+
+			final List< UnlockItem > result = this.unlockItemDao.findAllByRefId( refId );
+			Log.getInstance().print( "用户已解锁物品数量：" + result.size() );
+
+			for ( UnlockItem unlockItem : result ) {
+				final Node info = new Node( "info" );
+				item.addChildNode( info );
+				info.addChildNode( new TypeNode( "type", unlockItem.getType(), "u8" ) );
+				info.addChildNode( new TypeNode( "id", unlockItem.getId(), "u32" ) );
+				info.addChildNode( new TypeNode( "param", unlockItem.getParam(), "u32" ) );
+			}
 		}
 
 		return item;
@@ -176,7 +318,7 @@ public class ProfileService {
 	 * @param refId REF_ID
 	 * @return PARAM 节点
 	 */
-	public Node loadParam( String refId ) {
+	public Node _loadParamNode( String refId ) {
 		Log.getInstance().print( "读取用户 PARAM 参数" );
 
 		//这里目前不清楚用途，先返回默认值
@@ -219,6 +361,27 @@ public class ProfileService {
 		param.addChildNode( info_6 );
 
 		return param;
+	}
+
+	/**
+	 * 读取 PARAM 数据
+	 *
+	 * @param refId REF_ID
+	 * @return PARAM 节点
+	 */
+	public Node loadParamNode( String refId ) {
+		final List< Sv5ProfileParam > result = this.profileParamDao.getAllByRefId( refId );
+		Log.getInstance().print( "正在读取用户 PARAM 参数数据，数量：" + result.size() );
+
+		final Node root = new Node( "param" );
+		for ( Sv5ProfileParam profileParam : result ) {
+			final Node info = new Node( "info" );
+			root.addChildNode( info );
+			info.addChildNode( new TypeNode( "type", profileParam.getType(), "s32" ) );
+			info.addChildNode( new TypeNode( "id", profileParam.getId(), "s32" ) );
+			info.addChildNode( new ArrayTypeNode( 0, "param", "s32", profileParam.getParam() ) );
+		}
+		return root;
 	}
 
 }

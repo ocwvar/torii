@@ -1,23 +1,329 @@
 package com.ocwvar.torii.controller.game.kfc.c2019100800;
 
 import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ocwvar.torii.Config;
 import com.ocwvar.torii.data.StaticContainer;
 import com.ocwvar.torii.data.game.kfc.Course;
-import com.ocwvar.torii.db.entity.Sv5Profile;
-import com.ocwvar.torii.db.entity.Sv5Setting;
+import com.ocwvar.torii.db.entity.*;
 import com.ocwvar.torii.service.game.kfc.ProfileService;
 import com.ocwvar.torii.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.Pair;
 import com.ocwvar.utils.annotation.Nullable;
+import com.ocwvar.xml.node.ArrayTypeNode;
+import com.ocwvar.xml.node.BaseNode;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.TypeNode;
 
 public class RequestHandler {
+
+	/**
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_play_e( Node call ) {
+		final Node root = new Node( "response" );
+		root.addChildNode( new Node( "game" ) );
+		return root;
+	}
+
+	/**
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_play_s( Node call ) {
+		final Node root = new Node( "response" );
+		final Node game = new Node( "game" );
+		game.addChildNode( new TypeNode( "play_id", "1", "u32" ) );
+		return root;
+	}
+
+	/**
+	 * 保存用户配置以及数据
+	 *
+	 * @param call    请求的数据
+	 * @param service 账号数据交互服务
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_save( Node call, ProfileService service ) {
+		final Node call_game = ( Node ) call.getFirstChildNode();
+		final String refid = call_game.indexChildNode( "refid" ).getContentValue();
+		final Sv5Profile old = service.getProfile( refid );
+
+		//计算 packet、block、blaster_energy 的增减
+		final int earned_packet = Integer.parseInt( call_game.indexChildNode( "earned_gamecoin_packet" ).getContentValue() );
+		final int earned_block = Integer.parseInt( call_game.indexChildNode( "earned_gamecoin_block" ).getContentValue() );
+		final int earned_blaster_energy = Integer.parseInt( call_game.indexChildNode( "earned_blaster_energy" ).getContentValue() );
+		final int old_packet = Integer.parseInt( old.getPacket_point() );
+		final int old_block = Integer.parseInt( old.getBlock_point() );
+		final int old_blaster_energy = Integer.parseInt( old.getBlaster_energy() );
+		final int blaster_count = Integer.parseInt( old.getBlaster_count() ) + ( earned_blaster_energy > 0 ? 1 : 0 );
+
+		//最后一首歌曲数据
+		final Node musicHistory = ( Node ) call_game.indexChildNode( "music" );
+		final Node lastMusicInfo = ( Node ) musicHistory.indexChildNode( musicHistory.childCount() - 1 );
+
+		//用户的其他参数
+		final Node call_param = ( Node ) call_game.indexChildNode( "param" );
+
+		//保存其他参数
+		String id, type, p;
+		for ( BaseNode n : call_param.getChildNodes() ) {
+			id = n.indexChildNode( "id" ).getContentValue();
+			type = n.indexChildNode( "type" ).getContentValue();
+			p = n.indexChildNode( "param" ).getContentValue();
+
+			//存入数据库
+			final Sv5ProfileParam profileParam = new Sv5ProfileParam( refid, id, type, p );
+			service.saveProfileParam( profileParam );
+		}
+
+		final Sv5Profile profile = new Sv5Profile(
+				refid,
+				String.valueOf( old_packet + earned_packet ),
+				String.valueOf( old_block + earned_block ),
+				String.valueOf( old_blaster_energy + earned_blaster_energy ),
+				String.valueOf( blaster_count ),
+				call_game.indexChildNode( "appeal_id" ).getContentValue(),
+				call_game.indexChildNode( "skill_level" ).getContentValue(),
+				call_game.indexChildNode( "skill_base_id" ).getContentValue(),
+				call_game.indexChildNode( "skill_name_id" ).getContentValue(),
+				old.getPlayer_name(),
+				old.getPlayer_code()
+		);
+
+		final Sv5Setting setting = new Sv5Setting(
+				refid,
+				lastMusicInfo.indexChildNode( "id" ).getContentValue(),
+				lastMusicInfo.indexChildNode( "type" ).getContentValue(),
+				call_game.indexChildNode( "sort_type" ).getContentValue(),
+				call_game.indexChildNode( "narrow_down" ).getContentValue(),
+				call_game.indexChildNode( "headphone" ).getContentValue(),
+				call_game.indexChildNode( "gauge_option" ).getContentValue(),
+				call_game.indexChildNode( "ars_option" ).getContentValue(),
+				call_game.indexChildNode( "early_late_disp" ).getContentValue(),
+				call_game.indexChildNode( "notes_option" ).getContentValue(),
+				call_game.indexChildNode( "eff_c_left" ).getContentValue(),
+				call_game.indexChildNode( "eff_c_right" ).getContentValue(),
+				call_game.indexChildNode( "lanespeed" ).getContentValue(),
+				call_game.indexChildNode( "hispeed" ).getContentValue(),
+				call_game.indexChildNode( "draw_adjust" ).getContentValue()
+		);
+
+		//保存配置文件以及设置数据
+		service.saveProfile( profile, setting );
+
+		final Node root = new Node( "response" );
+		root.addChildNode( new Node( "game" ) );
+		return root;
+	}
+
+	/**
+	 * 保存成绩数据
+	 *
+	 * @param call    请求的数据
+	 * @param service 账号数据交互服务
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_save_m( Node call, ProfileService service ) {
+		final Node call_game = ( Node ) call.getFirstChildNode();
+		final Sv5Score score = new Sv5Score(
+				call_game.indexChildNode( "refid" ).getContentValue(),
+				call_game.indexChildNode( "music_id" ).getContentValue(),
+				call_game.indexChildNode( "music_type" ).getContentValue(),
+				call_game.indexChildNode( "score" ).getContentValue(),
+				call_game.indexChildNode( "clear_type" ).getContentValue(),
+				call_game.indexChildNode( "score_grade" ).getContentValue(),
+				call_game.indexChildNode( "max_chain" ).getContentValue(),
+				call_game.indexChildNode( "critical" ).getContentValue(),
+				call_game.indexChildNode( "near" ).getContentValue(),
+				call_game.indexChildNode( "error" ).getContentValue(),
+				call_game.indexChildNode( "gauge_type" ).getContentValue(),
+				call_game.indexChildNode( "effective_rate" ).getContentValue(),
+				call_game.indexChildNode( "btn_rate" ).getContentValue(),
+				call_game.indexChildNode( "long_rate" ).getContentValue(),
+				call_game.indexChildNode( "vol_rate" ).getContentValue(),
+				call_game.indexChildNode( "mode" ).getContentValue(),
+				call_game.indexChildNode( "notes_option" ).getContentValue()
+		);
+
+		service.saveScore( score );
+
+		final Node root = new Node( "response" );
+		root.addChildNode( new Node( "game" ) );
+		return root;
+	}
+
+	/**
+	 * 保存段位成绩数据
+	 *
+	 * @param call    请求的数据
+	 * @param service 账号数据交互服务
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_save_c( Node call, ProfileService service ) {
+		final Node call_game = ( Node ) call.getFirstChildNode();
+		final String refId = call_game.indexChildNode( "refId" ).getContentValue();
+		final String season_id = call_game.indexChildNode( "ssnid" ).getContentValue();
+		final String course_id = call_game.indexChildNode( "crsid" ).getContentValue();
+		final String clear_type = call_game.indexChildNode( "ct" ).getContentValue();
+		final String achievement_rate = call_game.indexChildNode( "ar" ).getContentValue();
+		final String grade = call_game.indexChildNode( "gr" ).getContentValue();
+		final String score = call_game.indexChildNode( "sc" ).getContentValue();
+
+		service.saveCourse( new Sv5Course(
+				season_id,
+				course_id,
+				score,
+				clear_type,
+				grade,
+				achievement_rate,
+				"1",
+				refId
+		) );
+
+		final Node root = new Node( "response" );
+		root.addChildNode( new Node( "game" ) );
+		return root;
+	}
+
+	/**
+	 * Policy floor infection 相关的逻辑
+	 *
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_save_e( Node call ) {
+		final Node root = new Node( "response" );
+		final Node game = new Node( "game" );
+		root.addChildNode( game );
+
+		final Node pbc_infection = new Node( "pbc_infection" );
+		game.addChildNode( pbc_infection );
+
+		for ( String name : new String[]{ "packet", "block", "coloris" } ) {
+			final Node child = new Node( name );
+			child.addChildNode( new TypeNode( "before", "0", "s32" ) );
+			child.addChildNode( new TypeNode( "after", "0", "s32" ) );
+			pbc_infection.addChildNode( child );
+		}
+
+		final Node pb_infection = new Node( "pb_infection" );
+		game.addChildNode( pb_infection );
+
+		for ( String name : new String[]{ "packet", "block" } ) {
+			final Node child = new Node( name );
+			child.addChildNode( new TypeNode( "before", "0", "s32" ) );
+			child.addChildNode( new TypeNode( "after", "0", "s32" ) );
+			pb_infection.addChildNode( child );
+		}
+
+		return root;
+	}
+
+	/**
+	 * 处理购买物品请求
+	 *
+	 * @param call    请求的数据
+	 * @param service 账号数据交互服务
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_buy( Node call, ProfileService service ) {
+		final Node call_game = ( Node ) call.getFirstChildNode();
+		final String refId = call_game.indexChildNode( "refid" ).getContentValue();
+		final Node item = ( Node ) call_game.indexChildNode( "item" );
+		final Sv5Profile profile = service.getProfile( refId );
+
+		//消费方式，0：PACKET   1：BLOCK
+		final int currency_type = Integer.parseInt( call_game.indexChildNode( "currency_type" ).getContentValue() );
+
+		//获取数据库内的数值，加上目前已获取到的数值，为当前可用数值
+		final int old_packet = Integer.parseInt( profile.getPacket_point() );
+		final int old_block = Integer.parseInt( profile.getBlock_point() );
+		final int earned_packet = Integer.parseInt( call_game.indexChildNode( "earned_gamecoin_packet" ).getContentValue() );
+		final int earned_block = Integer.parseInt( call_game.indexChildNode( "earned_gamecoin_block" ).getContentValue() );
+		final int total_packet = old_packet + earned_packet;
+		final int total_block = old_block + earned_block;
+
+		//返回的数据
+		final Node root = new Node( "response" );
+		final Node game = new Node( "game" );
+		root.addChildNode( game );
+
+		//计算本次消费总额
+		final ArrayTypeNode prices = new ArrayTypeNode( item.indexChildNode( "price" ) );
+		int sumPrice = 0;
+		for ( int i = 0; i < prices.count(); i++ ) {
+			sumPrice += Integer.parseInt( prices.value( i ) );
+		}
+
+		//判断是否能购买成功
+		final boolean enough;
+		switch ( currency_type ) {
+			case 0:
+				final int packetResult = total_packet - sumPrice;
+				enough = packetResult >= 0;
+				game.addChildNode( new TypeNode( "gamecoin_block", String.valueOf( old_block ), "u32" ) );
+				if ( enough ) {
+					profile.setPacket_point( String.valueOf( packetResult ) );
+					game.addChildNode( new TypeNode( "gamecoin_packet", String.valueOf( packetResult ), "u32" ) );
+					game.addChildNode( new TypeNode( "result", "0", "u8" ) );
+				}
+				break;
+
+			case 1:
+				final int blockResult = total_block - sumPrice;
+				enough = blockResult >= 0;
+				game.addChildNode( new TypeNode( "gamecoin_packet", String.valueOf( old_packet ), "u32" ) );
+				if ( enough ) {
+					profile.setBlock_point( String.valueOf( blockResult ) );
+					game.addChildNode( new TypeNode( "gamecoin_block", String.valueOf( blockResult ), "u32" ) );
+					game.addChildNode( new TypeNode( "result", "0", "u8" ) );
+				}
+				break;
+
+			default:
+				//未定义的支付方式
+				game.addChildNode( new TypeNode( "gamecoin_packet", String.valueOf( old_packet ), "u32" ) );
+				game.addChildNode( new TypeNode( "gamecoin_block", String.valueOf( old_block ), "u32" ) );
+				game.addChildNode( new TypeNode( "result", "1", "u8" ) );
+				return root;
+		}
+
+		//所有要购买物品的数据
+		final ArrayTypeNode itemsType = new ArrayTypeNode( item.indexChildNode( "item_type" ) );
+		final ArrayTypeNode itemsID = new ArrayTypeNode( item.indexChildNode( "item_id" ) );
+		final ArrayTypeNode itemsParam = new ArrayTypeNode( item.indexChildNode( "param" ) );
+		final int count = itemsType.count();
+
+		String type, id, param;
+		for ( int i = 0; i < count; i++ ) {
+			type = itemsType.value( i );
+			id = itemsID.value( i );
+			param = itemsParam.value( i );
+
+			//保存已解锁数据到数据库
+			service.saveUnlockItem( new UnlockItem( refId, id, type, param ) );
+		}
+
+		//更新账户数值
+		service.saveProfile( profile );
+
+		game.addChildNode( new TypeNode( "gamecoin_packet", String.valueOf( old_packet ), "u32" ) );
+		game.addChildNode( new TypeNode( "gamecoin_block", String.valueOf( old_packet ), "u32" ) );
+		game.addChildNode( new TypeNode( "result", "1", "u8" ) );
+
+		return root;
+	}
 
 	/**
 	 * 读取玩家数据
@@ -26,7 +332,7 @@ public class RequestHandler {
 	 * TODO 游玩次数统计存储
 	 *
 	 * @param call    请求的数据
-	 * @param service 配置文件管理服务
+	 * @param service 账号数据交互服务
 	 * @return 响应的数据
 	 */
 	public static @Nullable
@@ -53,6 +359,7 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "result", "0", "u8" ) );
 			game.addChildNode( new TypeNode( "name", profile.getPlayer_name() ) );
 			game.addChildNode( new TypeNode( "code", profile.getPlayer_code() ) );
+			game.addChildNode( new TypeNode( "kac_id", profile.getPlayer_code() ) );
 			game.addChildNode( new TypeNode( "creator_id", "0", "u32" ) );
 
 			//最后保存的状态
@@ -72,11 +379,11 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "play_count", "100", "u32" ) );
 			game.addChildNode( new TypeNode( "daily_count", "100", "u32" ) );
 			game.addChildNode( new TypeNode( "play_chain", "100", "u32" ) );
-			game.addChildNode( new TypeNode( "play_chain", "0", "u32" ) );
-			game.addChildNode( new TypeNode( "week_count", "0", "u32" ) );
-			game.addChildNode( new TypeNode( "week_play_count", "0", "u32" ) );
-			game.addChildNode( new TypeNode( "week_chain", "0", "u32" ) );
-			game.addChildNode( new TypeNode( "max_week_chain", "0", "u32" ) );
+			game.addChildNode( new TypeNode( "play_chain", "100", "u32" ) );
+			game.addChildNode( new TypeNode( "week_count", "100", "u32" ) );
+			game.addChildNode( new TypeNode( "week_play_count", "100", "u32" ) );
+			game.addChildNode( new TypeNode( "week_chain", "100", "u32" ) );
+			game.addChildNode( new TypeNode( "max_week_chain", "100", "u32" ) );
 
 			//游戏设置
 			game.addChildNode( new TypeNode( "hispeed", setting.getHispeed(), "s32" ) );
@@ -94,13 +401,35 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "gamecoin_block", profile.getBlock_point(), "u32" ) );
 
 			//解锁的对象
-			game.addChildNode( service.loadUnlockItem( refId.getContentValue() ) );
+			game.addChildNode( service.loadUnlockItemNode( refId.getContentValue() ) );
 
 			//PARAM对象
-			game.addChildNode( service.loadParam( refId.getContentValue() ) );
+			game.addChildNode( service._loadParamNode( refId.getContentValue() ) );
 
 			//段位成绩
-			game.addChildNode( service.loadCourseHistory( refId.getContentValue() ) );
+			game.addChildNode( service.loadCourseHistoryNode( refId.getContentValue() ) );
+
+			//下面的是测试数据
+			final Node ea_shop = new Node( "ea_shop" );
+			game.addChildNode( ea_shop );
+			ea_shop.addChildNode( new TypeNode( "packet_booster", "0", "s32" ) );
+			ea_shop.addChildNode( new TypeNode( "block_booster", "0", "s32" ) );
+
+			final Node eaappli = new Node( "eaappli" );
+			game.addChildNode( eaappli );
+			eaappli.addChildNode( new TypeNode( "relation", "0", "s8" ) );
+
+			final Node reitaisai2017 = new Node( "reitaisai2017" );
+			game.addChildNode( reitaisai2017 );
+			reitaisai2017.addChildNode( new TypeNode( "is_jackpot", "1", "bool" ) );
+
+			final Node volte_factory = new Node( "volte_factory" );
+			final Node info = new Node( "info" );
+			volte_factory.addChildNode( info );
+			game.addChildNode( volte_factory );
+			info.addChildNode( new TypeNode( "goods_id", "100", "s32" ) );
+			info.addChildNode( new TypeNode( "status", "3", "s32" ) );
+
 		} else {
 			//没有数据
 			Log.getInstance().print( "玩家数据不存在：" + refId.getContentValue() );
@@ -115,14 +444,20 @@ public class RequestHandler {
 	 * <p>
 	 * TODO	尚未实现，目前不清楚数据结构
 	 *
-	 * @param call 请求的数据
+	 * @param call    请求的数据
+	 * @param service 账号数据交互服务
 	 * @return 响应的数据
 	 */
 	public static @Nullable
-	Node handle_sv5_load_m( Node call ) {
+	Node handle_sv5_load_m( Node call, ProfileService service ) {
+		final Node call_game = ( Node ) call.getFirstChildNode();
+		final String refId = call_game.indexChildNode( "refid" ).getContentValue();
+
 		final Node root = new Node( "response" );
 		final Node game = new Node( "game" );
 		root.addChildNode( game );
+
+		game.addChildNode( service.loadScoreNode( refId ) );
 
 		return root;
 	}
@@ -188,6 +523,7 @@ public class RequestHandler {
 	 */
 	public static @Nullable
 	Node handle_sv5_common( Node call ) {
+		Log.getInstance().print( "开始加载 SV5_COMMON" );
 		final Node root = new Node( "response" );
 		final Node game = new Node( "game" );
 		root.addChildNode( game );
@@ -200,6 +536,7 @@ public class RequestHandler {
 		}
 
 		//启用的活动
+		Log.getInstance().print( "加载活动数据中..." );
 		final Node event = new Node( "event" );
 		game.addChildNode( event );
 		enableEvent( event, "ACHIEVEMENT_ENABLE" );
@@ -210,16 +547,9 @@ public class RequestHandler {
 		enableEvent( event, "ICON_FLOOR_INFECTION" );
 		enableEvent( event, "MATCHING_MODE" );
 		enableEvent( event, "MATCHING_MODE_FREE_IP" );
-		enableEvent( event, "SKILL_ANALYZER_ABLE" );
 		enableEvent( event, "EVENTDATE_ONIGO" );
 		enableEvent( event, "SERIALCODE_JAPAN" );
 		enableEvent( event, "APPEAL_CARD_UNLOCK" );
-		enableEvent( event, "BLASTER_ABLE" );
-		enableEvent( event, "GENERATOR_ABLE" );
-		enableEvent( event, "CREW_SELECT_ABLE" );
-		enableEvent( event, "PLAYERJUDGEADJ_ENABLE" );
-		enableEvent( event, "STANDARD_UNLOCK_ENABLE" );
-		enableEvent( event, "EVENTDATE_APRILFOOL" );
 		enableEvent( event, "OMEGA_ENABLE" );
 		enableEvent( event, "OMEGA_02_ENABLE" );
 		enableEvent( event, "OMEGA_03_ENABLE" );
@@ -233,6 +563,7 @@ public class RequestHandler {
 		enableEvent( event, "KONAMI_50TH_LOGO" );
 
 		//段位启用，有缓存好的数据，就不用生成了
+		Log.getInstance().print( "加载段位数据中..." );
 		Node skillCourse = StaticContainer.getInstance().has( "skill_course_node" ) ? ( Node ) StaticContainer.getInstance().get( "skill_course_node" ) : null;
 		if ( skillCourse == null ) {
 			skillCourse = new Node( "skill_course" );
@@ -274,7 +605,10 @@ public class RequestHandler {
 			}
 
 			StaticContainer.getInstance().set( "skill_course_node", skillCourse );
+		} else {
+			Log.getInstance().print( "存在缓存数据" );
 		}
+
 		game.addChildNode( skillCourse );
 
 		return root;
@@ -296,7 +630,7 @@ public class RequestHandler {
 	}
 
 	/**
-	 * 应该是商店之类的
+	 * 应该是请求登记商铺名称
 	 *
 	 * @param call 请求的数据
 	 * @return 响应的数据
@@ -305,7 +639,7 @@ public class RequestHandler {
 	Node handle_sv5_shop( Node call ) {
 		final Node root = new Node( "response" );
 		final Node game = new Node( "game" );
-		game.addChildNode( new TypeNode( "nxt_time", String.valueOf( 1000 * 5 * 60 ), "u32" ) );
+		game.addChildNode( new TypeNode( "next_time", String.valueOf( 1000 * 5 * 60 ), "u32" ) );
 		root.addChildNode( game );
 
 		return root;

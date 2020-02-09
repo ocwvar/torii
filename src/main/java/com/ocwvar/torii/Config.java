@@ -13,7 +13,7 @@ public class Config {
 	/**
 	 * 是否强制全解物品 (头像、领航员 等)
 	 */
-	public static final boolean FUNCTION_FORCE_UNLOCK_ITEMS = true;
+	public static final boolean FUNCTION_FORCE_UNLOCK_ITEMS = false;
 
 	/**
 	 * 是否强制全解歌曲，默认 False

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<!--suppress SqlDialectInspection -->
+<mapper namespace="com.ocwvar.torii.db.dao.UnlockItemDao">
+
+    <sql id="BASE_TABLE">
+        sdvx_5_item
+    </sql>
+
+    <sql id="ALL_COLUMN">
+        refId,type,param,id
+    </sql>
+
+    <resultMap id="list_unlock_item" type="com.ocwvar.torii.db.entity.UnlockItem">
+        <result column="refId" property="refId"/>
+        <result column="type" property="type"/>
+        <result column="param" property="param"/>
+        <result column="id" property="id"/>
+    </resultMap>
+
+    <select id="findAllByRefId" parameterType="java.lang.String" resultMap="list_unlock_item">
+        SELECT
+        <include refid="ALL_COLUMN"/>
+        FROM
+        <include refid="BASE_TABLE"/>
+        WHERE refId=#{refId}
+    </select>
+
+    <insert id="add" parameterType="com.ocwvar.torii.db.entity.UnlockItem">
+        INSERT INTO
+        <include refid="BASE_TABLE"/>
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <include refid="ALL_COLUMN"/>
+        </trim>
+        <trim prefix=" VALUE(" suffix=")" suffixOverrides=",">
+            #{refId},#{type},#{param},#{id}
+        </trim>
+    </insert>
+
+</mapper>

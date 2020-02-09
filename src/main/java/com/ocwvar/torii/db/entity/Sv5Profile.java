@@ -6,14 +6,14 @@ package com.ocwvar.torii.db.entity;
 public class Sv5Profile {
 
 	private final String refId;
-	private final String packet_point;
-	private final String block_point;
-	private final String blaster_energy;
-	private final String blaster_count;
-	private final String appeal_id;
-	private final String skill_level;
-	private final String skill_base_id;
-	private final String skill_name_id;
+	private String packet_point;
+	private String block_point;
+	private String blaster_energy;
+	private String blaster_count;
+	private String appeal_id;
+	private String skill_level;
+	private String skill_base_id;
+	private String skill_name_id;
 	private final String player_name;
 	private final String player_code;
 
@@ -108,5 +108,37 @@ public class Sv5Profile {
 	 */
 	public String getPlayer_code() {
 		return player_code;
+	}
+
+	public void setPacket_point( String packet_point ) {
+		this.packet_point = packet_point;
+	}
+
+	public void setBlock_point( String block_point ) {
+		this.block_point = block_point;
+	}
+
+	public void setBlaster_energy( String blaster_energy ) {
+		this.blaster_energy = blaster_energy;
+	}
+
+	public void setBlaster_count( String blaster_count ) {
+		this.blaster_count = blaster_count;
+	}
+
+	public void setAppeal_id( String appeal_id ) {
+		this.appeal_id = appeal_id;
+	}
+
+	public void setSkill_level( String skill_level ) {
+		this.skill_level = skill_level;
+	}
+
+	public void setSkill_base_id( String skill_base_id ) {
+		this.skill_base_id = skill_base_id;
+	}
+
+	public void setSkill_name_id( String skill_name_id ) {
+		this.skill_name_id = skill_name_id;
 	}
 }
