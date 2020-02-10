@@ -431,31 +431,10 @@ public class RequestHandler {
 			game.addChildNode( service.loadUnlockItemNode( refId.getContentValue() ) );
 
 			//PARAM对象
-			game.addChildNode( service._loadParamNode( refId.getContentValue() ) );
+			game.addChildNode( service.loadParamNode( refId.getContentValue() ) );
 
 			//段位成绩
 			game.addChildNode( service.loadCourseHistoryNode( refId.getContentValue() ) );
-
-			//下面的是测试数据
-			final Node ea_shop = new Node( "ea_shop" );
-			game.addChildNode( ea_shop );
-			ea_shop.addChildNode( new TypeNode( "packet_booster", "0", "s32" ) );
-			ea_shop.addChildNode( new TypeNode( "block_booster", "0", "s32" ) );
-
-			final Node eaappli = new Node( "eaappli" );
-			game.addChildNode( eaappli );
-			eaappli.addChildNode( new TypeNode( "relation", "0", "s8" ) );
-
-			final Node reitaisai2017 = new Node( "reitaisai2017" );
-			game.addChildNode( reitaisai2017 );
-			reitaisai2017.addChildNode( new TypeNode( "is_jackpot", "1", "bool" ) );
-
-			final Node volte_factory = new Node( "volte_factory" );
-			final Node info = new Node( "info" );
-			volte_factory.addChildNode( info );
-			game.addChildNode( volte_factory );
-			info.addChildNode( new TypeNode( "goods_id", "100", "s32" ) );
-			info.addChildNode( new TypeNode( "status", "3", "s32" ) );
 
 		} else {
 			//没有数据

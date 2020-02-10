@@ -36,8 +36,8 @@ public class Facility {
 		facilityNode.addAttribute( "expire", "600" );
 
 		final Node locationNode = new Node( "location" );
-		locationNode.addChildNode( new TypeNode( "id", "00000000" ) );
-		locationNode.addChildNode( new TypeNode( "country", "US" ) );
+		locationNode.addChildNode( new TypeNode( "id", "11451419" ) );
+		locationNode.addChildNode( new TypeNode( "country", "JP" ) );
 		locationNode.addChildNode( new TypeNode( "region", "." ) );
 		locationNode.addChildNode( new TypeNode( "name", "SONY_MOBILE_SHOP" ) );
 		locationNode.addChildNode( new TypeNode( "type", "0", "u8" ) );
