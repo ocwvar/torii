@@ -36,6 +36,10 @@ public class KFCRouter {
 			HttpServletResponse response
 	) throws Exception {
 
+		if ( Protocol.commitWithCache( request, response ) ){
+			return;
+		}
+
 		final String[] modelValues = model.split( ":" );
 		Node call = Protocol.decrypt( request );
 		Node root = null;
@@ -44,12 +48,12 @@ public class KFCRouter {
 		switch ( modelValues[ modelValues.length - 1 ] ) {
 			case "2019100800":
 				switch ( func ) {
-					case "sv5_exception":
-						root = RequestHandler.handle_sv5_exception( call );
-						break;
-
 					case "sv5_common":
 						root = RequestHandler.handle_sv5_common( call );
+						break;
+
+					case "sv5_exception":
+						root = RequestHandler.handle_sv5_exception( call );
 						break;
 
 					case "sv5_new":
@@ -81,11 +85,11 @@ public class KFCRouter {
 						break;
 
 					case "sv5_play_s":
-						root = RequestHandler.handle_play_s( call );
+						root = RequestHandler.handle_sv5_play_s( call );
 						break;
 
 					case "sv5_play_e":
-						root = RequestHandler.handle_play_e( call );
+						root = RequestHandler.handle_sv5_play_e( call );
 						break;
 
 					case "sv5_save":

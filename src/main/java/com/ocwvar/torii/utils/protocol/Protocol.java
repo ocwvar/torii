@@ -3,7 +3,10 @@ package com.ocwvar.torii.utils.protocol;
 import com.ocwvar.kbin.KBinXml;
 import com.ocwvar.torii.Config;
 import com.ocwvar.torii.Field;
+import com.ocwvar.torii.data.StaticContainer;
+import com.ocwvar.torii.utils.Cache;
 import com.ocwvar.torii.utils.IO;
+import com.ocwvar.utils.Log;
 import com.ocwvar.utils.TextUtils;
 import com.ocwvar.utils.annotation.NotNull;
 import com.ocwvar.utils.annotation.Nullable;
@@ -15,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.security.NoSuchAlgorithmException;
 
 public class Protocol {
 
@@ -56,20 +60,6 @@ public class Protocol {
 				content +
 				"====================================" + "\n";
 		System.out.println( string );
-	}
-
-	/**
-	 * 使用 DUMP 出来的 XML 进行响应
-	 *
-	 * @param xmlPath  XML文件路径
-	 * @param request  请求对象
-	 * @param response 响应对象
-	 */
-	public static void commitWithDumpXml( @NotNull String xmlPath, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws Exception {
-		final InputStream inputStream = new FileInputStream( xmlPath );
-		final byte[] data = inputStream.readAllBytes();
-		inputStream.close();
-		encryptAndCommit( data, request, response );
 	}
 
 	/**
@@ -171,6 +161,14 @@ public class Protocol {
 			);
 		}
 
+		//需要缓存数据
+		if ( Config.ENABLE_RESPONSE_CACHE && Cache.shouldBeCached( request ) && !StaticContainer.getInstance().has( String.valueOf( request.getRequestURL().hashCode() ) ) ) {
+			if ( Cache.createResponseCache( data, request ) ) {
+				StaticContainer.getInstance().set( String.valueOf( request.getRequestURL().hashCode() ), 0 );
+				Log.getInstance().print( "已生成缓存：" + request.getRequestURL() );
+			}
+		}
+
 		//需要压缩
 		if ( needCompress ) {
 			data = Lz77.compress( data );
@@ -226,6 +224,57 @@ public class Protocol {
 		}
 
 		commit( 200, data, request, response );
+	}
+
+	/**
+	 * 通过本地缓存进行响应
+	 *
+	 * @param request  请求对象
+	 * @param response 响应对象
+	 * @return 是否执行成功
+	 */
+	public static boolean commitWithCache( @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws NoSuchAlgorithmException, IOException {
+		if ( !Config.ENABLE_RESPONSE_CACHE || !Cache.hasResponseCache( request ) ) {
+			return false;
+		}
+
+		byte[] data = Cache.loadResponseCache( request );
+		if ( data == null ) {
+			Log.getInstance().print( "读取缓存数据失败" );
+			return false;
+		}
+
+		final String eamuseInfo = request.getHeader( Field.HEADER_X_Eamuse_Info );
+		final boolean needCompress = request.getHeader( Field.HEADER_COMPRESS ).equals( Field.HEADER_COMPRESS_TYPE_LZ77 );
+		final boolean needEncryptRC4 = !TextUtils.isEmpty( eamuseInfo );
+
+		//需要压缩
+		if ( needCompress ) {
+			data = Lz77.compress( data );
+		}
+
+		//需要RC4加密
+		if ( needEncryptRC4 ) {
+			data = Rc4.encrypt( Rc4.getRC4Key( eamuseInfo ), data );
+		}
+
+		commit( 200, data, request, response );
+		Log.getInstance().print( "已通过缓存完成请求：" + request.getRequestURL() );
+		return true;
+	}
+
+	/**
+	 * 使用 DUMP 出来的 XML 进行响应
+	 *
+	 * @param xmlPath  XML文件路径
+	 * @param request  请求对象
+	 * @param response 响应对象
+	 */
+	public static void commitWithDumpXml( @NotNull String xmlPath, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws Exception {
+		final InputStream inputStream = new FileInputStream( xmlPath );
+		final byte[] data = inputStream.readAllBytes();
+		inputStream.close();
+		encryptAndCommit( data, request, response );
 	}
 
 	/**

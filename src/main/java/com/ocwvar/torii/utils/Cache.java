@@ -22,7 +22,7 @@ public class Cache {
 		}
 
 		final String[] paths = request.getRequestURL().toString().split( "/" );
-		final String cachePath = Config.RESPONSE_CACHE_FOLDER + paths[ paths.length - 1 ] + ".kResp";
+		final String cachePath = Config.RESPONSE_CACHE_FOLDER + paths[ paths.length - 1 ] + ".kBin";
 		final boolean result = IO.outputFile( true, cachePath, data );
 
 		Log.getInstance().print( "生成请求缓存：" + paths[ paths.length - 1 ] + " 结果：" + result );
@@ -66,7 +66,7 @@ public class Cache {
 	 */
 	public static @Nullable
 	byte[] loadResponseCache( String requestName ) {
-		final String cachePath = Config.RESPONSE_CACHE_FOLDER + requestName + ".kResp";
+		final String cachePath = Config.RESPONSE_CACHE_FOLDER + requestName + ".kBin";
 		return IO.loadFile( true, cachePath );
 	}
 
@@ -75,7 +75,7 @@ public class Cache {
 	 */
 	public static boolean hasResponseCache( HttpServletRequest request ) {
 		final String[] paths = request.getRequestURL().toString().split( "/" );
-		final String cachePath = Config.RESPONSE_CACHE_FOLDER + paths[ paths.length - 1 ] + ".kResp";
+		final String cachePath = Config.RESPONSE_CACHE_FOLDER + paths[ paths.length - 1 ] + ".kBin";
 		return new File( cachePath ).exists();
 	}
 

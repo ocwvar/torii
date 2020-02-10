@@ -25,7 +25,7 @@ public class RequestHandler {
 	 * @return 响应的数据
 	 */
 	public static @Nullable
-	Node handle_play_e( Node call ) {
+	Node handle_sv5_play_e( Node call ) {
 		final Node root = new Node( "response" );
 		root.addChildNode( new Node( "game" ) );
 		return root;
@@ -36,7 +36,7 @@ public class RequestHandler {
 	 * @return 响应的数据
 	 */
 	public static @Nullable
-	Node handle_play_s( Node call ) {
+	Node handle_sv5_play_s( Node call ) {
 		final Node root = new Node( "response" );
 		final Node game = new Node( "game" );
 		game.addChildNode( new TypeNode( "play_id", "1", "u32" ) );
@@ -552,7 +552,6 @@ public class RequestHandler {
 	 */
 	public static @Nullable
 	Node handle_sv5_common( Node call ) {
-		Log.getInstance().print( "开始加载 SV5_COMMON" );
 		final Node root = new Node( "response" );
 		final Node game = new Node( "game" );
 		root.addChildNode( game );
@@ -565,7 +564,6 @@ public class RequestHandler {
 		}
 
 		//启用的活动
-		Log.getInstance().print( "加载活动数据中..." );
 		final Node event = new Node( "event" );
 		game.addChildNode( event );
 		enableEvent( event, "ACHIEVEMENT_ENABLE" );
@@ -591,51 +589,42 @@ public class RequestHandler {
 		enableEvent( event, "OMEGA_10_ENABLE" );
 		enableEvent( event, "KONAMI_50TH_LOGO" );
 
-		//段位启用，有缓存好的数据，就不用生成了
-		Log.getInstance().print( "加载段位数据中..." );
-		Node skillCourse = StaticContainer.getInstance().has( "skill_course_node" ) ? ( Node ) StaticContainer.getInstance().get( "skill_course_node" ) : null;
-		if ( skillCourse == null ) {
-			skillCourse = new Node( "skill_course" );
+		//段位启用
+		//Node skillCourse = StaticContainer.getInstance().has( "skill_course_node" ) ? ( Node ) StaticContainer.getInstance().get( "skill_course_node" ) : null;
+		final Node skillCourse = new Node( "skill_course" );
+		final Course[] courses = loadCourseConfig();
 
-			Log.getInstance().print( "正在首次加载段位数据..." );
-			final Course[] courses = loadCourseConfig();
-
-			for ( Course course : courses ) {
-				final Node info = new Node( "info" );
-				skillCourse.addChildNode( info );
+		for ( Course course : courses ) {
+			final Node info = new Node( "info" );
+			skillCourse.addChildNode( info );
 
 				/*
 					各个字段的意义查看 CourseData.Course 的注释
 				 */
 
-				info.addChildNode( new TypeNode( "course_id", course.courseId, "s16" ) );
-				info.addChildNode( new TypeNode( "skill_level", course.skillLevel, "s16" ) );
-				info.addChildNode( new TypeNode( "season_id", course.seasonId, "s32" ) );
-				info.addChildNode( new TypeNode( "season_name", course.seasonName ) );
-				info.addChildNode( new TypeNode( "season_new_flg", course.seasonNewFlg, "bool" ) );
-				info.addChildNode( new TypeNode( "course_name", course.courseName ) );
-				info.addChildNode( new TypeNode( "course_type", course.courseType, "s16" ) );
-				info.addChildNode( new TypeNode( "clear_rate", course.clearRate, "s32" ) );
-				info.addChildNode( new TypeNode( "avg_score", course.avgScore, "u32" ) );
-				info.addChildNode( new TypeNode( "skill_name_id", course.skillNameId, "s16" ) );
-				info.addChildNode( new TypeNode( "matching_assist", course.matchingAssist, "bool" ) );
-				info.addChildNode( new TypeNode( "gauge_type", course.gaugeType, "s16" ) );
-				info.addChildNode( new TypeNode( "paseli_type", course.paseliType, "s16" ) );
+			info.addChildNode( new TypeNode( "course_id", course.courseId, "s16" ) );
+			info.addChildNode( new TypeNode( "skill_level", course.skillLevel, "s16" ) );
+			info.addChildNode( new TypeNode( "season_id", course.seasonId, "s32" ) );
+			info.addChildNode( new TypeNode( "season_name", course.seasonName ) );
+			info.addChildNode( new TypeNode( "season_new_flg", course.seasonNewFlg, "bool" ) );
+			info.addChildNode( new TypeNode( "course_name", course.courseName ) );
+			info.addChildNode( new TypeNode( "course_type", course.courseType, "s16" ) );
+			info.addChildNode( new TypeNode( "clear_rate", course.clearRate, "s32" ) );
+			info.addChildNode( new TypeNode( "avg_score", course.avgScore, "u32" ) );
+			info.addChildNode( new TypeNode( "skill_name_id", course.skillNameId, "s16" ) );
+			info.addChildNode( new TypeNode( "matching_assist", course.matchingAssist, "bool" ) );
+			info.addChildNode( new TypeNode( "gauge_type", course.gaugeType, "s16" ) );
+			info.addChildNode( new TypeNode( "paseli_type", course.paseliType, "s16" ) );
 
-				//存放段位曲目
-				for ( int i = 0; i < course.tracks.length; i++ ) {
-					final Node track = new Node( "track" );
-					info.addChildNode( track );
+			//存放段位曲目
+			for ( int i = 0; i < course.tracks.length; i++ ) {
+				final Node track = new Node( "track" );
+				info.addChildNode( track );
 
-					track.addChildNode( new TypeNode( "track_no", String.valueOf( i ), "s16" ) );
-					track.addChildNode( new TypeNode( "music_id", String.valueOf( course.tracks[ i ].key ), "s32" ) );
-					track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
-				}
+				track.addChildNode( new TypeNode( "track_no", String.valueOf( i ), "s16" ) );
+				track.addChildNode( new TypeNode( "music_id", String.valueOf( course.tracks[ i ].key ), "s32" ) );
+				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
 			}
-
-			StaticContainer.getInstance().set( "skill_course_node", skillCourse );
-		} else {
-			Log.getInstance().print( "存在缓存数据" );
 		}
 
 		game.addChildNode( skillCourse );
