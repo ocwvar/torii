@@ -37,7 +37,7 @@ public class KFCRouter {
 	) throws Exception {
 
 		final String[] modelValues = model.split( ":" );
-		Node call = Protocol.decrypt( request );
+		Node call = Protocol.decrypt( request,true );
 		Node root = null;
 
 		//noinspection SwitchStatementWithTooFewBranches

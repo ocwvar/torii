@@ -4,6 +4,7 @@ import com.ocwvar.torii.Config;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.db.entity.Card;
 import com.ocwvar.torii.service.core.CardService;
+import com.ocwvar.torii.service.game.kfc.ProfileService;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.cardX.A;
@@ -23,10 +24,12 @@ import javax.servlet.http.HttpServletResponse;
 public class CardMng {
 
 	private final CardService cardService;
+	private final ProfileService profileService;
 
 	@Autowired
-	public CardMng( CardService cardService ) {
+	public CardMng( CardService cardService, ProfileService profileService ) {
 		this.cardService = cardService;
+		this.profileService = profileService;
 	}
 
 	/*
@@ -141,6 +144,7 @@ public class CardMng {
 	private Node getrefid( String rawId, String pin ) {
 
 		//加密的E004卡号
+		Log.getInstance().print( "开始计算新卡的 REF_ID" );
 		final String refId = new A().toKonamiID( rawId );
 		this.cardService.insertCard( new Card( refId, rawId, pin ) );
 
@@ -151,6 +155,7 @@ public class CardMng {
 						.addAttribute( "refid", refId )
 						.build()
 		);
+
 
 		Log.getInstance().print( "新卡片注册完成，REF_ID：" + refId );
 		return root;

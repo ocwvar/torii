@@ -53,7 +53,7 @@
         INSERT INTO
         <include refid="TABLE_PASELI_SEASON"/>
         <trim prefix="(" suffix=")" suffixOverrides=",">
-            <include refid="ALL_PASELI_SEASON_COLUMN"/>
+            <include refid="ALL_PASELI_COLUMN"/>
         </trim>
         <trim prefix=" VALUE(" suffix=")" suffixOverrides=",">
             #{season_id},#{rawId}

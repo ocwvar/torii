@@ -1,0 +1,123 @@
+<call model="KFC:J:A:A:2019100800" srcid="012010000000233A0E29" tag="NcI8ACRf">
+    <game method="sv5_save" ver="0">
+        <refid __type="str">8ABX1AHT05PYGH1D</refid>
+        <locid __type="str">00000000</locid>
+        <appeal_id __type="u16">2529</appeal_id>
+        <skill_level __type="s16">12</skill_level>
+        <skill_base_id __type="s16">12</skill_base_id>
+        <skill_name_id __type="s16">12</skill_name_id>
+        <earned_gamecoin_packet __type="u32">0</earned_gamecoin_packet>
+        <earned_gamecoin_block __type="u32">171</earned_gamecoin_block>
+        <earned_blaster_energy __type="s32">2400</earned_blaster_energy>
+        <p_start __type="u64">1581233777621</p_start>
+        <p_end __type="u64">1581233995764</p_end>
+        <ea_shop>
+            <used_packet_booster __type="s32">0</used_packet_booster>
+            <used_block_booster __type="s32">0</used_block_booster>
+        </ea_shop>
+        <hispeed __type="s32">100000000</hispeed>
+        <lanespeed __type="u32">0</lanespeed>
+        <gauge_option __type="u8">1</gauge_option>
+        <ars_option __type="u8">0</ars_option>
+        <notes_option __type="u8">0</notes_option>
+        <early_late_disp __type="u8">0</early_late_disp>
+        <draw_adjust __type="s32">0</draw_adjust>
+        <eff_c_left __type="u8">0</eff_c_left>
+        <eff_c_right __type="u8">0</eff_c_right>
+        <music_id __type="s32">1069</music_id>
+        <music_type __type="u8">4</music_type>
+        <sort_type __type="u8">0</sort_type>
+        <narrow_down __type="u8">0</narrow_down>
+        <headphone __type="u8">1</headphone>
+        <item>
+            <info>
+                <id __type="u32">4001</id>
+                <type __type="u32">1</type>
+                <param __type="u32">1</param>
+            </info>
+            <info>
+                <id __type="u32">4002</id>
+                <type __type="u32">1</type>
+                <param __type="u32">1</param>
+            </info>
+            <info>
+                <id __type="u32">4003</id>
+                <type __type="u32">1</type>
+                <param __type="u32">1</param>
+            </info>
+            <info>
+                <id __type="u32">4004</id>
+                <type __type="u32">1</type>
+                <param __type="u32">1</param>
+            </info>
+            <info>
+                <id __type="u32">4005</id>
+                <type __type="u32">1</type>
+                <param __type="u32">1</param>
+            </info>
+            <info>
+                <id __type="u32">4006</id>
+                <type __type="u32">1</type>
+                <param __type="u32">1</param>
+            </info>
+            <info>
+                <id __type="u32">4007</id>
+                <type __type="u32">1</type>
+                <param __type="u32">1</param>
+            </info>
+        </item>
+        <param>
+            <info>
+                <type __type="s32">2</type>
+                <id __type="s32">1</id>
+                <param __count="30" __type="s32">0 0 0 1581233792 19100800 19100800 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 59 0 0 0 0 1</param>
+            </info>
+            <info>
+                <type __type="s32">5</type>
+                <id __type="s32">0</id>
+                <param __count="71" __type="s32">1 1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 400 15 6 5 423 363 186 0 1 4 1 2 2 10 3 5 7 5 29 45 32 19 77 109 48 1 0 0 7 5 1 4 1 1 12 2 12 17 10 7 0 8 5 8 1 13 11 16 11 2 1 2 3</param>
+            </info>
+            <info>
+                <type __type="s32">8</type>
+                <id __type="s32">1</id>
+                <param __count="2" __type="s32">1069 4</param>
+            </info>
+            <info>
+                <type __type="s32">8</type>
+                <id __type="s32">2</id>
+                <param __count="2" __type="s32">2529 2528</param>
+            </info>
+        </param>
+        <music>
+            <info>
+                <track_no __type="u8">0</track_no>
+                <id __type="u32">4</id>
+                <type __type="u8">2</type>
+                <clear_type __type="u8">1</clear_type>
+                <score_grade __type="u8">1</score_grade>
+                <score __type="u32">133444</score>
+            </info>
+            <info>
+                <track_no __type="u8">1</track_no>
+                <id __type="u32">1069</id>
+                <type __type="u8">4</type>
+                <clear_type __type="u8">1</clear_type>
+                <score_grade __type="u8">1</score_grade>
+                <score __type="u32">0</score>
+            </info>
+            <info>
+                <track_no __type="u8">2</track_no>
+                <id __type="u32">1069</id>
+                <type __type="u8">4</type>
+                <clear_type __type="u8">1</clear_type>
+                <score_grade __type="u8">1</score_grade>
+                <score __type="u32">41551</score>
+            </info>
+        </music>
+        <blaster_count __type="u32">0</blaster_count>
+        <print>
+            <count __type="s32">0</count>
+        </print>
+        <start_option __type="s8">1</start_option>
+    </game>
+</call>
