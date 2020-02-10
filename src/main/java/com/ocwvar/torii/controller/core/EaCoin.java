@@ -144,7 +144,7 @@ public class EaCoin {
 
 		//查找PASELI账户并返回信息
 		final Paseli paseli = this.cardService.findPaseliByRawId( cardid.getContentValue() );
-		final String seasonId = TextUtils.getRandomText( 10 );
+		final String seasonId = TextUtils.getRandomText( false,10 );
 		eacoin.addChildNode( new TypeNode( "sequence", "1", "s16" ) );
 		eacoin.addChildNode( new TypeNode( "acstatus", "1", "u8" ) );
 		eacoin.addChildNode( new TypeNode( "acid", paseli.getAcid() ) );

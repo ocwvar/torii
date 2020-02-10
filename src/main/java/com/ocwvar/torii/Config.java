@@ -26,6 +26,15 @@ public class Config {
 	public static final boolean IS_UNDER_MAINTENANCE = false;
 
 	/**
+	 * 是否启用响应缓存，以及在下面配置功能的名称
+	 */
+	public static final boolean ENABLE_RESPONSE_CACHE = false;
+	public static final String RESPONSE_CACHE_FOLDER = "H:\\TORII\\RESPONSE_CACHE\\";
+	public static final String[] CACHE_RESPONSE_NAMES = new String[]{
+			"sv5_common","get"
+	};
+
+	/**
 	 * 请求地址
 	 */
 	public static final String BASE_URL = "http://127.0.0.1:50001";
@@ -48,7 +57,6 @@ public class Config {
 	/**
 	 * DEBUG：调试数据输出总目录
 	 */
-	public static final String DEBUG_OUTPUT_FOLDER = "H:\\DEBUG_OUTPUT\\";
-
+	public static final String DEBUG_OUTPUT_FOLDER = "H:\\TORII\\DEBUG_OUTPUT\\";
 
 }

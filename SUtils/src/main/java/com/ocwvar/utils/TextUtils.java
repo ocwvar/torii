@@ -6,7 +6,7 @@ import java.util.Random;
 
 public class TextUtils {
 
-	private final static String c = "abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLINMOPQRSTUVWXYZ";
+	private final static String c = "0123456789abcdefghijklnmopqrstuvwxyzABCDEFGHIJKLINMOPQRSTUVWXYZ";
 
 	/**
 	 * 检测文本是否为空，包括 null 的情况
@@ -21,15 +21,17 @@ public class TextUtils {
 	/**
 	 * 获取指定长度的随机字符串
 	 *
-	 * @param length 长度
+	 * @param numberOnly 是否只有数字
+	 * @param length     长度
 	 * @return 随机字符串
 	 */
-	public static String getRandomText( int length ) {
+	public static String getRandomText( boolean numberOnly, int length ) {
 
-		final Random random = new Random( (System.currentTimeMillis() - System.nanoTime()) * 41232);
+		final Random random = new Random( ( System.currentTimeMillis() - System.nanoTime() ) * 41232 );
 		final StringBuilder builder = new StringBuilder();
+		final int readLength = numberOnly ?  10 : c.length();
 		while ( builder.length() < length ) {
-			builder.append( c.charAt( random.nextInt( c.length() ) ) );
+			builder.append( c.charAt( random.nextInt( readLength ) ) );
 			random.setSeed( System.currentTimeMillis() / random.nextInt() );
 		}
 

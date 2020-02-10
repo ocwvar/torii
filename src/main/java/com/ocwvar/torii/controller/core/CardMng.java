@@ -51,7 +51,7 @@ public class CardMng {
 
 	@PostMapping( path = "/torii/cardmng/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
-		final Node info = ( Node ) Protocol.decrypt( request, true ).getFirstChildNode();
+		final Node info = ( Node ) Protocol.decrypt( request ).getFirstChildNode();
 
 		final String rawId = info.getAttribute( "cardid" );
 		final String method = info.getAttribute( "method" );

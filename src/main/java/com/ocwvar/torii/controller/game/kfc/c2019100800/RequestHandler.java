@@ -11,6 +11,7 @@ import com.ocwvar.torii.service.game.kfc.ProfileService;
 import com.ocwvar.torii.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.Pair;
+import com.ocwvar.utils.TextUtils;
 import com.ocwvar.utils.annotation.Nullable;
 import com.ocwvar.xml.node.ArrayTypeNode;
 import com.ocwvar.xml.node.BaseNode;
@@ -326,6 +327,32 @@ public class RequestHandler {
 	}
 
 	/**
+	 * 创建新的用户
+	 *
+	 * @param call    请求的数据
+	 * @param service 账号数据交互服务
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_new( Node call, ProfileService service ) {
+		final Node call_game = ( Node ) call.getFirstChildNode();
+		final String pcbid = call.getAttribute( "srcid" );
+		final String refId = call_game.indexChildNode( "refid" ).getContentValue();
+		final String name = call_game.indexChildNode( "name" ).getContentValue();
+		final String userCode = TextUtils.getRandomText( true, 9 );
+
+		//这个位置ID指 facility 中的 location 节点内的 id 值
+		final String localId = call_game.indexChildNode( "locid" ).getContentValue();
+
+		service.createDefaultProfile( refId, name, userCode );
+		Log.getInstance().print( "新注册  用户名：" + name + "  用户码：" + userCode + "  REF_ID：" + refId );
+
+		final Node root = new Node( "response" );
+		root.addChildNode( new Node( "game" ) );
+		return root;
+	}
+
+	/**
 	 * 读取玩家数据
 	 * <p>
 	 * TODO	段位记录存储获取
@@ -349,12 +376,12 @@ public class RequestHandler {
 		final Sv5Profile profile = service.getProfile( refId.getContentValue() );
 		final Sv5Setting setting = service.getSetting( refId.getContentValue() );
 		final Node root = new Node( "response" );
-		final Node game = new Node( "game" );
-		root.addChildNode( game );
 
 		if ( profile != null ) {
 
 			//有已保存的数据
+			final Node game = new Node( "game" );
+			root.addChildNode( game );
 			Log.getInstance().print( "已存在的玩家：" + refId.getContentValue() );
 			game.addChildNode( new TypeNode( "result", "0", "u8" ) );
 			game.addChildNode( new TypeNode( "name", profile.getPlayer_name() ) );
@@ -433,6 +460,8 @@ public class RequestHandler {
 		} else {
 			//没有数据
 			Log.getInstance().print( "玩家数据不存在：" + refId.getContentValue() );
+			final Node game = new Node( "game_5" );
+			root.addChildNode( game );
 			game.addChildNode( new TypeNode( "result", "1", "u8" ) );
 		}
 

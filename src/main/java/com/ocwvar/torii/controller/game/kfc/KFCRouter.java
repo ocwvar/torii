@@ -37,7 +37,7 @@ public class KFCRouter {
 	) throws Exception {
 
 		final String[] modelValues = model.split( ":" );
-		Node call = Protocol.decrypt( request,true );
+		Node call = Protocol.decrypt( request );
 		Node root = null;
 
 		//noinspection SwitchStatementWithTooFewBranches
@@ -50,6 +50,10 @@ public class KFCRouter {
 
 					case "sv5_common":
 						root = RequestHandler.handle_sv5_common( call );
+						break;
+
+					case "sv5_new":
+						root = RequestHandler.handle_sv5_new( call, this.profileService );
 						break;
 
 					case "sv5_load":
