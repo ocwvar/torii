@@ -22,8 +22,8 @@ public class ArrayTypeNode extends Node {
 			throw new RuntimeException( "此 node 无指定数据类型" );
 		}
 
-		addAttribute( INode.ATTR_TYPE, source.getAttribute( INode.ATTR_TYPE ) );
 		addAttribute( INode.ATTR_COUNT, source.getAttribute( INode.ATTR_COUNT ) );
+		addAttribute( INode.ATTR_TYPE, source.getAttribute( INode.ATTR_TYPE ) );
 
 		final String content = source.getContentValue();
 		if ( content.contains( " " ) ) {
@@ -42,8 +42,8 @@ public class ArrayTypeNode extends Node {
 	 */
 	public ArrayTypeNode( String name, String type, String... items ) {
 		super( name );
-		addAttribute( INode.ATTR_TYPE, type );
 		addAttribute( INode.ATTR_COUNT, String.valueOf( items.length ) );
+		addAttribute( INode.ATTR_TYPE, type );
 
 		final StringBuilder builder = new StringBuilder();
 		this.values = new String[ items.length ];
@@ -70,8 +70,6 @@ public class ArrayTypeNode extends Node {
 			throw new RuntimeException( "ArrayTypeNode ITEM 数据为空" );
 		}
 
-		addAttribute( INode.ATTR_TYPE, type );
-
 		if ( item.contains( " " ) ) {
 			this.values = item.split( " " );
 			addAttribute( INode.ATTR_COUNT, String.valueOf( values.length ) );
@@ -79,6 +77,8 @@ public class ArrayTypeNode extends Node {
 			addAttribute( INode.ATTR_COUNT, "1" );
 			this.values = new String[]{ item };
 		}
+
+		addAttribute( INode.ATTR_TYPE, type );
 
 		setContentValue( item );
 	}

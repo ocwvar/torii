@@ -48,8 +48,8 @@ public class Facility {
 
 		final Node portfwNode = new Node( "portfw" );
 		portfwNode.addChildNode( new TypeNode( "globalip", "127.0.0.1", "ip4" ) );
-		portfwNode.addChildNode( new TypeNode( "globalport", "50002", "u16" ) );
-		portfwNode.addChildNode( new TypeNode( "privateport", "50002", "u16" ) );
+		portfwNode.addChildNode( new TypeNode( "globalport", "50001", "u16" ) );
+		portfwNode.addChildNode( new TypeNode( "privateport", "50001", "u16" ) );
 
 		final Node publicNode = new Node( "public" );
 		publicNode.addChildNode( new TypeNode( "flag", "1", "u8" ) );

@@ -13,7 +13,10 @@ import com.ocwvar.utils.Log;
 import com.ocwvar.utils.Pair;
 import com.ocwvar.utils.TextUtils;
 import com.ocwvar.utils.annotation.Nullable;
-import com.ocwvar.xml.node.*;
+import com.ocwvar.xml.node.ArrayTypeNode;
+import com.ocwvar.xml.node.BaseNode;
+import com.ocwvar.xml.node.Node;
+import com.ocwvar.xml.node.TypeNode;
 
 public class RequestHandler {
 
@@ -401,6 +404,7 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "result", "0", "u8" ) );
 			game.addChildNode( new TypeNode( "name", profile.getPlayer_name() ) );
 			game.addChildNode( new TypeNode( "code", profile.getPlayer_code() ) );
+			game.addChildNode( new TypeNode( "sdvx_id", profile.getPlayer_code() ) );
 			game.addChildNode( new TypeNode( "kac_id", profile.getPlayer_code() ) );
 			game.addChildNode( new TypeNode( "creator_id", "0", "u32" ) );
 
@@ -444,6 +448,12 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "gamecoin_packet", profile.getPacket_point(), "u32" ) );
 			game.addChildNode( new TypeNode( "gamecoin_block", profile.getBlock_point(), "u32" ) );
 
+			//EA_SHOP 这里面的两个东西是能增加获取点数的东西
+			final Node eashop = new Node( "eashop" );
+			game.addChildNode( eashop );
+			eashop.addChildNode( new TypeNode( "packet_booster", "50", "s32" ) );
+			eashop.addChildNode( new TypeNode( "block_booster", "50", "s32" ) );
+
 			//解锁的对象
 			game.addChildNode( service.loadUnlockItemNode( refId.getContentValue() ) );
 
@@ -452,6 +462,15 @@ public class RequestHandler {
 
 			//段位成绩
 			game.addChildNode( service.loadCourseHistoryNode( refId.getContentValue() ) );
+
+			//下面的是不清楚功能的节点
+			final Node eaappli = new Node( "eaappli" );
+			game.addChildNode( eaappli );
+			eaappli.addChildNode( new TypeNode( "relation", "1", "s8" ) );
+
+			final Node cloud = new Node( "cloud" );
+			game.addChildNode( cloud );
+			cloud.addChildNode( new TypeNode( "relation", "1", "s8" ) );
 
 		} else {
 			//没有数据
@@ -481,15 +500,7 @@ public class RequestHandler {
 		final Node root = new Node( "response" );
 		final Node game = new Node( "game" );
 		root.addChildNode( game );
-
-		game.addAttribute( "status", "0" );
 		game.addChildNode( service.loadScoreNode( refId ) );
-
-		try {
-			System.out.println( NodeHelper.xml2Text( NodeHelper.note2Xml( root ) ) );
-		} catch ( Exception e ) {
-			e.printStackTrace();
-		}
 
 		return root;
 	}
@@ -569,31 +580,47 @@ public class RequestHandler {
 		//启用的活动
 		final Node event = new Node( "event" );
 		game.addChildNode( event );
-		enableEvent( event, "ACHIEVEMENT_ENABLE" );
-		enableEvent( event, "CONTINUATION" );
-		enableEvent( event, "EXTRACK_ENABLE" );
-		enableEvent( event, "VOLFORCE_ENABLE" );
-		enableEvent( event, "ICON_POLICY_BREAK" );
-		enableEvent( event, "ICON_FLOOR_INFECTION" );
-		enableEvent( event, "MATCHING_MODE" );
-		enableEvent( event, "MATCHING_MODE_FREE_IP" );
-		enableEvent( event, "EVENTDATE_ONIGO" );
-		enableEvent( event, "SERIALCODE_JAPAN" );
-		enableEvent( event, "APPEAL_CARD_UNLOCK" );
-		enableEvent( event, "OMEGA_ENABLE" );
-		enableEvent( event, "OMEGA_02_ENABLE" );
-		enableEvent( event, "OMEGA_03_ENABLE" );
-		enableEvent( event, "OMEGA_04_ENABLE" );
-		enableEvent( event, "OMEGA_05_ENABLE" );
-		enableEvent( event, "OMEGA_06_ENABLE" );
-		enableEvent( event, "OMEGA_07_ENABLE" );
-		enableEvent( event, "OMEGA_08_ENABLE" );
-		enableEvent( event, "OMEGA_09_ENABLE" );
-		enableEvent( event, "OMEGA_10_ENABLE" );
-		enableEvent( event, "KONAMI_50TH_LOGO" );
+		addEnableEvent( event, "ICON_POLICY_BREAK" );
+		addEnableEvent( event, "ICON_FLOOR_INFECTION" );
+		addEnableEvent( event, "TENKAICHI_MODE" );
+		addEnableEvent( event, "DEMOGAME_PLAY" );
+		addEnableEvent( event, "MATCHING_MODE" );
+		addEnableEvent( event, "MATCHING_MODE_FREE_IP" );
+		addEnableEvent( event, "LEVEL_LIMIT_EASING" );
+		addEnableEvent( event, "EVENT_IDS_SERIALCODE_TOHO_02" );
+		addEnableEvent( event, "ACHIEVEMENT_ENABLE" );
+		addEnableEvent( event, "APICAGACHADRAW 30" );
+		addEnableEvent( event, "VOLFORCE_ENABLE" );
+		addEnableEvent( event, "AKANAME_ENABLE" );
+		addEnableEvent( event, "FACTORY 10" );
+		addEnableEvent( event, "EXTRACK_ENABLE" );
+		addEnableEvent( event, "CONTINUATION" );
+		addEnableEvent( event, "APPEAL_CARD_GEN_NEW_PRICE" );
+		addEnableEvent( event, "FAVORITE_APPEALCARD_MAX 100" );
+		addEnableEvent( event, "FAVORITE_MUSIC_MAX 500" );
+		addEnableEvent( event, "EVENTDATE_APRILFOOL" );
+		addEnableEvent( event, "OMEGA_ENABLE" );
+		addEnableEvent( event, "OMEGA_02_ENABLE" );
+		addEnableEvent( event, "OMEGA_03_ENABLE" );
+		addEnableEvent( event, "OMEGA_04_ENABLE" );
+		addEnableEvent( event, "OMEGA_05_ENABLE" );
+		addEnableEvent( event, "OMEGA_06_ENABLE" );
+		addEnableEvent( event, "OMEGA_ARS_ENABLE" );
+		addEnableEvent( event, "KAC5TH_FINISH" );
+		addEnableEvent( event, "KAC6TH_FINISH" );
+		addEnableEvent( event, "KAC7TH_FINISH" );
+		addEnableEvent( event, "KAC8TH_FINISH" );
+		addEnableEvent( event, "DISABLE_MONITOR_ID_CHECK" );
+		addEnableEvent( event, "STANDARD_UNLOCK_ENABLE" );
+		addEnableEvent( event, "EVENTDATE_ONIGO" );
+		addEnableEvent( event, "EVENTDATE_GOTT" );
+
+		//添加Extend
+		final Node extend = new Node( "extend" );
+		game.addChildNode( extend );
+		addExtend( extend, "90", "14", new String[]{ "0", "1", "0", "0", "1" }, new String[]{ "PlayGenre:4", "", "", "", "" } );
 
 		//段位启用
-		//Node skillCourse = StaticContainer.getInstance().has( "skill_course_node" ) ? ( Node ) StaticContainer.getInstance().get( "skill_course_node" ) : null;
 		final Node skillCourse = new Node( "skill_course" );
 		final Course[] courses = loadCourseConfig();
 
@@ -630,7 +657,6 @@ public class RequestHandler {
 			}
 		}
 		game.addChildNode( skillCourse );
-		game.addChildNode( new Node( "extend" ) );
 
 		return root;
 	}
@@ -770,11 +796,37 @@ public class RequestHandler {
 	 * @param eventNode 活动数据父节点
 	 * @param eventName 活动名称
 	 */
-	private static void enableEvent( Node eventNode, String eventName ) {
+	private static void addEnableEvent( Node eventNode, String eventName ) {
 		final Node info = new Node( "info" );
 		info.addChildNode( new TypeNode( "event_id", eventName ) );
 
 		eventNode.addChildNode( info );
+	}
+
+	/**
+	 * 添加 Extend 字段数据
+	 *
+	 * @param extendNode Extend 父节点
+	 * @param id         Extend ID
+	 * @param type       Extend 类型
+	 * @param numbers    数值，须有5个，不能为空或NULL
+	 * @param params     参数，须有5个，不能为NULL
+	 */
+	private static void addExtend( Node extendNode, String id, String type, String[] numbers, String[] params ) {
+		final Node info = new Node( "info" );
+		extendNode.addChildNode( info );
+		info.addChildNode( new TypeNode( "extend_id", id, "u32" ) );
+		info.addChildNode( new TypeNode( "extend_type", type, "u32" ) );
+		info.addChildNode( new TypeNode( "param_num_1", numbers[ 0 ], "u32" ) );
+		info.addChildNode( new TypeNode( "param_num_2", numbers[ 1 ], "s32" ) );
+		info.addChildNode( new TypeNode( "param_num_3", numbers[ 2 ], "s32" ) );
+		info.addChildNode( new TypeNode( "param_num_4", numbers[ 3 ], "s32" ) );
+		info.addChildNode( new TypeNode( "param_num_5", numbers[ 4 ], "s32" ) );
+		info.addChildNode( new TypeNode( "param_str_1", params[ 0 ] ) );
+		info.addChildNode( new TypeNode( "param_str_2", params[ 1 ] ) );
+		info.addChildNode( new TypeNode( "param_str_3", params[ 2 ] ) );
+		info.addChildNode( new TypeNode( "param_str_4", params[ 3 ] ) );
+		info.addChildNode( new TypeNode( "param_str_5", params[ 4 ] ) );
 	}
 
 }

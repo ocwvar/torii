@@ -287,7 +287,7 @@ public class Protocol {
 	 */
 	public static void commit( int code, @Nullable byte[] data, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws IOException {
 		response.setHeader( Field.HEADER_X_Eamuse_Info, request.getHeader( Field.HEADER_X_Eamuse_Info ) );
-		response.setHeader( Field.HEADER_COMPRESS, request.getHeader( Field.HEADER_COMPRESS ) );
+		response.setHeader( Field.HEADER_COMPRESS, request.getHeader( Field.HEADER_COMPRESS ) );	//TODO	LZ77 压缩算法有问题
 		response.setStatus( code );
 
 		if ( data != null ) {
