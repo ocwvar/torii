@@ -204,10 +204,6 @@ public class ProfileService {
 							"0",
 							"0",
 							"0",
-							"0",
-							"0",
-							"0",
-							"0",
 							"0"
 					) );
 		}

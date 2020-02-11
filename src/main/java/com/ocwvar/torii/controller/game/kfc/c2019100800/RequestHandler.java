@@ -83,7 +83,7 @@ public class RequestHandler {
 
 		//保存解锁成就
 		final Node items = ( Node ) call_game.indexChildNode( "item" );
-		if ( items != null && items.childCount() > 0){
+		if ( items != null && items.childCount() > 0 ) {
 			//如果没有任何成就获得，则客户端是不会返回这个节点
 			for ( BaseNode it : items.getChildNodes() ) {
 				service.saveUnlockItem(
@@ -482,6 +482,7 @@ public class RequestHandler {
 		final Node game = new Node( "game" );
 		root.addChildNode( game );
 
+		game.addAttribute( "status", "0" );
 		game.addChildNode( service.loadScoreNode( refId ) );
 
 		try {
