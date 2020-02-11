@@ -17,8 +17,10 @@ public class Sv5Setting {
 	private final String lanespeed;
 	private final String hispeed;
 	private final String draw_adjust;
+	private final String p_start;
+	private final String p_end;
 
-	public Sv5Setting( String refId, String last_music_id, String last_music_type, String sort_type, String narrow_down, String headphone, String gauge_option, String ars_option, String early_late_disp, String note_option, String eff_c_left, String eff_c_right, String lanespeed, String hispeed, String draw_adjust ) {
+	public Sv5Setting( String refId, String last_music_id, String last_music_type, String sort_type, String narrow_down, String headphone, String gauge_option, String ars_option, String early_late_disp, String note_option, String eff_c_left, String eff_c_right, String lanespeed, String hispeed, String draw_adjust, String p_start, String p_end ) {
 		this.refId = refId;
 		this.last_music_id = last_music_id;
 		this.last_music_type = last_music_type;
@@ -34,6 +36,8 @@ public class Sv5Setting {
 		this.lanespeed = lanespeed;
 		this.hispeed = hispeed;
 		this.draw_adjust = draw_adjust;
+		this.p_start = p_start;
+		this.p_end = p_end;
 	}
 
 	/**
@@ -139,5 +143,19 @@ public class Sv5Setting {
 	 */
 	public String getDraw_adjust() {
 		return draw_adjust;
+	}
+
+	/**
+	 * @return 不懂
+	 */
+	public String getP_start() {
+		return p_start;
+	}
+
+	/**
+	 * @return 不懂
+	 */
+	public String getP_end() {
+		return p_end;
 	}
 }

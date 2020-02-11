@@ -45,71 +45,86 @@ public class KFCRouter {
 
 		//noinspection SwitchStatementWithTooFewBranches
 		switch ( modelValues[ modelValues.length - 1 ] ) {
+			case "2019020600":
 			case "2019100800":
 				switch ( func ) {
 					case "sv5_common":
+					case "sv4_common":
 						root = RequestHandler.handle_sv5_common( call );
-						//Protocol.encryptAndCommit( IO.loadResource( true,"sample/sv_common/response.xml" ),request,response );
 						break;
 
 					case "sv5_exception":
+					case "sv4_exception":
 						root = RequestHandler.handle_sv5_exception( call );
 						break;
 
 					case "sv5_new":
+					case "sv4_new":
 						root = RequestHandler.handle_sv5_new( call, this.profileService );
 						break;
 
 					case "sv5_load":
+					case "sv4_load":
 						root = RequestHandler.handle_sv5_load( call, this.profileService );
 						break;
 
 					case "sv5_frozen":
+					case "sv4_frozen":
 						root = RequestHandler.handle_sv5_frozen( call );
 						break;
 
 					case "sv5_hiscore":
+					case "sv4_hiscore":
 						root = RequestHandler.handle_sv5_hiscore( call );
 						break;
 
 					case "sv5_shop":
+					case "sv4_shop":
 						root = RequestHandler.handle_sv5_shop( call );
 						break;
 
 					case "sv5_load_m":
-						//Protocol.encryptAndCommit( IO.loadResource( true,"aa.xml" ),request,response );
+					case "sv4_load_m":
 						root = RequestHandler.handle_sv5_load_m( call, this.profileService );
 						break;
 
 					case "sv5_load_r":
+					case "sv4_load_r":
 						root = RequestHandler.handle_sv5_load_r( call );
 						break;
 
 					case "sv5_play_s":
+					case "sv4_play_s":
 						root = RequestHandler.handle_sv5_play_s( call );
 						break;
 
 					case "sv5_play_e":
+					case "sv4_play_e":
 						root = RequestHandler.handle_sv5_play_e( call );
 						break;
 
 					case "sv5_save":
+					case "sv4_save":
 						root = RequestHandler.handle_sv5_save( call, this.profileService );
 						break;
 
 					case "sv5_save_e":
+					case "sv4_save_e":
 						root = RequestHandler.handle_sv5_save_e( call );
 						break;
 
 					case "sv5_save_c":
+					case "sv4_save_c":
 						root = RequestHandler.handle_sv5_save_c( call, this.profileService );
 						break;
 
 					case "sv5_save_m":
+					case "sv4_save_m":
 						root = RequestHandler.handle_sv5_save_m( call, this.profileService );
 						break;
 
 					case "sv5_buy":
+					case "sv4_buy":
 						root = RequestHandler.handle_sv5_buy( call, this.profileService );
 						break;
 				}

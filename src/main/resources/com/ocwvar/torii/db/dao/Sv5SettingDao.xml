@@ -10,7 +10,7 @@
 
     <!--所有标签名-->
     <sql id="ALL_COLUMN">
-        refId,last_music_id,last_music_type,sort_type,narrow_down,headphone,gauge_option,ars_option,early_late_disp,note_option,eff_c_left,eff_c_right,lanespeed,hispeed,draw_adjust
+        refId,last_music_id,last_music_type,sort_type,narrow_down,headphone,gauge_option,ars_option,early_late_disp,note_option,eff_c_left,eff_c_right,lanespeed,hispeed,draw_adjust,p_start,p_end
     </sql>
 
     <sql id="BASE_COLUMN">
@@ -42,7 +42,9 @@
         eff_c_right = #{eff_c_right},
         lanespeed = #{lanespeed},
         hispeed = #{hispeed},
-        draw_adjust = #{draw_adjust}
+        draw_adjust = #{draw_adjust},
+        p_start = #{p_start},
+        p_end = #{p_end}
         WHERE refId = #{refId}
     </update>
 

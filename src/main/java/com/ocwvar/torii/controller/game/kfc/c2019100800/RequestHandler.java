@@ -5,7 +5,6 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ocwvar.torii.Config;
 import com.ocwvar.torii.Field;
-import com.ocwvar.torii.data.StaticContainer;
 import com.ocwvar.torii.data.game.kfc.Course;
 import com.ocwvar.torii.db.entity.*;
 import com.ocwvar.torii.service.game.kfc.ProfileService;
@@ -16,8 +15,6 @@ import com.ocwvar.utils.TextUtils;
 import com.ocwvar.utils.annotation.Nullable;
 import com.ocwvar.xml.node.*;
 
-import java.nio.charset.Charset;
-
 public class RequestHandler {
 
 	/**
@@ -27,7 +24,7 @@ public class RequestHandler {
 	public static @Nullable
 	Node handle_sv5_play_e( Node call ) {
 		final Node root = new Node( "response" );
-		root.addChildNode( new Node( "game" ) );
+		root.addChildNode( new Node( "game_5" ) );
 		return root;
 	}
 
@@ -38,7 +35,7 @@ public class RequestHandler {
 	public static @Nullable
 	Node handle_sv5_play_s( Node call ) {
 		final Node root = new Node( "response" );
-		final Node game = new Node( "game" );
+		final Node game = new Node( "game_5" );
 		game.addChildNode( new TypeNode( "play_id", "1", "u32" ) );
 		return root;
 	}
@@ -84,6 +81,22 @@ public class RequestHandler {
 			service.saveProfileParam( profileParam );
 		}
 
+		//保存解锁成就
+		final Node items = ( Node ) call_game.indexChildNode( "item" );
+		if ( items != null && items.childCount() > 0){
+			//如果没有任何成就获得，则客户端是不会返回这个节点
+			for ( BaseNode it : items.getChildNodes() ) {
+				service.saveUnlockItem(
+						new UnlockItem(
+								refid,
+								it.indexChildNode( "id" ).getContentValue(),
+								it.indexChildNode( "type" ).getContentValue(),
+								it.indexChildNode( "param" ).getContentValue()
+						)
+				);
+			}
+		}
+
 		final Sv5Profile profile = new Sv5Profile(
 				refid,
 				String.valueOf( old_packet + earned_packet ),
@@ -113,7 +126,9 @@ public class RequestHandler {
 				call_game.indexChildNode( "eff_c_right" ).getContentValue(),
 				call_game.indexChildNode( "lanespeed" ).getContentValue(),
 				call_game.indexChildNode( "hispeed" ).getContentValue(),
-				call_game.indexChildNode( "draw_adjust" ).getContentValue()
+				call_game.indexChildNode( "draw_adjust" ).getContentValue(),
+				call_game.indexChildNode( "p_start" ).getContentValue(),
+				call_game.indexChildNode( "p_end" ).getContentValue()
 		);
 
 		//保存配置文件以及设置数据
@@ -396,6 +411,8 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "narrow_down", setting.getNarrow_down(), "u8" ) );
 			game.addChildNode( new TypeNode( "headphone", setting.getHeadphone(), "u8" ) );
 			game.addChildNode( new TypeNode( "appeal_id", profile.getAppeal_id(), "u16" ) );
+			game.addChildNode( new TypeNode( "p_start", setting.getP_start(), "u64" ) );
+			game.addChildNode( new TypeNode( "p_end", setting.getP_end(), "u64" ) );
 
 			//当前段位
 			game.addChildNode( new TypeNode( "skill_level", profile.getSkill_level(), "s16" ) );
@@ -468,7 +485,7 @@ public class RequestHandler {
 		game.addChildNode( service.loadScoreNode( refId ) );
 
 		try {
-			System.out.println(NodeHelper.xml2Text( NodeHelper.note2Xml( root ) ));
+			System.out.println( NodeHelper.xml2Text( NodeHelper.note2Xml( root ) ) );
 		} catch ( Exception e ) {
 			e.printStackTrace();
 		}
@@ -659,7 +676,7 @@ public class RequestHandler {
 			throw new RuntimeException( "段位数据配置不存在" );
 		}
 
-		final JsonArray jCourse = JsonParser.parseString( new String( bytes,Field.SHIFT_JIS ) ).getAsJsonObject().getAsJsonArray( "course" );
+		final JsonArray jCourse = JsonParser.parseString( new String( bytes, Field.SHIFT_JIS ) ).getAsJsonObject().getAsJsonArray( "course" );
 
 		JsonObject joTemp;
 		JsonArray jaTemp;
@@ -737,13 +754,13 @@ public class RequestHandler {
 				"1",
 				"0",
 				new Pair[]{
-						new Pair( "17","1" ),
-						new Pair( "922","0" ),
-						new Pair( "76","1" )
+						new Pair( "17", "1" ),
+						new Pair( "922", "0" ),
+						new Pair( "76", "1" )
 				}
 		);
 
-		return new Course[]{result};
+		return new Course[]{ result };
 	}
 
 	/**

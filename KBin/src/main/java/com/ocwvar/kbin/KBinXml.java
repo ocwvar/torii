@@ -454,7 +454,11 @@ public class KBinXml {
 
 							case "null":
 							default:
-								( ( PyList ) data ).add( Py.newInteger( Integer.parseInt( string ) ) );
+								try {
+									( ( PyList ) data ).add( Py.newInteger( Integer.parseInt( string ) ) );
+								} catch ( NumberFormatException e ) {
+									( ( PyList ) data ).add( Py.newInteger( Long.parseLong( string ) ) );
+								}
 								break;
 						}
 					}
