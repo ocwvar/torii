@@ -3,6 +3,7 @@ package com.ocwvar.torii.controller.core;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.TypeNode;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,7 +41,7 @@ public class SEventLog {
 	 */
 
 	@PostMapping( path = "torii/{game}/{model}/eventlog/*" )
-	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
+	public void function( HttpServletRequest request, HttpServletResponse response, @PathVariable String game, @PathVariable String model ) throws Exception {
 		//直接返回数据即可
 		final Node root = new Node( "response" );
 		final Node eventlog = new Node( "eventlog" );
