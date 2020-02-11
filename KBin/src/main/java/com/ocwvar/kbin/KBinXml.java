@@ -79,9 +79,12 @@ public class KBinXml {
 	private final int _SIG_COMPRESSED = 0x42;
 	private final int _SIG_UNCOMPRESSED = 0x45;
 
-	private final Charset _XML_ENCODING = StandardCharsets.UTF_8;
-	private Charset _BIN_ENCODING = Charset.forName( "cp932" );
-	//private Charset _BIN_ENCODING = StandardCharsets.UTF_8;
+	//private final Charset _XML_ENCODING = StandardCharsets.US_ASCII;
+	//private final Charset _XML_ENCODING = StandardCharsets.UTF_8;
+	private final Charset _XML_ENCODING = Charset.forName( "cp932" );
+	private final Charset _BIN_ENCODING = Charset.forName( "cp932" );
+	//private final Charset _BIN_ENCODING = StandardCharsets.UTF_8;
+	//private final Charset _BIN_ENCODING = StandardCharsets.US_ASCII;
 
 	private final Map< Integer, String > _encoding_strings;
 	private final Map< String, Integer > _encoding_vals;

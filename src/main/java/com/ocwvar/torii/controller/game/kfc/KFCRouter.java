@@ -6,7 +6,6 @@ import com.ocwvar.torii.utils.IO;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.Log;
 import com.ocwvar.xml.node.Node;
-import com.ocwvar.xml.node.NodeHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -36,7 +35,7 @@ public class KFCRouter {
 			HttpServletResponse response
 	) throws Exception {
 
-		if ( Protocol.commitWithCache( request, response ) ){
+		if ( Protocol.commitWithCache( request, response ) ) {
 			return;
 		}
 
@@ -50,6 +49,7 @@ public class KFCRouter {
 				switch ( func ) {
 					case "sv5_common":
 						root = RequestHandler.handle_sv5_common( call );
+						//Protocol.encryptAndCommit( IO.loadResource( true,"sample/sv_common/response.xml" ),request,response );
 						break;
 
 					case "sv5_exception":
@@ -77,6 +77,7 @@ public class KFCRouter {
 						break;
 
 					case "sv5_load_m":
+						//Protocol.encryptAndCommit( IO.loadResource( true,"aa.xml" ),request,response );
 						root = RequestHandler.handle_sv5_load_m( call, this.profileService );
 						break;
 
@@ -116,7 +117,7 @@ public class KFCRouter {
 		}
 
 		Protocol.encryptAndCommit( root, request, response );
-		Log.getInstance().print( "已处理完成节点：" + func );
+		Log.getInstance().print( "已处理完成节点：" + func + "  " + root );
 	}
 
 }

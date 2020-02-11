@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Field;
 import com.ocwvar.torii.data.StaticContainer;
 import com.ocwvar.torii.data.game.kfc.Course;
 import com.ocwvar.torii.db.entity.*;
@@ -13,10 +14,9 @@ import com.ocwvar.utils.Log;
 import com.ocwvar.utils.Pair;
 import com.ocwvar.utils.TextUtils;
 import com.ocwvar.utils.annotation.Nullable;
-import com.ocwvar.xml.node.ArrayTypeNode;
-import com.ocwvar.xml.node.BaseNode;
-import com.ocwvar.xml.node.Node;
-import com.ocwvar.xml.node.TypeNode;
+import com.ocwvar.xml.node.*;
+
+import java.nio.charset.Charset;
 
 public class RequestHandler {
 
@@ -467,6 +467,12 @@ public class RequestHandler {
 
 		game.addChildNode( service.loadScoreNode( refId ) );
 
+		try {
+			System.out.println(NodeHelper.xml2Text( NodeHelper.note2Xml( root ) ));
+		} catch ( Exception e ) {
+			e.printStackTrace();
+		}
+
 		return root;
 	}
 
@@ -605,8 +611,8 @@ public class RequestHandler {
 				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
 			}
 		}
-
 		game.addChildNode( skillCourse );
+		game.addChildNode( new Node( "extend" ) );
 
 		return root;
 	}
@@ -621,7 +627,7 @@ public class RequestHandler {
 	Node handle_sv5_frozen( Node call ) {
 		final Node root = new Node( "response" );
 		final Node game = new Node( "game_5" );
-		game.addChildNode( new TypeNode( "result", "0", "u8" ) );
+		game.addChildNode( new TypeNode( "result", "99", "u8" ) );
 		root.addChildNode( game );
 		return root;
 	}
@@ -653,7 +659,7 @@ public class RequestHandler {
 			throw new RuntimeException( "段位数据配置不存在" );
 		}
 
-		final JsonArray jCourse = JsonParser.parseString( new String( bytes ) ).getAsJsonObject().getAsJsonArray( "course" );
+		final JsonArray jCourse = JsonParser.parseString( new String( bytes,Field.SHIFT_JIS ) ).getAsJsonObject().getAsJsonArray( "course" );
 
 		JsonObject joTemp;
 		JsonArray jaTemp;
@@ -707,6 +713,37 @@ public class RequestHandler {
 		}
 
 		return result;
+	}
+
+	/**
+	 * 读取段位配置
+	 *
+	 * @return 所有段位数据
+	 */
+	private static Course[] _loadCourseConfig() {
+
+		final Course result = new Course(
+				"1",
+				"1",
+				"1",
+				"SKILL ANALYZER 第1回 Aコース",
+				"0",
+				"SKILL ANALYZER Level.01",
+				"0",
+				"10000",
+				"1000000",
+				"1",
+				"1",
+				"1",
+				"0",
+				new Pair[]{
+						new Pair( "17","1" ),
+						new Pair( "922","0" ),
+						new Pair( "76","1" )
+				}
+		);
+
+		return new Course[]{result};
 	}
 
 	/**

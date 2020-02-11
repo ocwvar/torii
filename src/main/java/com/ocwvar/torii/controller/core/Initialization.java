@@ -1,10 +1,13 @@
 package com.ocwvar.torii.controller.core;
 
 import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Field;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.annotation.Nullable;
 import com.ocwvar.xml.node.Node;
+import com.ocwvar.xml.node.TypeNode;
 import com.ocwvar.xml.node.UrlNode;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -36,7 +39,7 @@ public class Initialization {
 
 		如果值为 0 是，请求的网址会像：（目前不支持这种请求方式）
 		http://127.0.0.1/torii/sdvx
-		具体请求的节点要看内部内容
+		具体请求的节点要看请求内容
 
 	 */
 
@@ -71,6 +74,11 @@ public class Initialization {
 
 	 */
 
+	@GetMapping( path = "/core/**" )
+	public String defaultFunction() {
+		return "HELLO THERE :)";
+	}
+
 	@PostMapping( path = "/core/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
 		final Node call = Protocol.decrypt( request );
@@ -81,7 +89,7 @@ public class Initialization {
 			return;
 		}
 
-		Protocol.encryptAndCommit( getFunctionsUrl( modelValues[ 0 ], modelValues[ modelValues.length - 1 ], "127.0.0.1:50001" ), request, response );
+		Protocol.encryptAndCommit( getFunctionsUrl( modelValues[ 0 ], modelValues[ modelValues.length - 1 ], "127.0.0.1" ), request, response );
 	}
 
 	/**
@@ -137,16 +145,6 @@ public class Initialization {
 						services.addChildNode( new UrlNode( "globby", Config.BASE_URL + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "slobby", Config.BASE_URL + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "sglobby", Config.BASE_URL + "/torii/sdvx" ) );
-
-						//services.addChildNode( new UrlNode( "numbering", Config.BASE_URL + "/torii/numbering" ) );
-						//services.addChildNode( new UrlNode( "pkglist", Config.BASE_URL + "/torii/pkglist" ) );
-						//services.addChildNode( new UrlNode( "posevent", Config.BASE_URL + "/torii/posevent" ) );
-						//services.addChildNode( new UrlNode( "userdata", Config.BASE_URL + "/torii/userdata" ) );
-						//services.addChildNode( new UrlNode( "userid", Config.BASE_URL + "/torii/userid" ) );
-						//services.addChildNode( new UrlNode( "netlog", Config.BASE_URL + "/torii/netlog" ) );
-						//services.addChildNode( new UrlNode( "info", Config.BASE_URL + "/torii/info" ) );
-						//services.addChildNode( new UrlNode( "reference", Config.BASE_URL + "/torii/reference" ) );
-						//services.addChildNode( new UrlNode( "sidmgr", Config.BASE_URL + "/torii/sidmgr" ) );
 						return root;
 				}
 		}

@@ -187,30 +187,29 @@ public class ProfileService {
 		for ( Sv5Score score : result ) {
 			final Node info = new Node( "info" );
 			music.addChildNode( info );
-			info.addChildNode( new ArrayTypeNode(
-					"param",
-					"u32",
-					score.getMusic_id(),
-					score.getMusic_type(),
-					"0",
-					"0",
-					"0",
-					"0",
-					"0",
-					"0",
-					"0",
-					"0",
-					score.getScore(),
-					score.getClear_type(),
-					score.getScore_grade(),
-					"0",
-					"0",
-					"0",
-					"0",
-					"0",
-					"0",
-					"0"
-			) );
+			info.addChildNode(
+					new ArrayTypeNode( "param", "u32",
+							score.getMusic_id(),
+							score.getMusic_type(),
+							score.getScore(),
+							score.getClear_type(),
+							score.getScore_grade(),
+							"0",
+							"0",
+							score.getBtn_rate(),
+							score.getLong_rate(),
+							score.getVol_rate(),
+							"0",
+							"0",
+							"0",
+							"0",
+							"0",
+							"0",
+							"0",
+							"0",
+							"0",
+							"0"
+					) );
 		}
 
 		return music;

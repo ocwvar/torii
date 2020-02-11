@@ -21,7 +21,7 @@ public class Field {
 	public static final String SDVX_LIMIT_UNLOCKED = "3";
 
 	public static final Charset UTF8 = StandardCharsets.UTF_8;
-	public static final Charset SHIFT_JIS = Charset.forName( "SHIFT_JIS" );
+	public static final Charset SHIFT_JIS = Charset.forName( "cp932" );
 
 	/**
 	 * 请求头字段：X-Eamuse-Info
