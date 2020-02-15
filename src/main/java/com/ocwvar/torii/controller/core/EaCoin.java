@@ -149,7 +149,7 @@ public class EaCoin {
 		eacoin.addChildNode( new TypeNode( "acstatus", "1", "u8" ) );
 		eacoin.addChildNode( new TypeNode( "acid", paseli.getAcid() ) );
 		eacoin.addChildNode( new TypeNode( "acname", paseli.getAcname() ) );
-		eacoin.addChildNode( new TypeNode( "balance", paseli.isInfiniteBalance() ? "99999" : paseli.getBalance(), "s32" ) );
+		eacoin.addChildNode( new TypeNode( "balance", paseli.isInfiniteBalance() ? "114514" : paseli.getBalance(), "s32" ) );
 		eacoin.addChildNode( new TypeNode( "sessid", seasonId ) );
 		this.cardService.createSeason( cardid.getContentValue(), seasonId );
 

@@ -376,6 +376,7 @@ public class RequestHandler {
 	 * <p>
 	 * TODO	段位记录存储获取
 	 * TODO 游玩次数统计存储
+	 * TODO	全解领航员和头像卡
 	 *
 	 * @param call    请求的数据
 	 * @param service 账号数据交互服务
@@ -410,7 +411,7 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "creator_id", "0", "u32" ) );
 
 			//最后保存的状态
-			game.addChildNode( new TypeNode( "last_music_id", setting.getLast_music_id(), "u32" ) );
+			game.addChildNode( new TypeNode( "last_music_id", setting.getLast_music_id(), "s32" ) );
 			game.addChildNode( new TypeNode( "last_music_type", setting.getLast_music_type(), "u8" ) );
 			game.addChildNode( new TypeNode( "sort_type", setting.getSort_type(), "u8" ) );
 			game.addChildNode( new TypeNode( "narrow_down", setting.getNarrow_down(), "u8" ) );
@@ -450,10 +451,10 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "gamecoin_block", profile.getBlock_point(), "u32" ) );
 
 			//EA_SHOP 这里面的两个东西是能增加获取点数的东西
-			final Node eashop = new Node( "eashop" );
+			final Node eashop = new Node( "ea_shop" );
 			game.addChildNode( eashop );
-			eashop.addChildNode( new TypeNode( "packet_booster", "50", "s32" ) );
-			eashop.addChildNode( new TypeNode( "block_booster", "50", "s32" ) );
+			eashop.addChildNode( new TypeNode( "packet_booster", "22", "s32" ) );
+			eashop.addChildNode( new TypeNode( "block_booster", "22", "s32" ) );
 
 			//解锁的对象
 			game.addChildNode( service.loadUnlockItemNode( refId.getContentValue() ) );

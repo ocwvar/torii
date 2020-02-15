@@ -13,9 +13,9 @@ public class EncodeTest {
 
 	 */
 
-	private final static String PATH = "H:\\IdeaProjects\\BServer\\DataTesting\\sample\\sv4_common\\response.xml";
+	private final static String PATH = "H:\\TORII\\kbin\\raw.xml";
 
-	private final static String OUTPUT_PATH = "H:\\IdeaProjects\\BServer\\DataTesting\\kbinxml\\fuck.kbin";
+	private final static String OUTPUT_PATH = "H:\\TORII\\kbin\\encode.kbin";
 
 	public static void main( String[] args ) throws Exception {
 		//读取 xml 已解密文件

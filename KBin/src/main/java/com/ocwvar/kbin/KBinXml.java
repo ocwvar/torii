@@ -1,6 +1,5 @@
 package com.ocwvar.kbin;
 
-
 import com.ocwvar.kbin.utils.AssertCheck;
 import com.ocwvar.xml.node.BaseNode;
 import com.ocwvar.xml.node.Node;
