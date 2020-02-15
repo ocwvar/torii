@@ -580,31 +580,41 @@ public class RequestHandler {
 		//启用的活动
 		final Node event = new Node( "event" );
 		game.addChildNode( event );
+
+		//先停用这些功能
+		//addEnableEvent( event, "MATCHING_MODE" );
+		//addEnableEvent( event, "MATCHING_MODE_FREE_IP" );
+		//addEnableEvent( event, "SERIALCODE_KOREA" );
+		//addEnableEvent( event, "SERIALCODE_ASIA" );
+		//addEnableEvent( event, "DISP_PASELI_BANNER" );	//禁用 PASEL 显示文字？
+		//addEnableEvent( event, "FACTORY" );
+		//addEnableEvent( event, "DEMOGAME_PLAY" );
+		//addEnableEvent( event, "TENKAICHI_MODE" );	//天下一
+
+		addEnableEvent( event, "CREW_SELECT_ABLE" );    //启用领航员功能
+		addEnableEvent( event, "BLASTER_ABLE" );    //启用 BLASTER 功能
+		addEnableEvent( event, "LEVEL_LIMIT_EASING" );    //去除等级限制？
+		addEnableEvent( event, "SKILL_ANALYZER_ABLE" );    //启用段位功能
 		addEnableEvent( event, "ICON_POLICY_BREAK" );
 		addEnableEvent( event, "ICON_FLOOR_INFECTION" );
-		addEnableEvent( event, "TENKAICHI_MODE" );
-		addEnableEvent( event, "DEMOGAME_PLAY" );
-		addEnableEvent( event, "MATCHING_MODE" );
-		addEnableEvent( event, "MATCHING_MODE_FREE_IP" );
-		addEnableEvent( event, "LEVEL_LIMIT_EASING" );
 		addEnableEvent( event, "EVENT_IDS_SERIALCODE_TOHO_02" );
+		addEnableEvent( event, "PLAYERJUDGEADJ_ENABLE" );
 		addEnableEvent( event, "ACHIEVEMENT_ENABLE" );
-		addEnableEvent( event, "APICAGACHADRAW 30" );
+		addEnableEvent( event, "APICAGACHADRAW_30" );
 		addEnableEvent( event, "VOLFORCE_ENABLE" );
 		addEnableEvent( event, "AKANAME_ENABLE" );
-		addEnableEvent( event, "FACTORY 10" );
 		addEnableEvent( event, "EXTRACK_ENABLE" );
+		addEnableEvent( event, "GENERATOR_ABLE" );
+		addEnableEvent( event, "STANDARD_UNLOCK_ENABLE" );
+		addEnableEvent( event, "TOTAL_MEMORIAL_ENABLE" );
 		addEnableEvent( event, "CONTINUATION" );
 		addEnableEvent( event, "APPEAL_CARD_GEN_NEW_PRICE" );
-		addEnableEvent( event, "FAVORITE_APPEALCARD_MAX 100" );
-		addEnableEvent( event, "FAVORITE_MUSIC_MAX 500" );
+		addEnableEvent( event, "APPEAL_CARD_GEN_PRICE" );
+		addEnableEvent( event, "FAVORITE_APPEALCARD_MAX" );
+		addEnableEvent( event, "FAVORITE_MUSIC_MAX" );
 		addEnableEvent( event, "EVENTDATE_APRILFOOL" );
+		addEnableEvent( event, "SERIALCODE_JAPAN" );
 		addEnableEvent( event, "OMEGA_ENABLE" );
-		addEnableEvent( event, "OMEGA_02_ENABLE" );
-		addEnableEvent( event, "OMEGA_03_ENABLE" );
-		addEnableEvent( event, "OMEGA_04_ENABLE" );
-		addEnableEvent( event, "OMEGA_05_ENABLE" );
-		addEnableEvent( event, "OMEGA_06_ENABLE" );
 		addEnableEvent( event, "OMEGA_ARS_ENABLE" );
 		addEnableEvent( event, "KAC5TH_FINISH" );
 		addEnableEvent( event, "KAC6TH_FINISH" );
@@ -618,7 +628,9 @@ public class RequestHandler {
 		//添加Extend
 		final Node extend = new Node( "extend" );
 		game.addChildNode( extend );
-		addExtend( extend, "90", "14", new String[]{ "0", "1", "0", "0", "1" }, new String[]{ "PlayGenre:4", "", "", "", "" } );
+		for ( int i = 1; i < 100; i++ ) {
+			addExtend( extend, "0", String.valueOf( i ), new String[]{ "0", "0", "0", "0", "1" }, new String[]{ "", "", "", "", "" } );
+		}
 
 		//段位启用
 		final Node skillCourse = new Node( "skill_course" );
@@ -635,9 +647,9 @@ public class RequestHandler {
 			info.addChildNode( new TypeNode( "course_id", course.courseId, "s16" ) );
 			info.addChildNode( new TypeNode( "skill_level", course.skillLevel, "s16" ) );
 			info.addChildNode( new TypeNode( "season_id", course.seasonId, "s32" ) );
-			info.addChildNode( new TypeNode( "season_name", course.seasonName ) );
+			info.addChildNode( new TypeNode( "season_name", "TEST" ) );
 			info.addChildNode( new TypeNode( "season_new_flg", course.seasonNewFlg, "bool" ) );
-			info.addChildNode( new TypeNode( "course_name", course.courseName ) );
+			info.addChildNode( new TypeNode( "course_name", "TEST" ) );
 			info.addChildNode( new TypeNode( "course_type", course.courseType, "s16" ) );
 			info.addChildNode( new TypeNode( "clear_rate", course.clearRate, "s32" ) );
 			info.addChildNode( new TypeNode( "avg_score", course.avgScore, "u32" ) );
