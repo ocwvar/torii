@@ -102,7 +102,7 @@ public class IO {
 	 * 读取 Resource 下的文件
 	 *
 	 * @param useBuffer 是否使用缓冲
-	 * @param path      文件路径，如 "/folder/file.txt
+	 * @param path      文件路径，如 "folder/file.txt
 	 * @return 字节数组，如果读取失败则返回 NULL
 	 */
 	public static byte[] loadResource( boolean useBuffer, String path ) {

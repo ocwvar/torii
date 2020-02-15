@@ -1,6 +1,7 @@
 package com.ocwvar.torii.controller.game.kfc.c2019100800;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ocwvar.torii.Config;
@@ -557,8 +558,6 @@ public class RequestHandler {
 	/**
 	 * 处理一些基础的事件，例如：歌曲解锁、活动、限时段位... 等
 	 * <p>
-	 * TODO	全解功能
-	 * TODO 成就，先不管
 	 * TODO 段位通过率计算
 	 *
 	 * @param call 请求的数据
@@ -571,15 +570,105 @@ public class RequestHandler {
 		root.addChildNode( game );
 
 		//解锁歌曲
-		final Node limitedMusic = new Node( "music_limited" );
+		final Node limitedMusic = common_loadForceMusicInfo();
 		game.addChildNode( limitedMusic );
-		if ( Config.FUNCTION_FORCE_UNLOCK_ALL_MUSIC ) {
-			//TODO	歌曲全解
-		}
 
 		//启用的活动
-		final Node event = new Node( "event" );
+		final Node event = common_loadEvent();
 		game.addChildNode( event );
+
+		//添加Extend
+		final Node extend = common_loadExtend();
+		game.addChildNode( extend );
+
+		//段位启用
+		final Node skillCourse = common_loadCourse();
+		game.addChildNode( skillCourse );
+
+		return root;
+	}
+
+	/**
+	 * 应该是静止请求
+	 *
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_frozen( Node call ) {
+		final Node root = new Node( "response" );
+		final Node game = new Node( "game_5" );
+		game.addChildNode( new TypeNode( "result", "99", "u8" ) );
+		root.addChildNode( game );
+		return root;
+	}
+
+	/**
+	 * 应该是请求登记商铺名称
+	 *
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_shop( Node call ) {
+		final Node root = new Node( "response" );
+		final Node game = new Node( "game" );
+		game.addChildNode( new TypeNode( "next_time", String.valueOf( 1000 * 5 * 60 ), "u32" ) );
+		root.addChildNode( game );
+
+		return root;
+	}
+
+	/**
+	 * 读取强制解锁歌曲数据
+	 *
+	 * @return 所有强制解锁歌曲数据
+	 */
+	private static Node common_loadForceMusicInfo() {
+		final Node music_limited = new Node( "music_limited" );
+		if ( !Config.FUNCTION_FORCE_UNLOCK_ALL_MUSIC ) {
+			return music_limited;
+		}
+
+		final byte[] bytes = IO.loadResource( true, "generator/MusicUnlockJsonData/data.json" );
+		if ( bytes == null || bytes.length <= 0 ) {
+			Log.getInstance().print( "强制全解歌曲已启用，但不存在数据文件" );
+			return music_limited;
+		}
+
+		try {
+			final JsonArray jsonArray = JsonParser.parseString( new String( bytes ) ).getAsJsonArray();
+			JsonObject temp;
+			String id;
+			String[] tracks;
+			for ( JsonElement element : jsonArray ) {
+				temp = element.getAsJsonObject();
+				id = temp.get( "id" ).getAsString();
+				tracks = temp.get( "tracks" ).getAsString().split( "#" );
+				for ( String s : tracks ) {
+					final Node info = new Node( "info" );
+					music_limited.addChildNode( info );
+					info.addChildNode( new TypeNode( "music_id", id, "s32" ) );
+					info.addChildNode( new TypeNode( "music_type", s, "u8" ) );
+					info.addChildNode( new TypeNode( "limited", "3", "u8" ) );
+				}
+			}
+
+			return music_limited;
+		} catch ( Exception e ) {
+			Log.getInstance().print( "处理强制解锁数据失败：" + e );
+		}
+
+		return music_limited;
+	}
+
+	/**
+	 * 读取启用的活动
+	 *
+	 * @return 活动数据
+	 */
+	private static Node common_loadEvent() {
+		final Node event = new Node( "event" );
 
 		//先停用这些功能
 		//addEnableEvent( event, "MATCHING_MODE" );
@@ -625,14 +714,15 @@ public class RequestHandler {
 		addEnableEvent( event, "EVENTDATE_ONIGO" );
 		addEnableEvent( event, "EVENTDATE_GOTT" );
 
-		//添加Extend
-		final Node extend = new Node( "extend" );
-		game.addChildNode( extend );
-		for ( int i = 1; i < 100; i++ ) {
-			addExtend( extend, "0", String.valueOf( i ), new String[]{ "0", "0", "0", "0", "1" }, new String[]{ "", "", "", "", "" } );
-		}
+		return event;
+	}
 
-		//段位启用
+	/**
+	 * 读取段位
+	 *
+	 * @return 段位数据
+	 */
+	private static Node common_loadCourse() {
 		final Node skillCourse = new Node( "skill_course" );
 		final Course[] courses = loadCourseConfig();
 
@@ -668,40 +758,24 @@ public class RequestHandler {
 				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
 			}
 		}
-		game.addChildNode( skillCourse );
 
-		return root;
+		return skillCourse;
 	}
 
 	/**
-	 * 应该是静止请求
+	 * 读取 Extend 字段
+	 * <p>
+	 * TODO	不清楚具体实现
 	 *
-	 * @param call 请求的数据
-	 * @return 响应的数据
+	 * @return Extend 数据
 	 */
-	public static @Nullable
-	Node handle_sv5_frozen( Node call ) {
-		final Node root = new Node( "response" );
-		final Node game = new Node( "game_5" );
-		game.addChildNode( new TypeNode( "result", "99", "u8" ) );
-		root.addChildNode( game );
-		return root;
-	}
+	private static Node common_loadExtend() {
+		final Node extend = new Node( "extend" );
+		for ( int i = 1; i < 100; i++ ) {
+			addExtend( extend, "0", String.valueOf( i ), new String[]{ "0", "0", "0", "0", "1" }, new String[]{ "", "", "", "", "" } );
+		}
 
-	/**
-	 * 应该是请求登记商铺名称
-	 *
-	 * @param call 请求的数据
-	 * @return 响应的数据
-	 */
-	public static @Nullable
-	Node handle_sv5_shop( Node call ) {
-		final Node root = new Node( "response" );
-		final Node game = new Node( "game" );
-		game.addChildNode( new TypeNode( "next_time", String.valueOf( 1000 * 5 * 60 ), "u32" ) );
-		root.addChildNode( game );
-
-		return root;
+		return extend;
 	}
 
 	/**

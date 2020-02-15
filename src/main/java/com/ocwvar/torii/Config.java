@@ -18,7 +18,7 @@ public class Config {
 	/**
 	 * 是否强制全解歌曲，默认 False
 	 */
-	public static final boolean FUNCTION_FORCE_UNLOCK_ALL_MUSIC = false;
+	public static final boolean FUNCTION_FORCE_UNLOCK_ALL_MUSIC = true;
 
 	/**
 	 * 当前是否处于维护状态，默认 False
