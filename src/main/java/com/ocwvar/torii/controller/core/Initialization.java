@@ -1,11 +1,9 @@
 package com.ocwvar.torii.controller.core;
 
 import com.ocwvar.torii.Config;
-import com.ocwvar.torii.Field;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.annotation.Nullable;
 import com.ocwvar.xml.node.Node;
-import com.ocwvar.xml.node.TypeNode;
 import com.ocwvar.xml.node.UrlNode;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -83,7 +81,6 @@ public class Initialization {
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
 		final Node call = Protocol.decrypt( request );
 		final String[] modelValues = call.getAttribute( "model" ).split( ":" );
-
 		if ( !isValidPcbid( call.getAttribute( "srcid" ) ) ) {
 			Protocol.commit( 404, null, request, response );
 			return;

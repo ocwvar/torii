@@ -41,7 +41,7 @@ public class Protocol {
 
 		//解压
 		if ( needDeCompress ) {
-			data = Lz77.decompress( data );
+			data = KLz77.decompress( data );
 		}
 
 		//Kbin解密
@@ -83,7 +83,7 @@ public class Protocol {
 
 		//解压
 		if ( needDeCompress ) {
-			data = Lz77.decompress( data );
+			data = KLz77.decompress( data );
 		}
 
 		//Kbin解密
@@ -171,7 +171,7 @@ public class Protocol {
 
 		//需要压缩
 		if ( needCompress ) {
-			data = Lz77.compress( data );
+			data = KLz77.compress( data );
 		}
 
 		//需要RC4加密
@@ -215,7 +215,7 @@ public class Protocol {
 
 		//需要压缩
 		if ( needCompress ) {
-			data = Lz77.compress( data );
+			data = KLz77.compress( data );
 		}
 
 		//需要RC4加密
@@ -250,7 +250,7 @@ public class Protocol {
 
 		//需要压缩
 		if ( needCompress ) {
-			data = Lz77.compress( data );
+			data = KLz77.compress( data );
 		}
 
 		//需要RC4加密
@@ -287,7 +287,7 @@ public class Protocol {
 	 */
 	public static void commit( int code, @Nullable byte[] data, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws IOException {
 		response.setHeader( Field.HEADER_X_Eamuse_Info, request.getHeader( Field.HEADER_X_Eamuse_Info ) );
-		response.setHeader( Field.HEADER_COMPRESS, request.getHeader( Field.HEADER_COMPRESS ) );	//TODO	LZ77 压缩算法有问题
+		response.setHeader( Field.HEADER_COMPRESS, request.getHeader( Field.HEADER_COMPRESS ) );
 		response.setStatus( code );
 
 		if ( data != null ) {
