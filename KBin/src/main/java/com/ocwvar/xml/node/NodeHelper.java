@@ -104,6 +104,13 @@ public class NodeHelper {
 		return xml2Node( document );
 	}
 
+	/**
+	 * 将标准 XML 节点数据转换为 Node 对象
+	 *
+	 * @param xmlNode    XML 节点数据
+	 * @param parentNode 父Node节点
+	 * @return 当前节点数据
+	 */
 	private static Node xmlNodeConvert( org.w3c.dom.Node xmlNode, Node parentNode ) {
 		switch ( xmlNode.getNodeType() ) {
 			//这些节点不需要处理

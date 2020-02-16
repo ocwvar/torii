@@ -17,7 +17,8 @@ public class DecodeTest {
 	//private final static String PATH = "H:\\IdeaProjects\\BServer\\DataTesting\\kbinxml\\Encrypted_raw.kbin";
 
 	//加密输出文件
-	private final static String PATH = "H:\\TORII\\kbin\\sv5_common.kBin";
+	private final static String PATH = "H:\\note_output.kbin";
+	//private final static String PATH = "H:\\TORII\\kbin\\sv5_common.kBin";
 	//private final static String PATH = "H:\\IdeaProjects\\BServer\\DataTesting\\kbinxml\\Encrypted_output.kbin";
 
 	public static void main( String[] args ) throws Exception {

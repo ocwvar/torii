@@ -30,6 +30,8 @@ public abstract class BaseNode implements INode {
 	}
 
 	/**
+	 * 输出 XML 文本字符串
+	 *
 	 * @return XML 文本数据
 	 */
 	public String toXmlText() {
@@ -74,7 +76,7 @@ public abstract class BaseNode implements INode {
 		} else {
 			// 3
 			builder.append( ">" );
-			for ( BaseNode baseNode : getChildNodes() ){
+			for ( BaseNode baseNode : getChildNodes() ) {
 				baseNode.__toXmlText( builder );
 			}
 			builder.append( "</" ).append( getName() ).append( ">" );
