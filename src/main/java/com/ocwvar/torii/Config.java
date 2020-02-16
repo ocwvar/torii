@@ -28,7 +28,7 @@ public class Config {
 	/**
 	 * 是否启用响应缓存，以及在下面配置功能的名称
 	 */
-	public static final boolean ENABLE_RESPONSE_CACHE = false;
+	public static final boolean ENABLE_RESPONSE_CACHE = true;
 	public static final String RESPONSE_CACHE_FOLDER = "H:\\TORII\\RESPONSE_CACHE\\";
 	public static final String[] CACHE_RESPONSE_NAMES = new String[]{
 			"sv5_common"

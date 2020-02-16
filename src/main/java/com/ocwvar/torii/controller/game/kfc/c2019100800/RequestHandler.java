@@ -705,6 +705,8 @@ public class RequestHandler {
 		addEnableEvent( event, "EVENTDATE_APRILFOOL" );
 		addEnableEvent( event, "SERIALCODE_JAPAN" );
 		addEnableEvent( event, "OMEGA_ENABLE" );
+		addEnableEvent( event, "BEMANI_VOTING_2019_ENABLE" );
+		addEnableEvent( event, "MIXID_INPUT_ENABLE" );
 		addEnableEvent( event, "OMEGA_ARS_ENABLE" );
 		addEnableEvent( event, "KAC5TH_FINISH" );
 		addEnableEvent( event, "KAC6TH_FINISH" );
@@ -767,15 +769,15 @@ public class RequestHandler {
 	/**
 	 * 读取 Extend 字段
 	 * <p>
-	 * TODO	不清楚具体实现
+	 * TODO	不清楚具体实现，这部分是实现活动以及部分功能的控制
 	 *
 	 * @return Extend 数据
 	 */
 	private static Node common_loadExtend() {
 		final Node extend = new Node( "extend" );
-		for ( int i = 1; i < 100; i++ ) {
+		/*for ( int i = 1; i < 100; i++ ) {
 			addExtend( extend, "0", String.valueOf( i ), new String[]{ "0", "0", "0", "0", "1" }, new String[]{ "", "", "", "", "" } );
-		}
+		}*/
 
 		return extend;
 	}

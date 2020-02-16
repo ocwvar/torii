@@ -359,6 +359,12 @@ public class ProfileService {
 
 		//TODO	目前需要清楚领航员的id从哪里能获得，光是靠穷举的方式不可靠
 
+		/*final Node info = new Node( "info" );
+		item.addChildNode( info );
+		info.addChildNode( new TypeNode( "type", "11", "u8" ) );
+		info.addChildNode( new TypeNode( "id", "103", "u32" ) );
+		info.addChildNode( new TypeNode( "param", "1", "u32" ) );*/
+
 		/*final JsonArray crewArray = JsonParser.parseString( new String( bytes ) ).getAsJsonArray();
 		JsonObject jsonObject;
 		for ( JsonElement element : crewArray ) {
@@ -371,7 +377,7 @@ public class ProfileService {
 			info.addChildNode( new TypeNode( "param", "1", "u32" ) );
 		}*/
 
-		for ( int i = 0; i < 300; i++ ) {
+		for ( int i = 0; i < 200; i++ ) {
 			final Node info = new Node( "info" );
 			item.addChildNode( info );
 			info.addChildNode( new TypeNode( "type", "11", "u8" ) );

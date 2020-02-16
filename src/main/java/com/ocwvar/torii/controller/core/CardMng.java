@@ -4,7 +4,6 @@ import com.ocwvar.torii.Config;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.db.entity.Card;
 import com.ocwvar.torii.service.core.CardService;
-import com.ocwvar.torii.service.game.kfc.ProfileService;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.cardX.A;
@@ -24,12 +23,10 @@ import javax.servlet.http.HttpServletResponse;
 public class CardMng {
 
 	private final CardService cardService;
-	private final ProfileService profileService;
 
 	@Autowired
-	public CardMng( CardService cardService, ProfileService profileService ) {
+	public CardMng( CardService cardService ) {
 		this.cardService = cardService;
-		this.profileService = profileService;
 	}
 
 	/*
