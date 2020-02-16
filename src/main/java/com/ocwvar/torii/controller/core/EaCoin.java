@@ -55,6 +55,11 @@ public class EaCoin {
 
 	 */
 
+	/**
+	 * 无限 PASELI 账户的余额
+	 */
+	private final String INFINITE_BALANCE_NUMBER = "1145141919";
+
 	private final CardService cardService;
 
 	@Autowired
@@ -149,7 +154,7 @@ public class EaCoin {
 		eacoin.addChildNode( new TypeNode( "acstatus", "1", "u8" ) );
 		eacoin.addChildNode( new TypeNode( "acid", paseli.getAcid() ) );
 		eacoin.addChildNode( new TypeNode( "acname", paseli.getAcname() ) );
-		eacoin.addChildNode( new TypeNode( "balance", paseli.isInfiniteBalance() ? "114514" : paseli.getBalance(), "s32" ) );
+		eacoin.addChildNode( new TypeNode( "balance", paseli.isInfiniteBalance() ? INFINITE_BALANCE_NUMBER : paseli.getBalance(), "s32" ) );
 		eacoin.addChildNode( new TypeNode( "sessid", seasonId ) );
 		this.cardService.createSeason( cardid.getContentValue(), seasonId );
 
@@ -214,7 +219,7 @@ public class EaCoin {
 		if ( paseli.isInfiniteBalance() ) {
 			//无限 PASELI 账户
 			eacoin.addChildNode( new TypeNode( "acstatus", "0", "u8" ) );
-			eacoin.addChildNode( new TypeNode( "balance", "99999", "s32" ) );
+			eacoin.addChildNode( new TypeNode( "balance", INFINITE_BALANCE_NUMBER, "s32" ) );
 			need2UpdateBalance = false;
 		} else {
 			//计算扣费

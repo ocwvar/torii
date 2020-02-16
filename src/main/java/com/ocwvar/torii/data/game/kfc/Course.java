@@ -99,15 +99,13 @@ public class Course {
 	public final String seasonNewFlg;
 	public final String courseName;
 	public final String courseType;
-	public final String clearRate;
-	public final String avgScore;
 	public final String skillNameId;
 	public final String matchingAssist;
 	public final String gaugeType;
 	public final String paseliType;
 	public final Pair< Integer, String >[] tracks;
 
-	public Course( String courseId, String skillLevel, String seasonId, String seasonName, String seasonNewFlg, String courseName, String courseType, String clearRate, String avgScore, String skillNameId, String matchingAssist, String gaugeType, String paseliType, Pair< Integer, String >[] tracks ) {
+	public Course( String courseId, String skillLevel, String seasonId, String seasonName, String seasonNewFlg, String courseName, String courseType, String skillNameId, String matchingAssist, String gaugeType, String paseliType, Pair< Integer, String >[] tracks ) {
 		this.courseId = courseId;
 		this.skillLevel = skillLevel;
 		this.seasonId = seasonId;
@@ -115,8 +113,6 @@ public class Course {
 		this.seasonNewFlg = seasonNewFlg;
 		this.courseName = courseName;
 		this.courseType = courseType;
-		this.clearRate = clearRate;
-		this.avgScore = avgScore;
 		this.skillNameId = skillNameId;
 		this.matchingAssist = matchingAssist;
 		this.gaugeType = gaugeType;

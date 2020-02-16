@@ -383,7 +383,7 @@ public class RequestHandler {
 	 * @return 响应的数据
 	 */
 	public static @Nullable
-	Node handle_sv5_load( Node call, ProfileService service ) {
+	Node handle_sv5_load( Node call, ProfileService service ) throws Exception {
 		final String pcbid = call.getAttribute( "srcid" );
 
 		final Node cGame = ( Node ) call.getFirstChildNode();
@@ -742,12 +742,12 @@ public class RequestHandler {
 			info.addChildNode( new TypeNode( "season_new_flg", course.seasonNewFlg, "bool" ) );
 			info.addChildNode( new TypeNode( "course_name", "TEST" ) );
 			info.addChildNode( new TypeNode( "course_type", course.courseType, "s16" ) );
-			info.addChildNode( new TypeNode( "clear_rate", course.clearRate, "s32" ) );
-			info.addChildNode( new TypeNode( "avg_score", course.avgScore, "u32" ) );
+			info.addChildNode( new TypeNode( "clear_rate", "0", "s32" ) );
+			info.addChildNode( new TypeNode( "avg_score", "0", "u32" ) );
 			info.addChildNode( new TypeNode( "skill_name_id", course.skillNameId, "s16" ) );
 			info.addChildNode( new TypeNode( "matching_assist", course.matchingAssist, "bool" ) );
-			info.addChildNode( new TypeNode( "gauge_type", course.gaugeType, "s16" ) );
-			info.addChildNode( new TypeNode( "paseli_type", course.paseliType, "s16" ) );
+			info.addChildNode( new TypeNode( "gauge_type", "1", "s16" ) );
+			info.addChildNode( new TypeNode( "paseli_type", "1", "s16" ) );
 
 			//存放段位曲目
 			for ( int i = 0; i < course.tracks.length; i++ ) {
@@ -758,6 +758,7 @@ public class RequestHandler {
 				track.addChildNode( new TypeNode( "music_id", String.valueOf( course.tracks[ i ].key ), "s32" ) );
 				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
 			}
+			break;
 		}
 
 		return skillCourse;
@@ -785,18 +786,18 @@ public class RequestHandler {
 	 * @return 所有段位数据
 	 */
 	private static Course[] loadCourseConfig() {
-		final byte[] bytes = IO.loadResource( true, "game/kfc/c2019100800/courses.json" );
+		final byte[] bytes = IO.loadResource( true, "game/kfc/c2019100800/courses_eng.json" );
 		if ( bytes == null || bytes.length <= 0 ) {
 			throw new RuntimeException( "段位数据配置不存在" );
 		}
 
-		final JsonArray jCourse = JsonParser.parseString( new String( bytes, Field.SHIFT_JIS ) ).getAsJsonObject().getAsJsonArray( "course" );
+		final JsonArray jCourse = JsonParser.parseString( new String( bytes, Field.UTF8 ) ).getAsJsonObject().getAsJsonArray( "course" );
 
 		JsonObject joTemp;
 		JsonArray jaTemp;
 
 		//读取段位数据
-		String course_id, skill_level, season_id, season_name, season_new_flg, course_name, course_type, clear_rate, avg_score, skill_name_id, matching_assist, gauge_type, paseli_type;
+		String course_id, skill_level, season_id, season_name, season_new_flg, course_name, course_type, skill_name_id, matching_assist, gauge_type, paseli_type;
 		final Course[] result = new Course[ jCourse.size() ];
 		for ( int k = 0; k < result.length; k++ ) {
 			joTemp = jCourse.get( k ).getAsJsonObject();
@@ -809,8 +810,6 @@ public class RequestHandler {
 			season_new_flg = joTemp.get( "season_new_flg" ).getAsString();
 			course_name = joTemp.get( "course_name" ).getAsString();
 			course_type = joTemp.get( "course_type" ).getAsString();
-			clear_rate = joTemp.get( "clear_rate" ).getAsString();
-			avg_score = joTemp.get( "avg_score" ).getAsString();
 			skill_name_id = joTemp.get( "skill_name_id" ).getAsString();
 			matching_assist = joTemp.get( "matching_assist" ).getAsString();
 			gauge_type = joTemp.get( "gauge_type" ).getAsString();
@@ -833,8 +832,6 @@ public class RequestHandler {
 					season_new_flg,
 					course_name,
 					course_type,
-					clear_rate,
-					avg_score,
 					skill_name_id,
 					matching_assist,
 					gauge_type,
@@ -857,20 +854,18 @@ public class RequestHandler {
 				"1",
 				"1",
 				"1",
-				"SKILL ANALYZER 第1回 Aコース",
+				"SKILL ANALYZER TEST",
 				"0",
 				"SKILL ANALYZER Level.01",
 				"0",
-				"10000",
-				"1000000",
 				"1",
 				"1",
 				"1",
-				"0",
+				"1",
 				new Pair[]{
-						new Pair( "17", "1" ),
-						new Pair( "922", "0" ),
-						new Pair( "76", "1" )
+						new Pair( "4", "3" ),
+						new Pair( "4", "2" ),
+						new Pair( "4", "1" )
 				}
 		);
 

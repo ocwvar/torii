@@ -247,47 +247,18 @@ public class ProfileService {
 	 * @param refId REF_ID
 	 * @return 解锁数据节点
 	 */
-	public Node loadUnlockItemNode( String refId ) {
+	public Node loadUnlockItemNode( String refId ) throws Exception {
 		Log.getInstance().print( "读取用户解锁物品数据，是否强制全解：" + Config.FUNCTION_FORCE_UNLOCK_ITEMS );
 
 		final Node item;
 
 		if ( Config.FUNCTION_FORCE_UNLOCK_ITEMS ) {
 			//如果强制全解物品，则这里直接返回全解数据，否则需要根据存入的数据返回
-
-			if ( StaticContainer.getInstance().has( "force_unlock_item" ) ) {
-				return ( Node ) StaticContainer.getInstance().get( "unlock_item" );
-			}
-
 			item = new Node( "item" );
-			final byte[] bytes = IO.loadResource( true, "game/kfc/force_unlock_items.json" );
-			if ( bytes == null || bytes.length <= 0 ) {
-				return item;
-			}
 
-			final JsonArray jItems = JsonParser.parseString( new String( bytes ) ).getAsJsonArray();
-			JsonObject temp;
-			for ( JsonElement element : jItems ) {
-				temp = ( JsonObject ) element;
+			//解锁领航员
+			addForceCrewData( item );
 
-				final Node info = new Node( "info" );
-				item.addChildNode( info );
-
-			/*
-				TYPE 对应
-				GAME_CATALOG_TYPE_SONG = 0
-				GAME_CATALOG_TYPE_APPEAL_CARD = 1
-				GAME_CATALOG_TYPE_CREW = 4
-
-				ID 对应解锁对象的ID
-				PARAM 对应参数，传 1 即可
-			 */
-				info.addChildNode( new TypeNode( "type", temp.get( "type" ).getAsString(), "u8" ) );
-				info.addChildNode( new TypeNode( "id", temp.get( "id" ).getAsString(), "u32" ) );
-				info.addChildNode( new TypeNode( "param", temp.get( "param" ).getAsString(), "u32" ) );
-			}
-
-			StaticContainer.getInstance().set( "unlock_item", item );
 			return item;
 		} else {
 			item = new Node( "item" );
@@ -377,6 +348,41 @@ public class ProfileService {
 			info.addChildNode( new ArrayTypeNode( 0, "param", "s32", profileParam.getParam() ) );
 		}
 		return root;
+	}
+
+	/**
+	 * 添加强制解锁的领航员数据
+	 *
+	 * @param item 添加数据后的 item 节点
+	 */
+	private void addForceCrewData( Node item ) throws Exception {
+		byte[] bytes = IO.loadResource( true, "generator/CharacterUnlockJsonData/data.json" );
+		if ( bytes == null || bytes.length <= 0 ) {
+			Log.getInstance().print( "没有预制领航员解锁数据" );
+			return;
+		}
+
+		//TODO	目前需要清楚领航员的id从哪里能获得，光是靠穷举的方式不可靠
+
+		/*final JsonArray crewArray = JsonParser.parseString( new String( bytes ) ).getAsJsonArray();
+		JsonObject jsonObject;
+		for ( JsonElement element : crewArray ) {
+			jsonObject = element.getAsJsonObject();
+
+			final Node info = new Node( "info" );
+			item.addChildNode( info );
+			info.addChildNode( new TypeNode( "type", "11", "u8" ) );
+			info.addChildNode( new TypeNode( "id", jsonObject.get( "id" ).getAsString(), "u32" ) );
+			info.addChildNode( new TypeNode( "param", "1", "u32" ) );
+		}*/
+
+		for ( int i = 0; i < 300; i++ ) {
+			final Node info = new Node( "info" );
+			item.addChildNode( info );
+			info.addChildNode( new TypeNode( "type", "11", "u8" ) );
+			info.addChildNode( new TypeNode( "id", String.valueOf( i ), "u32" ) );
+			info.addChildNode( new TypeNode( "param", "1", "u32" ) );
+		}
 	}
 
 }

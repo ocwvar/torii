@@ -13,12 +13,12 @@ public class Config {
 	/**
 	 * 是否强制全解物品 (头像、领航员 等)
 	 */
-	public static final boolean FUNCTION_FORCE_UNLOCK_ITEMS = false;
+	public static final boolean FUNCTION_FORCE_UNLOCK_ITEMS = true;
 
 	/**
 	 * 是否强制全解歌曲，默认 False
 	 */
-	public static final boolean FUNCTION_FORCE_UNLOCK_ALL_MUSIC = true;
+	public static final boolean FUNCTION_FORCE_UNLOCK_ALL_MUSIC = false;
 
 	/**
 	 * 当前是否处于维护状态，默认 False
@@ -28,7 +28,7 @@ public class Config {
 	/**
 	 * 是否启用响应缓存，以及在下面配置功能的名称
 	 */
-	public static final boolean ENABLE_RESPONSE_CACHE = true;
+	public static final boolean ENABLE_RESPONSE_CACHE = false;
 	public static final String RESPONSE_CACHE_FOLDER = "H:\\TORII\\RESPONSE_CACHE\\";
 	public static final String[] CACHE_RESPONSE_NAMES = new String[]{
 			"sv5_common"
