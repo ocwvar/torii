@@ -2,7 +2,6 @@ package com.ocwvar.torii.controller.game.kfc;
 
 import com.ocwvar.torii.controller.game.kfc.c2019100800.RequestHandler;
 import com.ocwvar.torii.service.game.kfc.ProfileService;
-import com.ocwvar.torii.utils.IO;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.Log;
 import com.ocwvar.xml.node.Node;

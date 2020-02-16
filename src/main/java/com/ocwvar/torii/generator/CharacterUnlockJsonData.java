@@ -2,7 +2,7 @@ package com.ocwvar.torii.generator;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import com.ocwvar.torii.utils.IO;
+import com.ocwvar.utils.IO;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.NodeHelper;
 
@@ -25,7 +25,7 @@ public class CharacterUnlockJsonData {
 
 	public static void main( String[] args ) throws Exception {
 		System.out.println( "正在读取文件：" + LOAD_FILE_PATH );
-		byte[] bytes = IO.loadFile( true, LOAD_FILE_PATH );
+		byte[] bytes = IO.loadFile(  LOAD_FILE_PATH );
 		if ( bytes == null || bytes.length <= 0 ) {
 			System.out.println( "文件读取失败" );
 			return;

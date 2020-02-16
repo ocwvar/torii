@@ -1,14 +1,9 @@
 package com.ocwvar.torii.service.game.kfc;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.ocwvar.torii.Config;
-import com.ocwvar.torii.data.StaticContainer;
 import com.ocwvar.torii.db.dao.*;
 import com.ocwvar.torii.db.entity.*;
-import com.ocwvar.torii.utils.IO;
+import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.annotation.NotNull;
 import com.ocwvar.utils.annotation.Nullable;
@@ -356,7 +351,7 @@ public class ProfileService {
 	 * @param item 添加数据后的 item 节点
 	 */
 	private void addForceCrewData( Node item ) throws Exception {
-		byte[] bytes = IO.loadResource( true, "generator/CharacterUnlockJsonData/data.json" );
+		byte[] bytes = IO.loadResource( "generator/CharacterUnlockJsonData/data.json" );
 		if ( bytes == null || bytes.length <= 0 ) {
 			Log.getInstance().print( "没有预制领航员解锁数据" );
 			return;

@@ -1,6 +1,7 @@
 package com.ocwvar.torii.utils;
 
 import com.ocwvar.torii.Config;
+import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.annotation.Nullable;
 
@@ -67,7 +68,7 @@ public class Cache {
 	public static @Nullable
 	byte[] loadResponseCache( String requestName ) {
 		final String cachePath = Config.RESPONSE_CACHE_FOLDER + requestName + ".kBin";
-		return IO.loadFile( true, cachePath );
+		return IO.loadFile( cachePath );
 	}
 
 	/**

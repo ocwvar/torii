@@ -1,36 +1,27 @@
-package com.ocwvar.torii.utils;
+package com.ocwvar.utils;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
-import com.ocwvar.torii.Field;
 import com.ocwvar.utils.annotation.NotNull;
 import com.ocwvar.utils.annotation.Nullable;
 
 import java.io.*;
+import java.nio.charset.Charset;
 
 public class IO {
 
 	/**
 	 * 将文件读取为字节数组
 	 *
-	 * @param useBuffer 是否使用缓冲
 	 * @param filePath  读取文件路径
 	 * @return 字节数组，如果读取失败则返回 NULL
 	 */
 	public static @Nullable
-	byte[] loadFile( boolean useBuffer, String filePath ) {
+	byte[] loadFile( String filePath ) {
 		try (
 				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				final FileInputStream inputStream = new FileInputStream( new File( filePath ) )
 		) {
-			if ( !useBuffer ) {
-				outputStream.write( inputStream.readAllBytes() );
-				outputStream.flush();
-				outputStream.close();
-				inputStream.close();
-
-				return outputStream.toByteArray();
-			}
 
 			final byte[] buffer = new byte[ 1024 ];
 			int length;
@@ -101,24 +92,14 @@ public class IO {
 	/**
 	 * 读取 Resource 下的文件
 	 *
-	 * @param useBuffer 是否使用缓冲
 	 * @param path      文件路径，如 "folder/file.txt
 	 * @return 字节数组，如果读取失败则返回 NULL
 	 */
-	public static byte[] loadResource( boolean useBuffer, String path ) {
+	public static byte[] loadResource( String path ) {
 		try (
 				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
 				final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( path )
 		) {
-			if ( !useBuffer ) {
-				outputStream.write( inputStream.readAllBytes() );
-				outputStream.flush();
-				outputStream.close();
-				inputStream.close();
-
-				return outputStream.toByteArray();
-			}
-
 			final byte[] buffer = new byte[ 1024 ];
 			int length;
 			while ( ( length = inputStream.read( buffer ) ) != -1 ) {
@@ -141,13 +122,13 @@ public class IO {
 	 * @param filePath  读取文件路径
 	 * @return JsonElement 对象，如果失败则返回 NULL
 	 */
-	public static JsonElement loadJsonFile( boolean useBuffer, String filePath ) {
-		final byte[] bytes = loadFile( true, filePath );
+	public static JsonElement loadJsonFile( boolean useBuffer, String filePath, Charset charset ) {
+		final byte[] bytes = loadFile( filePath );
 		if ( bytes == null ) {
 			return null;
 		}
 
-		return JsonParser.parseString( new String( bytes, Field.UTF8 ) );
+		return JsonParser.parseString( new String( bytes, charset ) );
 	}
 
 }

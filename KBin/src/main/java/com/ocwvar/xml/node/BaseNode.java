@@ -30,6 +30,58 @@ public abstract class BaseNode implements INode {
 	}
 
 	/**
+	 * @return XML 文本数据
+	 */
+	public String toXmlText() {
+		final StringBuilder builder = new StringBuilder();
+		__toXmlText( builder );
+		return builder.toString();
+	}
+
+	/**
+	 * 写入上层提供的 StringBuilder
+	 *
+	 * @param builder 上层的 StringBuilder
+	 */
+	protected void __toXmlText( StringBuilder builder ) {
+		//添加Node名字
+		builder.append( "<" ).append( getName() );
+
+		//添加属性
+		if ( attributeCount() > 0 ) {
+			for ( Map.Entry< String, String > entry : getAttributes().entrySet() ) {
+				builder.append( " " ).append( entry.getKey() ).append( "=" ).append( "\"" ).append( entry.getValue() ).append( "\"" );
+			}
+		}
+
+
+		/*
+
+			判断当前 node 的 子node 类型，一般的 xml 数据 子node 可以有Text以及Element
+			但我们这里是不会的，所以仅需要判断 Text 或者 子Element 即可。所以情况有三种：
+
+			1.没有子node，没有content
+			2.没有子node，有content
+			3.有子node，没有content
+
+		 */
+		if ( childCount() <= 0 && getContentValue() == null ) {
+			// 1
+			builder.append( " " ).append( "/>" );
+		} else if ( getContentValue() != null ) {
+			// 2
+			builder.append( ">" ).append( getContentValue() ).append( "</" ).append( getName() ).append( ">" );
+		} else {
+			// 3
+			builder.append( ">" );
+			for ( BaseNode baseNode : getChildNodes() ){
+				baseNode.__toXmlText( builder );
+			}
+			builder.append( "</" ).append( getName() ).append( ">" );
+		}
+	}
+
+	/**
 	 * 输入此节点所有子节点到给定的对象
 	 *
 	 * @param document      XML文档对象

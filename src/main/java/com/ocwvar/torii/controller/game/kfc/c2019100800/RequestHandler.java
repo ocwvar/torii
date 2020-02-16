@@ -9,7 +9,7 @@ import com.ocwvar.torii.Field;
 import com.ocwvar.torii.data.game.kfc.Course;
 import com.ocwvar.torii.db.entity.*;
 import com.ocwvar.torii.service.game.kfc.ProfileService;
-import com.ocwvar.torii.utils.IO;
+import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.Pair;
 import com.ocwvar.utils.TextUtils;
@@ -631,7 +631,7 @@ public class RequestHandler {
 			return music_limited;
 		}
 
-		final byte[] bytes = IO.loadResource( true, "generator/MusicUnlockJsonData/data.json" );
+		final byte[] bytes = IO.loadResource( "generator/MusicUnlockJsonData/data.json" );
 		if ( bytes == null || bytes.length <= 0 ) {
 			Log.getInstance().print( "强制全解歌曲已启用，但不存在数据文件" );
 			return music_limited;
@@ -786,7 +786,7 @@ public class RequestHandler {
 	 * @return 所有段位数据
 	 */
 	private static Course[] loadCourseConfig() {
-		final byte[] bytes = IO.loadResource( true, "game/kfc/c2019100800/courses_eng.json" );
+		final byte[] bytes = IO.loadResource( "game/kfc/c2019100800/courses_eng.json" );
 		if ( bytes == null || bytes.length <= 0 ) {
 			throw new RuntimeException( "段位数据配置不存在" );
 		}

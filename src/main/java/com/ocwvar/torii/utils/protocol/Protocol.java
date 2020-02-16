@@ -5,7 +5,7 @@ import com.ocwvar.torii.Config;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.data.StaticContainer;
 import com.ocwvar.torii.utils.Cache;
-import com.ocwvar.torii.utils.IO;
+import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.TextUtils;
 import com.ocwvar.utils.annotation.NotNull;
