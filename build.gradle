@@ -18,6 +18,7 @@ dependencies {
     //第三方依赖
     implementation group: 'org.mybatis.spring.boot', name: 'mybatis-spring-boot-starter', version: '2.1.1'
     implementation group: 'org.springframework', name: 'spring-jdbc', version: '5.2.3.RELEASE'
+    implementation group: 'org.java-websocket', name: 'Java-WebSocket', version: '1.4.0'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'com.google.code.gson:gson:2.8.6'
 

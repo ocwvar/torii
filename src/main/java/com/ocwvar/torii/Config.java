@@ -40,6 +40,11 @@ public class Config {
 	public static final String BASE_URL = "http://127.0.0.1:50001";
 
 	/**
+	 * 远端协议处理地址
+	 */
+	public static final String REMOTE_PROTOCOL_SERVER_URI = "ws://localhost:50000/websocket";
+
+	/**
 	 * DEBUG：DUMP请求的KBIN数据，默认 False
 	 */
 	public static final boolean DEBUG_DUMP_KBIN_REQUEST = false;
