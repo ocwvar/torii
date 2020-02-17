@@ -32,12 +32,17 @@ public class RemoteKBinClient extends WebSocketClient {
 	/**
 	 * 等待响应超时时间，单位毫秒
 	 */
-	private static final long RESPONSE_TIMEOUT_MS = 500L;
+	private static final long RESPONSE_TIMEOUT_MS = 10L * 1000L;
 
 	/**
 	 * 连接超时，单位毫秒
 	 */
 	private static final int CONNECT_TIMEOUT_MS = 2000;
+
+	/**
+	 * 调试模式
+	 */
+	private static final boolean DEBUG = false;
 
 	/**
 	 * 超时结果
@@ -63,6 +68,27 @@ public class RemoteKBinClient extends WebSocketClient {
 	public RemoteKBinClient() {
 		super( URI.create( Config.REMOTE_PROTOCOL_SERVER_URI ) );
 		setConnectionLostTimeout( CONNECT_TIMEOUT_MS );
+	}
+
+	/**
+	 * 连接或重连远端WS，注意此方法会阻塞线程
+	 *
+	 * @return 是否连接上
+	 */
+	public boolean connectRemote() {
+		if ( !isOpen() ) {
+			return true;
+		}
+
+		try {
+			if ( this.isConnected ) {
+				return reconnectBlocking();
+			} else {
+				return connectBlocking();
+			}
+		} catch ( InterruptedException e ) {
+			return false;
+		}
 	}
 
 	/**
@@ -128,14 +154,15 @@ public class RemoteKBinClient extends WebSocketClient {
 	 */
 	@Override
 	public void onMessage( ByteBuffer bytes ) {
-		Log.getInstance().print( "远端协议处理服务返回数据长度：" + bytes.limit() );
+		synchronized ( this.LOCK ) {
+			printLog( "返回数据长度：" + bytes.limit() );
 
-		this.result = new Result( false, this.isEncodeRequest, null, bytes.array() );
-		bytes.clear();
-
-		try {
-			this.LOCK.notify();
-		} catch ( Exception ignore ) {
+			this.result = new Result( false, this.isEncodeRequest, null, bytes.array() );
+			try {
+				this.LOCK.notifyAll();
+			} catch ( Exception e ) {
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -144,7 +171,7 @@ public class RemoteKBinClient extends WebSocketClient {
 	 */
 	@Override
 	public void onOpen( ServerHandshake handshakedata ) {
-		Log.getInstance().print( "远端协议处理服务已连接" );
+		printLog( "远端协议处理服务已连接" );
 		this.isConnected = true;
 	}
 
@@ -153,7 +180,7 @@ public class RemoteKBinClient extends WebSocketClient {
 	 */
 	@Override
 	public void onClose( int code, String reason, boolean remote ) {
-		Log.getInstance().print( "远端协议处理服务断开:" + reason, true );
+		printLog( "远端协议处理服务断开:" + reason );
 
 		this.result = new Result( true, this.isEncodeRequest, "远端断开连接：" + reason, null );
 		try {
@@ -167,7 +194,7 @@ public class RemoteKBinClient extends WebSocketClient {
 	 */
 	@Override
 	public void onError( Exception ex ) {
-		Log.getInstance().print( "远端协议处理服务异常：" + ex );
+		printLog( "远端协议处理服务异常：" + ex );
 
 		this.result = new Result( true, this.isEncodeRequest, ex.getMessage(), null );
 		try {
@@ -179,6 +206,12 @@ public class RemoteKBinClient extends WebSocketClient {
 	@Override
 	public void onMessage( String message ) {
 		//这个不用
+	}
+
+	private void printLog( String msg ) {
+		if ( DEBUG ) {
+			Log.getInstance().print( "[RemoteKBin] " + msg );
+		}
 	}
 
 	public static class Result {
