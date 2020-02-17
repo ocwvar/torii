@@ -26,6 +26,26 @@ public class Config {
 	public static final boolean IS_UNDER_MAINTENANCE = false;
 
 	/**
+	 * 强制店铺名
+	 */
+	public static final String FORCE_SHOP_NAME = "TORII 鳥居";
+
+	/**
+	 * 请求端口
+	 */
+	public static final String REQUEST_PORT = "50001";
+
+	/**
+	 * 请求地址
+	 */
+	public static final String BASE_URL = "http://127.0.0.1:" + REQUEST_PORT;
+
+	/**
+	 * 远端协议处理地址
+	 */
+	public static final String REMOTE_PROTOCOL_SERVER_URI = "ws://127.0.0.1:50000/websocket";
+
+	/**
 	 * 是否启用响应缓存，以及在下面配置功能的名称
 	 */
 	public static final boolean ENABLE_RESPONSE_CACHE = true;
@@ -33,16 +53,6 @@ public class Config {
 	public static final String[] CACHE_RESPONSE_NAMES = new String[]{
 			"sv5_common"
 	};
-
-	/**
-	 * 请求地址
-	 */
-	public static final String BASE_URL = "http://127.0.0.1:50001";
-
-	/**
-	 * 远端协议处理地址
-	 */
-	public static final String REMOTE_PROTOCOL_SERVER_URI = "ws://127.0.0.1:50000/websocket";
 
 	/**
 	 * DEBUG：DUMP请求的KBIN数据，默认 False

@@ -1,5 +1,6 @@
 package com.ocwvar.torii.controller.core;
 
+import com.ocwvar.torii.Config;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.TypeNode;
@@ -8,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.net.InetAddress;
 
 /**
  * 返回当前服务器配置
@@ -30,30 +32,46 @@ public class Facility {
 	}
 
 	private Node getFacilityNode() {
-		final Node root = new Node( "response" );
 
+		String ip;
+		try {
+			ip = InetAddress.getLocalHost().getHostAddress();
+		} catch ( Exception ignore ) {
+			ip = "127.0.0.1";
+		}
+
+		final Node root = new Node( "response" );
 		final Node facilityNode = new Node( "facility" );
-		facilityNode.addAttribute( "expire", "600" );
 
 		final Node locationNode = new Node( "location" );
-		locationNode.addChildNode( new TypeNode( "id", "11451419" ) );
+		locationNode.addChildNode( new TypeNode( "id", Config.FORCE_SHOP_NAME ) );
 		locationNode.addChildNode( new TypeNode( "country", "JP" ) );
 		locationNode.addChildNode( new TypeNode( "region", "." ) );
-		locationNode.addChildNode( new TypeNode( "name", "SONY_MOBILE_SHOP" ) );
 		locationNode.addChildNode( new TypeNode( "type", "0", "u8" ) );
+		locationNode.addChildNode( new TypeNode( "latitude", "0", "u8" ) );
+		locationNode.addChildNode( new TypeNode( "longitude", "0", "u8" ) );
+		locationNode.addChildNode( new TypeNode( "accuracy", "0", "u8" ) );
+		locationNode.addChildNode( new TypeNode( "name", Config.FORCE_SHOP_NAME ) );
+		locationNode.addChildNode( new TypeNode( "countryname", Config.FORCE_SHOP_NAME ) );
+		locationNode.addChildNode( new TypeNode( "countryjname", Config.FORCE_SHOP_NAME ) );
+		locationNode.addChildNode( new TypeNode( "regionname", Config.FORCE_SHOP_NAME ) );
+		locationNode.addChildNode( new TypeNode( "regionjname", Config.FORCE_SHOP_NAME ) );
+		locationNode.addChildNode( new TypeNode( "customercode", Config.FORCE_SHOP_NAME ) );
+		locationNode.addChildNode( new TypeNode( "customercode", Config.FORCE_SHOP_NAME ) );
 
-		final Node lineNode = new Node( "line" );
-		lineNode.addChildNode( new TypeNode( "id", "." ) );
-		lineNode.addChildNode( new TypeNode( "class", "0", "u8" ) );
+		final Node classNode = new Node( "class" );
+		classNode.addChildNode( new TypeNode( "id", "ID" ) );
+		classNode.addChildNode( new TypeNode( "line", "0", "u8" ) );
 
 		final Node portfwNode = new Node( "portfw" );
-		portfwNode.addChildNode( new TypeNode( "globalip", "127.0.0.1", "ip4" ) );
-		portfwNode.addChildNode( new TypeNode( "globalport", "50001", "u16" ) );
-		portfwNode.addChildNode( new TypeNode( "privateport", "50001", "u16" ) );
+
+		portfwNode.addChildNode( new TypeNode( "globalip", ip, "ip4" ) );
+		portfwNode.addChildNode( new TypeNode( "globalport", Config.REQUEST_PORT, "u16" ) );
+		portfwNode.addChildNode( new TypeNode( "privateport", Config.REQUEST_PORT, "u16" ) );
 
 		final Node publicNode = new Node( "public" );
 		publicNode.addChildNode( new TypeNode( "flag", "1", "u8" ) );
-		publicNode.addChildNode( new TypeNode( "name", "." ) );
+		publicNode.addChildNode( new TypeNode( "name", Config.FORCE_SHOP_NAME ) );
 		publicNode.addChildNode( new TypeNode( "latitude", "0" ) );
 		publicNode.addChildNode( new TypeNode( "longitude", "0" ) );
 
@@ -63,7 +81,7 @@ public class Facility {
 		eacoinNode.addChildNode( new TypeNode( "supplylimit", "10000", "s32" ) );
 
 		final Node eapassNode = new Node( "eapass" );
-		eapassNode.addChildNode( new TypeNode( "valid", "365", "u16" ) );
+		eapassNode.addChildNode( new TypeNode( "valid", "0", "u16" ) );
 
 		final Node urlNode = new Node( "url" );
 		urlNode.addChildNode( new TypeNode( "eapass", "www.ea-pass.konami.net" ) );
@@ -78,7 +96,7 @@ public class Facility {
 		shareNode.addChildNode( eapassNode );
 
 		facilityNode.addChildNode( locationNode );
-		facilityNode.addChildNode( lineNode );
+		facilityNode.addChildNode( classNode );
 		facilityNode.addChildNode( portfwNode );
 		facilityNode.addChildNode( publicNode );
 		facilityNode.addChildNode( shareNode );

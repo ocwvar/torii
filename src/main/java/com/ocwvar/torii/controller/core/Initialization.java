@@ -110,7 +110,7 @@ public class Initialization {
 		services.addAttribute( "product_domain", "1" );
 		root.addChildNode( services );
 
-		services.addChildNode( new UrlNode( "ntp", "ntp://eamuse.konami.fun/" ) );
+		services.addChildNode( new UrlNode( "ntp", "ntp://pool.ntp.org/" ) );
 		services.addChildNode( new UrlNode( "keepalive", "http://" + selfIpAddress + "/keepalive?pa=" + selfIpAddress + "&ia=" + selfIpAddress + "&ga=" + selfIpAddress + "&ma=" + selfIpAddress + "&t1=2&t2=10" ) );
 		switch ( type ) {
 			default:
@@ -141,6 +141,16 @@ public class Initialization {
 						services.addChildNode( new UrlNode( "local2", Config.BASE_URL + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "lobby", Config.BASE_URL + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "lobby2", Config.BASE_URL + "/torii/sdvx" ) );
+
+						//不明用途节点
+						services.addChildNode( new UrlNode( "globby", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "slobby", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sglobby", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sglocal", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sglocal2", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "slocal", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "slocal2", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "info", Config.BASE_URL + "/torii/sdvx" ) );
 						return root;
 				}
 		}
