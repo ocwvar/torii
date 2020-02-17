@@ -15,9 +15,7 @@ import com.ocwvar.xml.node.NodeHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.security.NoSuchAlgorithmException;
 
 public class Protocol {
@@ -144,7 +142,14 @@ public class Protocol {
 		}
 
 		//首先必须Kbin加密
-		byte[] data = KBinXml.encode( node );
+		//byte[] data = KBinXml.encode( node );
+		final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( node );
+		byte[] data = result.getResult();
+		if ( result.hasException() ) {
+			Log.getInstance().print( "处理出现问题:" + result.getExceptionMessage() );
+			commit( 403, null, request, response );
+			return;
+		}
 
 		final String eamuseInfo = request.getHeader( Field.HEADER_X_Eamuse_Info );
 		final boolean needCompress = request.getHeader( Field.HEADER_COMPRESS ).equals( Field.HEADER_COMPRESS_TYPE_LZ77 );
@@ -167,50 +172,6 @@ public class Protocol {
 				StaticContainer.getInstance().set( String.valueOf( request.getRequestURL().hashCode() ), 0 );
 				Log.getInstance().print( "已生成缓存：" + request.getRequestURL() );
 			}
-		}
-
-		//需要压缩
-		if ( needCompress ) {
-			data = KLz77.compress( data );
-		}
-
-		//需要RC4加密
-		if ( needEncryptRC4 ) {
-			data = Rc4.encrypt( Rc4.getRC4Key( eamuseInfo ), data );
-		}
-
-		commit( 200, data, request, response );
-	}
-
-	/**
-	 * 加密并传输数据
-	 *
-	 * @param rawData  传输的内容
-	 * @param request  请求对象
-	 * @param response 响应对象
-	 */
-	public static void encryptAndCommit( @Nullable byte[] rawData, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws Exception {
-		if ( rawData == null ) {
-			commit( 403, null, request, response );
-			return;
-		}
-
-		//首先必须Kbin加密
-		byte[] data = KBinXml.encode( new String( rawData ) );
-
-		final String eamuseInfo = request.getHeader( Field.HEADER_X_Eamuse_Info );
-		final boolean needCompress = request.getHeader( Field.HEADER_COMPRESS ).equals( Field.HEADER_COMPRESS_TYPE_LZ77 );
-		final boolean needEncryptRC4 = !TextUtils.isEmpty( eamuseInfo );
-
-		//DEBUG：DUMP 出响应数据
-		if ( Configs.isIsDumpResponseKbin() ) {
-			final String[] paths = request.getRequestURL().toString().split( "/" );
-
-			IO.outputFile( true,
-					Configs.getDumpFileOutputFolder() + "/dump/response/",
-					paths[ paths.length - 2 ] + "_" + paths[ paths.length - 1 ] + ".kbin",
-					data
-			);
 		}
 
 		//需要压缩
@@ -266,20 +227,6 @@ public class Protocol {
 		commit( 200, data, request, response );
 		Log.getInstance().print( "已通过缓存完成请求：" + request.getRequestURL() );
 		return true;
-	}
-
-	/**
-	 * 使用 DUMP 出来的 XML 进行响应
-	 *
-	 * @param xmlPath  XML文件路径
-	 * @param request  请求对象
-	 * @param response 响应对象
-	 */
-	public static void commitWithDumpXml( @NotNull String xmlPath, @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws Exception {
-		final InputStream inputStream = new FileInputStream( xmlPath );
-		final byte[] data = inputStream.readAllBytes();
-		inputStream.close();
-		encryptAndCommit( data, request, response );
 	}
 
 	/**

@@ -111,7 +111,7 @@ public class Initialization {
 		root.addChildNode( services );
 
 		services.addChildNode( new UrlNode( "ntp", "ntp://pool.ntp.org/" ) );
-		services.addChildNode( new UrlNode( "keepalive", "http://" + selfIpAddress + "/keepalive?pa=" + selfIpAddress + "&ia=" + selfIpAddress + "&ga=" + selfIpAddress + "&ma=" + selfIpAddress + "&t1=2&t2=10" ) );
+		services.addChildNode( new UrlNode( "keepalive", "http://" + selfIpAddress + "/keepalive?pa=" + selfIpAddress + "&amp;ia=" + selfIpAddress + "&amp;ga=" + selfIpAddress + "&amp;ma=" + selfIpAddress + "&amp;t1=2&amp;t2=10" ) );
 		switch ( type ) {
 			default:
 				return null;

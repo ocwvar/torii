@@ -13,12 +13,15 @@ public class RemoteProtocolTest {
 	private static final Charset usingCharset = Charset.forName( "cp932" );
 
 	public static void main( String[] args ) throws Exception {
+		ToriiApplication.loadConfig();
 		System.out.println( "开始处理" );
 
 		//解密测试
-		//final byte[] decodeSample = IO.loadFile( "H:\\test.kbin" );
+		//final byte[] decodeSample = IO.loadFile( "H:\\1581952783233.kbin" );
 		//benchmarkDecode( decodeSample, 50 );
 		//testDecode( decodeSample, 1, 1, true );
+
+
 
 		//加密测试
 		final Node encodeSample = NodeHelper.xml2Node( new String( IO.loadFile( "H:\\test.xml" ), usingCharset ) );
@@ -42,7 +45,7 @@ public class RemoteProtocolTest {
 				final long startM = System.currentTimeMillis();
 				for ( int j = 0; j < times; j++ ) {
 					final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendKbin( sample );
-					System.out.println( "执行结果：" + !result.isHasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) );
+					System.out.println( "执行结果：" + !result.hasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) );
 					if ( result.getResult() != null && outputResult ) {
 						System.out.println( new String( result.getResult(), usingCharset ) );
 					}
@@ -66,7 +69,7 @@ public class RemoteProtocolTest {
 				final long startM = System.currentTimeMillis();
 				for ( int j = 0; j < times; j++ ) {
 					final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( sample );
-					System.out.println( "执行结果：" + !result.isHasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) );
+					System.out.println( "执行结果：" + !result.hasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) );
 					if ( result.getResult() != null && outputResult ) {
 						IO.outputFile( true, "H:\\" + System.currentTimeMillis() + ".kbin", result.getResult() );
 					}
@@ -99,7 +102,7 @@ public class RemoteProtocolTest {
 		for ( int i = 0; i < times; i++ ) {
 			final long m3 = System.currentTimeMillis();
 			final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( sample );
-			if ( result != null && result.getResult() != null && !result.isHasException() ) {
+			if ( result != null && result.getResult() != null && !result.hasException() ) {
 				sum += System.currentTimeMillis() - m3;
 			} else {
 				throw new RuntimeException( "执行出现异常或超时" );
@@ -133,7 +136,7 @@ public class RemoteProtocolTest {
 		for ( int i = 0; i < times; i++ ) {
 			final long m3 = System.currentTimeMillis();
 			final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendKbin( sample );
-			if ( result != null && result.getResult() != null && !result.isHasException() ) {
+			if ( result != null && result.getResult() != null && !result.hasException() ) {
 				sum += System.currentTimeMillis() - m3;
 			} else {
 				throw new RuntimeException( "执行出现异常或超时" );

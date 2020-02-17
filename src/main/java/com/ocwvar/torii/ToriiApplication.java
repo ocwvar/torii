@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ocwvar.torii.data.StaticContainer;
+import com.ocwvar.torii.utils.protocol.RemoteKBinClient;
 import com.ocwvar.utils.IO;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
@@ -18,6 +19,7 @@ public class ToriiApplication {
 	public static void main( String[] args ) {
 		loadConfig();
 		createEnvironment();
+		RemoteKBinClient.getInstance().connectRemote();
 		SpringApplication.run( ToriiApplication.class, args );
 	}
 
@@ -33,7 +35,7 @@ public class ToriiApplication {
 	/**
 	 * 从 ServerConfig.json 中读取配置
 	 */
-	private static void loadConfig() {
+	public static void loadConfig() {
 		try {
 			final byte[] bytes = IO.loadResource( "ServerConfig.json" );
 			if ( bytes == null || bytes.length <= 0 ) {

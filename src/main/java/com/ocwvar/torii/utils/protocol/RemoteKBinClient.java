@@ -10,6 +10,7 @@ import org.java_websocket.handshake.ServerHandshake;
 
 import java.net.URI;
 import java.nio.ByteBuffer;
+import java.nio.charset.StandardCharsets;
 
 public class RemoteKBinClient extends WebSocketClient {
 
@@ -139,7 +140,7 @@ public class RemoteKBinClient extends WebSocketClient {
 
 				//请求数据
 				if ( object instanceof Node ) {
-					send( ( ( Node ) object ).toXmlText().getBytes() );
+					send( ( ( Node ) object ).toXmlText(true).getBytes( StandardCharsets.UTF_8 ) );
 				} else {
 					send( ( byte[] ) object );
 				}
@@ -234,7 +235,7 @@ public class RemoteKBinClient extends WebSocketClient {
 		/**
 		 * @return 是否出现了异常
 		 */
-		public boolean isHasException() {
+		public boolean hasException() {
 			return hasException;
 		}
 

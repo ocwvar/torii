@@ -35,9 +35,24 @@ public abstract class BaseNode implements INode {
 	 * @return XML 文本数据
 	 */
 	public String toXmlText() {
+		return toXmlText( false );
+	}
+
+	/**
+	 * 输出 XML 文本字符串
+	 *
+	 * @param encodeCharacter 是否需要转义字符
+	 * @return XML 文本数据
+	 */
+	public String toXmlText( boolean encodeCharacter ) {
 		final StringBuilder builder = new StringBuilder();
 		__toXmlText( builder );
-		return builder.toString();
+
+		if ( encodeCharacter ){
+			return builder.toString().replaceAll( "&","&amp;" );
+		}else {
+			return builder.toString();
+		}
 	}
 
 	/**
