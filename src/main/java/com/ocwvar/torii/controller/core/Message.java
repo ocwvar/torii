@@ -1,6 +1,6 @@
 package com.ocwvar.torii.controller.core;
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.NodeBuilder;
@@ -27,13 +27,17 @@ public class Message {
 
 	@PostMapping( path = "/torii/message/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
+		if ( Protocol.commitWithCache( request, response ) ) {
+			return;
+		}
+
 		final Node root = new Node( "response" );
 		final Node message = new Node( "message" );
 		message.addAttribute( "expire", "600" );
 		root.addChildNode( message );
 
 		//判断处于维护中
-		if ( Config.IS_UNDER_MAINTENANCE ) {
+		if ( Configs.isIsUnderMaintenance() ) {
 			message.addAttribute( "status", "0" );
 
 			message.addChildNode(

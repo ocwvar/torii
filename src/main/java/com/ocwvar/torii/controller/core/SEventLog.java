@@ -42,6 +42,10 @@ public class SEventLog {
 
 	@PostMapping( path = "torii/{game}/{model}/eventlog/*" )
 	public void function( HttpServletRequest request, HttpServletResponse response, @PathVariable String game, @PathVariable String model ) throws Exception {
+		if ( Protocol.commitWithCache( request, response ) ) {
+			return;
+		}
+
 		//直接返回数据即可
 		final Node root = new Node( "response" );
 		final Node eventlog = new Node( "eventlog" );

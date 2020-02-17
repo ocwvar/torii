@@ -1,7 +1,5 @@
 package com.ocwvar.torii.data;
 
-import com.ocwvar.utils.Log;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -47,7 +45,7 @@ public class StaticContainer {
 	public void set( String key, Object value ) {
 		this.map.remove( key );
 		this.map.put( key, value );
-		Log.getInstance().print( "静态资源存储器，存入操作：" + key + "   " + value );
+		//Log.getInstance().print( "静态资源存储器，存入操作：" + key + "   " + value );
 	}
 
 }

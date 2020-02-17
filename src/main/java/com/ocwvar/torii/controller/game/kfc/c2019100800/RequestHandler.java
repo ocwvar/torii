@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.data.game.kfc.Course;
 import com.ocwvar.torii.db.entity.*;
@@ -718,7 +718,7 @@ public class RequestHandler {
 	 */
 	private static Node common_loadForceMusicInfo() {
 		final Node music_limited = new Node( "music_limited" );
-		if ( !Config.FUNCTION_FORCE_UNLOCK_ALL_MUSIC ) {
+		if ( !Configs.isIsForceUnlockAllMusic() ) {
 			return music_limited;
 		}
 

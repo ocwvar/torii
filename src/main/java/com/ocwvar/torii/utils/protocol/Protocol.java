@@ -1,7 +1,7 @@
 package com.ocwvar.torii.utils.protocol;
 
 import com.ocwvar.kbin.KBinXml;
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.data.StaticContainer;
 import com.ocwvar.torii.utils.Cache;
@@ -95,7 +95,7 @@ public class Protocol {
 		}
 
 		//DEBUG：输出请求内容
-		if ( Config.DEBUG_OUTPUT_REQUEST | print ) {
+		if ( Configs.isIsDumpRequestKbin() | print ) {
 			final String content = NodeHelper.xml2Text( NodeHelper.note2Xml( node ) );
 			final String string = "====================================" + "\n" +
 					"URL:" + request.getRequestURL() + "\n" +
@@ -107,11 +107,11 @@ public class Protocol {
 		}
 
 		//DEBUG：DUMP出请求内容
-		if ( Config.DEBUG_DUMP_KBIN_REQUEST ) {
+		if ( Configs.isIsDumpRequestKbin() ) {
 			final String[] paths = request.getRequestURL().toString().split( "/" );
 
 			IO.outputFile( true,
-					Config.DEBUG_OUTPUT_FOLDER + "/dump/request/",
+					Configs.getDumpFileOutputFolder() + "/dump/request/",
 					paths[ paths.length - 2 ] + "_" + paths[ paths.length - 1 ] + ".kbin",
 					data
 			);
@@ -151,18 +151,18 @@ public class Protocol {
 		final boolean needEncryptRC4 = !TextUtils.isEmpty( eamuseInfo );
 
 		//DEBUG：DUMP 出响应数据
-		if ( Config.DEBUG_DUMP_RESPONSE ) {
+		if ( Configs.isIsDumpResponseKbin() ) {
 			final String[] paths = request.getRequestURL().toString().split( "/" );
 
 			IO.outputFile( true,
-					Config.DEBUG_OUTPUT_FOLDER + "/dump/response/",
+					Configs.getDumpFileOutputFolder() + "/dump/response/",
 					paths[ paths.length - 2 ] + "_" + paths[ paths.length - 1 ] + ".kbin",
 					data
 			);
 		}
 
 		//需要缓存数据
-		if ( Config.ENABLE_RESPONSE_CACHE && Cache.shouldBeCached( request ) && !StaticContainer.getInstance().has( String.valueOf( request.getRequestURL().hashCode() ) ) ) {
+		if ( Configs.isIsResoponseCacheEnable() && Cache.shouldBeCached( request ) && !StaticContainer.getInstance().has( String.valueOf( request.getRequestURL().hashCode() ) ) ) {
 			if ( Cache.createResponseCache( data, request ) ) {
 				StaticContainer.getInstance().set( String.valueOf( request.getRequestURL().hashCode() ), 0 );
 				Log.getInstance().print( "已生成缓存：" + request.getRequestURL() );
@@ -203,11 +203,11 @@ public class Protocol {
 		final boolean needEncryptRC4 = !TextUtils.isEmpty( eamuseInfo );
 
 		//DEBUG：DUMP 出响应数据
-		if ( Config.DEBUG_DUMP_RESPONSE ) {
+		if ( Configs.isIsDumpResponseKbin() ) {
 			final String[] paths = request.getRequestURL().toString().split( "/" );
 
 			IO.outputFile( true,
-					Config.DEBUG_OUTPUT_FOLDER + "/dump/response/",
+					Configs.getDumpFileOutputFolder() + "/dump/response/",
 					paths[ paths.length - 2 ] + "_" + paths[ paths.length - 1 ] + ".kbin",
 					data
 			);
@@ -234,7 +234,8 @@ public class Protocol {
 	 * @return 是否执行成功
 	 */
 	public static boolean commitWithCache( @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws NoSuchAlgorithmException, IOException {
-		if ( !Config.ENABLE_RESPONSE_CACHE || !Cache.hasResponseCache( request ) ) {
+		final String requestTag = Cache.getRequestTag( request );
+		if ( !Configs.isIsResoponseCacheEnable() || !Cache.hasResponseCache( requestTag ) ) {
 			return false;
 		}
 
@@ -242,6 +243,10 @@ public class Protocol {
 		if ( data == null ) {
 			Log.getInstance().print( "读取缓存数据失败" );
 			return false;
+		}
+
+		if ( !StaticContainer.getInstance().has( String.valueOf( request.getRequestURL().hashCode() ) ) ) {
+			StaticContainer.getInstance().set( String.valueOf( request.getRequestURL().hashCode() ), 0 );
 		}
 
 		final String eamuseInfo = request.getHeader( Field.HEADER_X_Eamuse_Info );

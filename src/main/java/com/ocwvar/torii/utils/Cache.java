@@ -1,6 +1,6 @@
 package com.ocwvar.torii.utils;
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.annotation.Nullable;
@@ -18,15 +18,15 @@ public class Cache {
 	 * @return 执行是否成功
 	 */
 	public static boolean createResponseCache( byte[] data, HttpServletRequest request ) throws Exception {
-		if ( !Config.ENABLE_RESPONSE_CACHE || hasResponseCache( request ) ) {
+		final String requestTag = getRequestTag( request );
+		if ( !Configs.isIsResoponseCacheEnable() || hasResponseCache( requestTag ) ) {
 			return false;
 		}
 
-		final String[] paths = request.getRequestURL().toString().split( "/" );
-		final String cachePath = Config.RESPONSE_CACHE_FOLDER + paths[ paths.length - 1 ] + ".kBin";
+		final String cachePath = Configs.getResponseCacheFolder() + requestTag + ".kBin";
 		final boolean result = IO.outputFile( true, cachePath, data );
 
-		Log.getInstance().print( "生成请求缓存：" + paths[ paths.length - 1 ] + " 结果：" + result );
+		Log.getInstance().print( "生成请求缓存：" + requestTag + " 结果：" + result );
 		return result;
 	}
 
@@ -34,17 +34,29 @@ public class Cache {
 	 * @return 此请求的响应数据是否需要被缓存
 	 */
 	public static boolean shouldBeCached( HttpServletRequest request ) {
-		if ( !Config.ENABLE_RESPONSE_CACHE ) {
+		if ( !Configs.isIsResoponseCacheEnable() ) {
 			return false;
 		}
 
-		for ( String s : Config.CACHE_RESPONSE_NAMES ) {
-			if ( request.getRequestURL().indexOf( s ) >= 0 ) {
+		final String requestTag = getRequestTag( request );
+		for ( String s : Configs.getCacheResponseNames() ) {
+			if ( requestTag.equals( s ) ) {
 				return true;
 			}
 		}
 
 		return false;
+	}
+
+	/**
+	 * 获取请求TAG
+	 *
+	 * @param request 请求对象
+	 * @return TAG
+	 */
+	public static String getRequestTag( HttpServletRequest request ) {
+		final String[] paths = request.getRequestURL().toString().split( "/" );
+		return paths[ paths.length - 2 ] + "_" + paths[ paths.length - 1 ];
 	}
 
 	/**
@@ -55,29 +67,26 @@ public class Cache {
 	 */
 	public static @Nullable
 	byte[] loadResponseCache( HttpServletRequest request ) {
-		final String[] paths = request.getRequestURL().toString().split( "/" );
-		return loadResponseCache( paths[ paths.length - 1 ] );
+		return loadResponseCache( getRequestTag( request ) );
 	}
 
 	/**
 	 * 读取缓存
 	 *
-	 * @param requestName 请求名称
+	 * @param requestTag 请求名称
 	 * @return 缓存数据
 	 */
 	public static @Nullable
-	byte[] loadResponseCache( String requestName ) {
-		final String cachePath = Config.RESPONSE_CACHE_FOLDER + requestName + ".kBin";
+	byte[] loadResponseCache( String requestTag ) {
+		final String cachePath = Configs.getResponseCacheFolder() + requestTag + ".kBin";
 		return IO.loadFile( cachePath );
 	}
 
 	/**
 	 * @return 是否有缓存
 	 */
-	public static boolean hasResponseCache( HttpServletRequest request ) {
-		final String[] paths = request.getRequestURL().toString().split( "/" );
-		final String cachePath = Config.RESPONSE_CACHE_FOLDER + paths[ paths.length - 1 ] + ".kBin";
-		return new File( cachePath ).exists();
+	public static boolean hasResponseCache( String requestTag ) {
+		return new File( Configs.getResponseCacheFolder() + requestTag + ".kBin" ).exists();
 	}
 
 }

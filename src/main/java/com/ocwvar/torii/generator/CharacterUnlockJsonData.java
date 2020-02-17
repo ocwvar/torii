@@ -25,7 +25,7 @@ public class CharacterUnlockJsonData {
 
 	public static void main( String[] args ) throws Exception {
 		System.out.println( "正在读取文件：" + LOAD_FILE_PATH );
-		byte[] bytes = IO.loadFile(  LOAD_FILE_PATH );
+		byte[] bytes = IO.loadFile( LOAD_FILE_PATH );
 		if ( bytes == null || bytes.length <= 0 ) {
 			System.out.println( "文件读取失败" );
 			return;

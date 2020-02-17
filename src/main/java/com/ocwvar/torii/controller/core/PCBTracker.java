@@ -1,6 +1,6 @@
 package com.ocwvar.torii.controller.core;
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.NodeBuilder;
@@ -28,10 +28,14 @@ public class PCBTracker {
 
 	@PostMapping( path = "/torii/pcbtracker/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
+		if ( Protocol.commitWithCache( request, response ) ) {
+			return;
+		}
+
 		final Node root = new Node( "response" );
 		root.addChildNode(
 				new NodeBuilder( "pcbtracker" )
-						.addAttribute( "ecenable", Config.FUNCTION_PASELI_ENABLE ? "1" : "0" )
+						.addAttribute( "ecenable", Configs.isIsPaseliEnable() ? "1" : "0" )
 						.addAttribute( "expire", "600" )
 						.build()
 		);

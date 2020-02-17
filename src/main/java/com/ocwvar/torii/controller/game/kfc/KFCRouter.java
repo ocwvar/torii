@@ -42,7 +42,6 @@ public class KFCRouter {
 		Node call = Protocol.decrypt( request );
 		Node root = null;
 
-		//noinspection SwitchStatementWithTooFewBranches
 		switch ( modelValues[ modelValues.length - 1 ] ) {
 			case "2019020600":
 			case "2019100800":

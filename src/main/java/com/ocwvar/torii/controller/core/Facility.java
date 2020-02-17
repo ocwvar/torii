@@ -1,6 +1,6 @@
 package com.ocwvar.torii.controller.core;
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.Log;
 import com.ocwvar.xml.node.Node;
@@ -29,6 +29,10 @@ public class Facility {
 
 	@PostMapping( path = "/torii/facility/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
+		if ( Protocol.commitWithCache( request, response ) ) {
+			return;
+		}
+
 		Protocol.encryptAndCommit( getFacilityNode(), request, response );
 	}
 
@@ -46,20 +50,20 @@ public class Facility {
 		final Node facilityNode = new Node( "facility" );
 
 		final Node locationNode = new Node( "location" );
-		locationNode.addChildNode( new TypeNode( "id", Config.FORCE_SHOP_NAME ) );
+		locationNode.addChildNode( new TypeNode( "id", Configs.getShopName() ) );
 		locationNode.addChildNode( new TypeNode( "country", "JP" ) );
 		locationNode.addChildNode( new TypeNode( "region", "." ) );
 		locationNode.addChildNode( new TypeNode( "type", "0", "u8" ) );
 		locationNode.addChildNode( new TypeNode( "latitude", "0", "u8" ) );
 		locationNode.addChildNode( new TypeNode( "longitude", "0", "u8" ) );
 		locationNode.addChildNode( new TypeNode( "accuracy", "0", "u8" ) );
-		locationNode.addChildNode( new TypeNode( "name", Config.FORCE_SHOP_NAME ) );
-		locationNode.addChildNode( new TypeNode( "countryname", Config.FORCE_SHOP_NAME ) );
-		locationNode.addChildNode( new TypeNode( "countryjname", Config.FORCE_SHOP_NAME ) );
-		locationNode.addChildNode( new TypeNode( "regionname", Config.FORCE_SHOP_NAME ) );
-		locationNode.addChildNode( new TypeNode( "regionjname", Config.FORCE_SHOP_NAME ) );
-		locationNode.addChildNode( new TypeNode( "customercode", Config.FORCE_SHOP_NAME ) );
-		locationNode.addChildNode( new TypeNode( "customercode", Config.FORCE_SHOP_NAME ) );
+		locationNode.addChildNode( new TypeNode( "name", Configs.getShopName() ) );
+		locationNode.addChildNode( new TypeNode( "countryname", Configs.getShopName() ) );
+		locationNode.addChildNode( new TypeNode( "countryjname", Configs.getShopName() ) );
+		locationNode.addChildNode( new TypeNode( "regionname", Configs.getShopName() ) );
+		locationNode.addChildNode( new TypeNode( "regionjname", Configs.getShopName() ) );
+		locationNode.addChildNode( new TypeNode( "customercode", Configs.getShopName() ) );
+		locationNode.addChildNode( new TypeNode( "customercode", Configs.getShopName() ) );
 
 		final Node classNode = new Node( "class" );
 		classNode.addChildNode( new TypeNode( "id", "ID" ) );
@@ -68,12 +72,12 @@ public class Facility {
 		final Node portfwNode = new Node( "portfw" );
 
 		portfwNode.addChildNode( new TypeNode( "globalip", ip, "ip4" ) );
-		portfwNode.addChildNode( new TypeNode( "globalport", Config.REQUEST_PORT, "u16" ) );
-		portfwNode.addChildNode( new TypeNode( "privateport", Config.REQUEST_PORT, "u16" ) );
+		portfwNode.addChildNode( new TypeNode( "globalport", Configs.getPort(), "u16" ) );
+		portfwNode.addChildNode( new TypeNode( "privateport", Configs.getPort(), "u16" ) );
 
 		final Node publicNode = new Node( "public" );
 		publicNode.addChildNode( new TypeNode( "flag", "1", "u8" ) );
-		publicNode.addChildNode( new TypeNode( "name", Config.FORCE_SHOP_NAME ) );
+		publicNode.addChildNode( new TypeNode( "name", Configs.getShopName() ) );
 		publicNode.addChildNode( new TypeNode( "latitude", "0" ) );
 		publicNode.addChildNode( new TypeNode( "longitude", "0" ) );
 

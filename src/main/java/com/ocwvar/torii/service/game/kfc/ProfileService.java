@@ -1,6 +1,6 @@
 package com.ocwvar.torii.service.game.kfc;
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.db.dao.*;
 import com.ocwvar.torii.db.entity.*;
 import com.ocwvar.utils.IO;
@@ -243,11 +243,11 @@ public class ProfileService {
 	 * @return 解锁数据节点
 	 */
 	public Node loadUnlockItemNode( String refId ) throws Exception {
-		Log.getInstance().print( "读取用户解锁物品数据，是否强制全解：" + Config.FUNCTION_FORCE_UNLOCK_ITEMS );
+		Log.getInstance().print( "读取用户解锁物品数据，是否强制全解：" + Configs.isIsForceUnlockAllItems() );
 
 		final Node item;
 
-		if ( Config.FUNCTION_FORCE_UNLOCK_ITEMS ) {
+		if ( Configs.isIsForceUnlockAllItems() ) {
 			//如果强制全解物品，则这里直接返回全解数据，否则需要根据存入的数据返回
 			item = new Node( "item" );
 

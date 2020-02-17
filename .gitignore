@@ -37,3 +37,4 @@ local.gradle
 local.properties
 /DataSample
 /KBin/lib/cachedir/
+/src/main/resources/ServerConfig.json

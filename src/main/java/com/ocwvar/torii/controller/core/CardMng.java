@@ -1,6 +1,6 @@
 package com.ocwvar.torii.controller.core;
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.db.entity.Card;
 import com.ocwvar.torii.service.core.CardService;
@@ -103,7 +103,7 @@ public class CardMng {
 				new NodeBuilder( "cardmng" )
 						.addAttribute( "binded", "1" )    //账号是否已绑定到当前版本
 						.addAttribute( "dataid", savedCard.getRefId() )    //加密后的卡号
-						.addAttribute( "ecflag", Config.FUNCTION_PASELI_ENABLE ? "1" : "0" )    //PASELI 支持
+						.addAttribute( "ecflag", Configs.isIsPaseliEnable() ? "1" : "0" )    //PASELI 支持
 						.addAttribute( "expired", "0" )    //是否已过期需要迁移数据
 						.addAttribute( "newflag", "1" )    //UNKNOWN
 						.addAttribute( "refid", savedCard.getRefId() )    //加密后的卡号

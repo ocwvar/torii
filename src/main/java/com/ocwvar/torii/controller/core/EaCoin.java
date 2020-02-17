@@ -1,6 +1,6 @@
 package com.ocwvar.torii.controller.core;
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.db.entity.Card;
 import com.ocwvar.torii.db.entity.Paseli;
@@ -69,7 +69,7 @@ public class EaCoin {
 
 	@PostMapping( path = "/torii/eacoin/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
-		if ( !Config.FUNCTION_PASELI_ENABLE ) {
+		if ( !Configs.isIsPaseliEnable() ) {
 			//PASELI 不支持
 			final Node root = new Node( "response" );
 			final Node eacoin = new Node( "eacoin" );
@@ -149,7 +149,7 @@ public class EaCoin {
 
 		//查找PASELI账户并返回信息
 		final Paseli paseli = this.cardService.findPaseliByRawId( cardid.getContentValue() );
-		final String seasonId = TextUtils.getRandomText( false,10 );
+		final String seasonId = TextUtils.getRandomText( false, 10 );
 		eacoin.addChildNode( new TypeNode( "sequence", "1", "s16" ) );
 		eacoin.addChildNode( new TypeNode( "acstatus", "1", "u8" ) );
 		eacoin.addChildNode( new TypeNode( "acid", paseli.getAcid() ) );

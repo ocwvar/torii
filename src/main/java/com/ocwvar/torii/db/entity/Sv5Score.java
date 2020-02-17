@@ -110,14 +110,14 @@ public class Sv5Score {
 	}
 
 	/**
-	 * @return	判定类型
+	 * @return 判定类型
 	 */
 	public String getGauge_type() {
 		return gauge_type;
 	}
 
 	/**
-	 * @return	NOTE 模式
+	 * @return NOTE 模式
 	 */
 	public String getNotes_option() {
 		return notes_option;

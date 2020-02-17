@@ -28,6 +28,10 @@ public class Package {
 
 	@PostMapping( path = "/torii/package/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
+		if ( Protocol.commitWithCache( request, response ) ) {
+			return;
+		}
+
 		final Node root = new Node( "response" );
 		root.addChildNode(
 				new NodeBuilder( "package" )

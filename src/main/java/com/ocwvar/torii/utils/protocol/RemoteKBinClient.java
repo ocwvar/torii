@@ -1,7 +1,7 @@
 package com.ocwvar.torii.utils.protocol;
 
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.annotation.Nullable;
 import com.ocwvar.xml.node.Node;
@@ -42,7 +42,7 @@ public class RemoteKBinClient extends WebSocketClient {
 	/**
 	 * 调试模式
 	 */
-	private static final boolean DEBUG = false;
+	private static final boolean DEBUG = true;
 
 	/**
 	 * 超时结果
@@ -66,7 +66,7 @@ public class RemoteKBinClient extends WebSocketClient {
 	private volatile boolean isEncodeRequest = false;
 
 	public RemoteKBinClient() {
-		super( URI.create( Config.REMOTE_PROTOCOL_SERVER_URI ) );
+		super( URI.create( Configs.getRemoteProtocolServerUri() ) );
 		setConnectionLostTimeout( CONNECT_TIMEOUT_MS );
 	}
 
@@ -129,13 +129,17 @@ public class RemoteKBinClient extends WebSocketClient {
 					}
 				}
 
+				if ( !isOpen() || isClosed() || isClosing() ) {
+					return RESULT_TIMEOUT;
+				}
+
 				//重置与更新状态
 				this.result = null;
 				this.isEncodeRequest = isEncodeRequest;
 
 				//请求数据
 				if ( object instanceof Node ) {
-					send( ( ( Node ) object ).toXmlText() );
+					send( ( ( Node ) object ).toXmlText().getBytes() );
 				} else {
 					send( ( byte[] ) object );
 				}
@@ -205,7 +209,7 @@ public class RemoteKBinClient extends WebSocketClient {
 
 	@Override
 	public void onMessage( String message ) {
-		//这个不用
+		System.out.println();
 	}
 
 	private void printLog( String msg ) {

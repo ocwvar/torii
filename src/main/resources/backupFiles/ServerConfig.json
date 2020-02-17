@@ -1,0 +1,36 @@
+{
+  "FUNCTION_PASELI_ENABLE": true,
+  "FUNCTION_FORCE_UNLOCK_ITEMS": true,
+  "FUNCTION_FORCE_UNLOCK_ALL_MUSIC": false,
+  "IS_UNDER_MAINTENANCE": false,
+
+
+  "SHOP_NAME": "TORII 鳥居",
+  "PORT": "50001",
+  "SERVER_URL": "http://127.0.0.1",
+  "REMOTE_PROTOCOL_SERVER_URI": "ws://127.0.0.1:50000/websocket",
+
+
+  "ENABLE_RESPONSE_CACHE": true,
+  "RESPONSE_CACHE_FOLDER": "H:\\TORII\\RESPONSE_CACHE\\",
+  "CACHE_RESPONSE_NAMES": [
+    "game_sv5_common",
+    "game_sv5_shop",
+    "game_sv5_frozen",
+    "game_sv5_save_e",
+    "game_sv5_play_s",
+    "game_sv5_play_e",
+    "eventlog_write",
+    "pcbtracker_alive",
+    "package_list",
+    "message_get",
+    "pcbevent_put",
+    "facility_get"
+  ],
+
+
+  "DEBUG_DUMP_KBIN_REQUEST": false,
+  "DEBUG_DUMP_RESPONSE": false,
+  "IS_PRINT_REQUEST_TEXT": false,
+  "DEBUG_OUTPUT_FOLDER": "H:\\TORII\\DEBUG_OUTPUT\\"
+}

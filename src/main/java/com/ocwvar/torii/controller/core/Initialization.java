@@ -1,6 +1,6 @@
 package com.ocwvar.torii.controller.core;
 
-import com.ocwvar.torii.Config;
+import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.annotation.Nullable;
 import com.ocwvar.xml.node.Node;
@@ -123,34 +123,34 @@ public class Initialization {
 
 					case "2019100800":    //SDVX V
 					case "2019020600":    //SDVX IV
-						services.addChildNode( new UrlNode( "pcbtracker", Config.BASE_URL + "/torii/pcbtracker" ) );
-						services.addChildNode( new UrlNode( "facility", Config.BASE_URL + "/torii/facility" ) );
-						services.addChildNode( new UrlNode( "pcbevent", Config.BASE_URL + "/torii/pcbevent" ) );
-						services.addChildNode( new UrlNode( "package", Config.BASE_URL + "/torii/package" ) );
-						services.addChildNode( new UrlNode( "message", Config.BASE_URL + "/torii/message" ) );
-						services.addChildNode( new UrlNode( "dlstatus", Config.BASE_URL + "/torii/dlstatus" ) );
-						services.addChildNode( new UrlNode( "cardmng", Config.BASE_URL + "/torii/cardmng" ) );
-						services.addChildNode( new UrlNode( "eacoin", Config.BASE_URL + "/torii/eacoin" ) );
-						services.addChildNode( new UrlNode( "numbering", Config.BASE_URL + "/torii/numbering" ) );
-						services.addChildNode( new UrlNode( "pkglist", Config.BASE_URL + "/torii/pkglist" ) );
-						services.addChildNode( new UrlNode( "posevent", Config.BASE_URL + "/torii/posevent" ) );
-						services.addChildNode( new UrlNode( "userdata", Config.BASE_URL + "/torii/userdata" ) );
-						services.addChildNode( new UrlNode( "userid", Config.BASE_URL + "/torii/userid" ) );
-						services.addChildNode( new UrlNode( "netlog", Config.BASE_URL + "/torii/netlog" ) );
-						services.addChildNode( new UrlNode( "local", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "local2", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "lobby", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "lobby2", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "pcbtracker", Configs.getFullServerUrl() + "/torii/pcbtracker" ) );
+						services.addChildNode( new UrlNode( "facility", Configs.getFullServerUrl() + "/torii/facility" ) );
+						services.addChildNode( new UrlNode( "pcbevent", Configs.getFullServerUrl() + "/torii/pcbevent" ) );
+						services.addChildNode( new UrlNode( "package", Configs.getFullServerUrl() + "/torii/package" ) );
+						services.addChildNode( new UrlNode( "message", Configs.getFullServerUrl() + "/torii/message" ) );
+						services.addChildNode( new UrlNode( "dlstatus", Configs.getFullServerUrl() + "/torii/dlstatus" ) );
+						services.addChildNode( new UrlNode( "cardmng", Configs.getFullServerUrl() + "/torii/cardmng" ) );
+						services.addChildNode( new UrlNode( "eacoin", Configs.getFullServerUrl() + "/torii/eacoin" ) );
+						services.addChildNode( new UrlNode( "numbering", Configs.getFullServerUrl() + "/torii/numbering" ) );
+						services.addChildNode( new UrlNode( "pkglist", Configs.getFullServerUrl() + "/torii/pkglist" ) );
+						services.addChildNode( new UrlNode( "posevent", Configs.getFullServerUrl() + "/torii/posevent" ) );
+						services.addChildNode( new UrlNode( "userdata", Configs.getFullServerUrl() + "/torii/userdata" ) );
+						services.addChildNode( new UrlNode( "userid", Configs.getFullServerUrl() + "/torii/userid" ) );
+						services.addChildNode( new UrlNode( "netlog", Configs.getFullServerUrl() + "/torii/netlog" ) );
+						services.addChildNode( new UrlNode( "local", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "local2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "lobby", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "lobby2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 
 						//不明用途节点
-						services.addChildNode( new UrlNode( "globby", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "slobby", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "sglobby", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "sglocal", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "sglocal2", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "slocal", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "slocal2", Config.BASE_URL + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "info", Config.BASE_URL + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "globby", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "slobby", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sglobby", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sglocal", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sglocal2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "slocal", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "slocal2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "info", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 						return root;
 				}
 		}

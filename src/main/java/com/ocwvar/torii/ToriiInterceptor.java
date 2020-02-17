@@ -13,6 +13,13 @@ import javax.servlet.http.HttpServletResponse;
 @Component
 public class ToriiInterceptor implements HandlerInterceptor {
 
+	/*
+
+		request.getRequestURL()		:	http://127.0.0.1/core/KFC:J:A:A:2019100800/services/get
+		request.getRequestURI()		:	/core/KFC:J:A:A:2019100800/services/get
+		request.getServerName()		:	127.0.0.1
+
+	 */
 	@Override
 	public boolean preHandle( HttpServletRequest request, HttpServletResponse response, Object handler ) throws Exception {
 		Log.getInstance().print( "收到 " + request.getMethod() + " 请求：" + request.getRequestURL() );
