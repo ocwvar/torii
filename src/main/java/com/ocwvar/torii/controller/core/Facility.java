@@ -2,6 +2,7 @@ package com.ocwvar.torii.controller.core;
 
 import com.ocwvar.torii.Config;
 import com.ocwvar.torii.utils.protocol.Protocol;
+import com.ocwvar.utils.Log;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.TypeNode;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -40,6 +41,7 @@ public class Facility {
 			ip = "127.0.0.1";
 		}
 
+		Log.getInstance().print( "服务器地址：" + ip );
 		final Node root = new Node( "response" );
 		final Node facilityNode = new Node( "facility" );
 

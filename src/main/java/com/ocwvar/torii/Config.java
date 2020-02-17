@@ -51,7 +51,7 @@ public class Config {
 	public static final boolean ENABLE_RESPONSE_CACHE = true;
 	public static final String RESPONSE_CACHE_FOLDER = "H:\\TORII\\RESPONSE_CACHE\\";
 	public static final String[] CACHE_RESPONSE_NAMES = new String[]{
-			"sv5_common"
+			"sv5_common", "sv5_shop", "sv5_frozen", "sv5_save_e", "sv5_play_s", "sv5_play_e"
 	};
 
 	/**

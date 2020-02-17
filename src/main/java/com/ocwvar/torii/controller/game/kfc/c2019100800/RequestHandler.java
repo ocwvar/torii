@@ -22,26 +22,16 @@ import com.ocwvar.xml.node.TypeNode;
 public class RequestHandler {
 
 	/**
-	 * @param call 请求的数据
-	 * @return 响应的数据
+	 * 空响应 Node
 	 */
-	public static @Nullable
-	Node handle_sv5_play_e( Node call ) {
-		final Node root = new Node( "response" );
-		root.addChildNode( new Node( "game_5" ) );
-		return root;
-	}
+	private static final Node DUMMY_RESPONSE;
 
-	/**
-	 * @param call 请求的数据
-	 * @return 响应的数据
-	 */
-	public static @Nullable
-	Node handle_sv5_play_s( Node call ) {
-		final Node root = new Node( "response" );
-		final Node game = new Node( "game_5" );
-		game.addChildNode( new TypeNode( "play_id", "1", "u32" ) );
-		return root;
+	static {
+		DUMMY_RESPONSE = new Node( "response" );
+		final Node game = new Node( "game" );
+		game.addChildNode( new TypeNode( "result", "0", "u8" ) );
+
+		DUMMY_RESPONSE.addChildNode( game );
 	}
 
 	/**
@@ -215,41 +205,6 @@ public class RequestHandler {
 	}
 
 	/**
-	 * Policy floor infection 相关的逻辑
-	 *
-	 * @param call 请求的数据
-	 * @return 响应的数据
-	 */
-	public static @Nullable
-	Node handle_sv5_save_e( Node call ) {
-		final Node root = new Node( "response" );
-		final Node game = new Node( "game" );
-		root.addChildNode( game );
-
-		final Node pbc_infection = new Node( "pbc_infection" );
-		game.addChildNode( pbc_infection );
-
-		for ( String name : new String[]{ "packet", "block", "coloris" } ) {
-			final Node child = new Node( name );
-			child.addChildNode( new TypeNode( "before", "0", "s32" ) );
-			child.addChildNode( new TypeNode( "after", "0", "s32" ) );
-			pbc_infection.addChildNode( child );
-		}
-
-		final Node pb_infection = new Node( "pb_infection" );
-		game.addChildNode( pb_infection );
-
-		for ( String name : new String[]{ "packet", "block" } ) {
-			final Node child = new Node( name );
-			child.addChildNode( new TypeNode( "before", "0", "s32" ) );
-			child.addChildNode( new TypeNode( "after", "0", "s32" ) );
-			pb_infection.addChildNode( child );
-		}
-
-		return root;
-	}
-
-	/**
 	 * 处理购买物品请求
 	 *
 	 * @param call    请求的数据
@@ -374,7 +329,6 @@ public class RequestHandler {
 	/**
 	 * 读取玩家数据
 	 * <p>
-	 * TODO	段位记录存储获取
 	 * TODO 游玩次数统计存储
 	 * TODO	全解领航员和头像卡
 	 *
@@ -487,8 +441,6 @@ public class RequestHandler {
 
 	/**
 	 * 读取玩家成绩数据
-	 * <p>
-	 * TODO	尚未实现，目前不清楚数据结构
 	 *
 	 * @param call    请求的数据
 	 * @param service 账号数据交互服务
@@ -542,21 +494,6 @@ public class RequestHandler {
 	}
 
 	/**
-	 * 处理报错信息
-	 *
-	 * @param call 请求的数据
-	 * @return 响应的数据
-	 */
-	public static @Nullable
-	Node handle_sv5_exception( Node call ) {
-		//返回 dummy 数据
-		final Node root = new Node( "response" );
-		root.addChildNode( new Node( "game" ) );
-
-		return root;
-	}
-
-	/**
 	 * 处理一些基础的事件，例如：歌曲解锁、活动、限时段位... 等
 	 * <p>
 	 * TODO 段位通过率计算
@@ -597,11 +534,114 @@ public class RequestHandler {
 	 */
 	public static @Nullable
 	Node handle_sv5_frozen( Node call ) {
-		final Node root = new Node( "response" );
+		/*
+			<?xml version="1.0" encoding="UTF-8"?>
+			<call model="KFC:J:A:A:2019020600" srcid="PCBID" tag="abc9759b">
+			    <game method="sv4_frozen" ver="0">
+			        <refid __type="str">REF_ID</refid>
+			        <sec __type="u32">0</sec>
+			    </game>
+			</call>
+		 */
+
+		/*final Node root = new Node( "response" );
 		final Node game = new Node( "game_5" );
 		game.addChildNode( new TypeNode( "result", "99", "u8" ) );
 		root.addChildNode( game );
-		return root;
+		return root;*/
+		return RequestHandler.DUMMY_RESPONSE;
+	}
+
+	/**
+	 * 不懂什么功能
+	 *
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_play_e( Node call ) {
+		/*
+			<?xml version="1.0" encoding="UTF-8"?>
+			<call model="KFC:J:A:A:2019020600" srcid="PCBID" tag="abc9759b">
+			    <game method="sv4_play_e" ver="0">
+			        <refid __type="str">REF_ID</refid>
+			        <play_id __type="u32">79877888</play_id>
+			        <start_type __type="s8">0</start_type>
+			        <mode __type="s8">0</mode>
+			        <track_num __type="s16">1</track_num>
+			        <s_coin __type="s32">200</s_coin>
+			        <s_paseli __type="s32">0</s_paseli>
+			        <print_card __type="u32">0</print_card>
+			        <print_result __type="u32">0</print_result>
+			        <blaster_num __type="u32">0</blaster_num>
+			        <today_cnt __type="u32">142</today_cnt>
+			        <play_chain __type="u32">0</play_chain>
+			        <week_play_cnt __type="u32">0</week_play_cnt>
+			        <week_chain __type="u32">0</week_chain>
+			        <locid __type="str">X</locid>
+			        <drop_frame __type="u16">360</drop_frame>
+			        <drop_frame_max __type="u16">360</drop_frame_max>
+			        <drop_count __type="u16">1</drop_count>
+			        <etc __type="str">play_t:99</etc>
+			    </game>
+			</call>
+		 */
+		return RequestHandler.DUMMY_RESPONSE;
+	}
+
+	/**
+	 * 不懂什么功能
+	 *
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_play_s( Node call ) {
+		/*
+			<?xml version="1.0" encoding="UTF-8"?>
+			<call model="KFC:J:A:A:2019020600" srcid="PCBID" tag="abc9759b">
+			    <game method="sv4_play_s" ver="0"/>
+			</call>
+		 */
+		return RequestHandler.DUMMY_RESPONSE;
+	}
+
+	/**
+	 * Policy floor infection 相关的逻辑
+	 *
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_save_e( Node call ) {
+		/*
+			<?xml version="1.0" encoding="UTF-8"?>
+			<call model="KFC:J:A:A:2019020600" srcid="PCBID" tag="abc9759b">
+			    <game method="sv4_save_e" ver="0">
+			        <locid __type="str">X</locid>
+			        <cardnumber __type="str">CARD_RAW_ID</cardnumber>
+			        <refid __type="str">REF_ID</refid>
+			        <playid __type="s32">79877888</playid>
+			        <is_paseli __type="bool">0</is_paseli>
+			        <online_num __type="s32">0</online_num>
+			        <local_num __type="s32">0</local_num>
+			        <start_option __type="s32">0</start_option>
+			        <print_num __type="s32">0</print_num>
+			    </game>
+			</call>
+		 */
+		return RequestHandler.DUMMY_RESPONSE;
+	}
+
+	/**
+	 * 处理报错信息
+	 *
+	 * @param call 请求的数据
+	 * @return 响应的数据
+	 */
+	public static @Nullable
+	Node handle_sv5_exception( Node call ) {
+		return RequestHandler.DUMMY_RESPONSE;
 	}
 
 	/**
@@ -612,12 +652,63 @@ public class RequestHandler {
 	 */
 	public static @Nullable
 	Node handle_sv5_shop( Node call ) {
-		final Node root = new Node( "response" );
-		final Node game = new Node( "game" );
-		game.addChildNode( new TypeNode( "next_time", String.valueOf( 1000 * 5 * 60 ), "u32" ) );
-		root.addChildNode( game );
+		/*
 
-		return root;
+		<?xml version="1.0" encoding="UTF-8"?>
+		<call model="KFC:J:A:A:2019020600" srcid="PCBID" tag="abc9759b">
+		    <game method="sv4_shop" ver="0">
+		        <locid __type="str">X</locid>
+		        <regcode __type="str">.</regcode>
+		        <locname __type="str">X</locname>
+		        <loctype __type="u8">0</loctype>
+		        <cstcode __type="str">X</cstcode>
+		        <cpycode __type="str">X</cpycode>
+		        <latde __type="s32">0</latde>
+		        <londe __type="s32">0</londe>
+		        <accu __type="u8">0</accu>
+		        <linid __type="str"/>
+		        <linclass __type="u8">0</linclass>
+		        <ipaddr __type="ip4">192.168.0.106</ipaddr>
+		        <hadid __type="str">1000</hadid>
+		        <licid __type="str">1000</licid>
+		        <actid __type="str">PCBID</actid>
+		        <appstate __type="s8">0</appstate>
+		        <c_need __type="s8">1</c_need>
+		        <c_credit __type="s8">1</c_credit>
+		        <s_credit __type="s8">2</s_credit>
+		        <free_p __type="bool">0</free_p>
+		        <close __type="bool">0</close>
+		        <close_t __type="s32">1380</close_t>
+		        <playc __type="u32">0</playc>
+		        <playn __type="u32">0</playn>
+		        <playe __type="u32">0</playe>
+		        <test_m __type="u32">0</test_m>
+		        <service __type="u32">0</service>
+		        <paseli __type="bool">0</paseli>
+		        <update __type="u32">0</update>
+		        <shopname __type="str"/>
+		        <newpc __type="bool">0</newpc>
+		        <s_paseli __type="s32">206</s_paseli>
+		        <monitor __type="s32">0</monitor>
+		        <romnumber __type="str">-</romnumber>
+		        <etc __type="str">Moni:,TaxMode:1,BasicRate:100/1,FirstFree:1,Headphone:0,0</etc>
+		        <setting>
+		            <coin_slot __type="s32">0</coin_slot>
+		            <game_start __type="s32">1</game_start>
+		            <schedule __type="str">0,0,0,0,0,0,0</schedule>
+		            <reference __type="str">1,1,1</reference>
+		            <basic_rate __type="str">100,100,100</basic_rate>
+		            <tax_rate __type="s32">1</tax_rate>
+		            <time_service __type="str">0,0,0</time_service>
+		            <service_value __type="str">10,10,10</service_value>
+		            <service_limit __type="str">10,10,10</service_limit>
+		            <service_time __type="str">07:00-11:00,07:00-11:00,07:00-11:00</service_time>
+		        </setting>
+		    </game>
+		</call>
+
+		 */
+		return RequestHandler.DUMMY_RESPONSE;
 	}
 
 	/**
