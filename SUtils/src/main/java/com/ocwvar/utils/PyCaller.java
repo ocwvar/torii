@@ -3,9 +3,12 @@ package com.ocwvar.utils;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 
+/**
+ * 这个类是提供调用 Python 脚本的方法
+ */
 public class PyCaller {
 
-	//是否输出错误日志
+	//是否输出日志
 	private static final boolean DEBUG = true;
 
 	/**
