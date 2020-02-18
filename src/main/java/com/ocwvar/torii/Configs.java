@@ -10,6 +10,7 @@ public class Configs {
 	private static boolean isDumpRequestKbin;
 	private static boolean isDumpResponseKbin;
 	private static boolean isPrintRequestText;
+	private static boolean isPrintRemoteClientText;
 
 	private static String shopName;
 	private static String port;
@@ -17,62 +18,63 @@ public class Configs {
 	private static String remoteProtocolServerUri;
 	private static String responseCacheFolder;
 	private static String dumpFileOutputFolder;
+	private static String remoteProtocolServerPath;
 
 	private static String[] cacheResponseNames;
 
 	/**
 	 * @return 是否启用 PASELI
 	 */
-	public static boolean isIsPaseliEnable() {
+	public static boolean isPaseliEnable() {
 		return isPaseliEnable;
 	}
 
 	/**
 	 * @return 是否强制全解所有物品
 	 */
-	public static boolean isIsForceUnlockAllItems() {
+	public static boolean isForceUnlockAllItems() {
 		return isForceUnlockAllItems;
 	}
 
 	/**
 	 * @return 是否强制全解所有歌曲
 	 */
-	public static boolean isIsForceUnlockAllMusic() {
+	public static boolean isForceUnlockAllMusic() {
 		return isForceUnlockAllMusic;
 	}
 
 	/**
 	 * @return 当前是否为维护状态
 	 */
-	public static boolean isIsUnderMaintenance() {
+	public static boolean isUnderMaintenance() {
 		return isUnderMaintenance;
 	}
 
 	/**
 	 * @return 是否启用响应缓存
 	 */
-	public static boolean isIsResoponseCacheEnable() {
+	public static boolean isResponseCacheEnable() {
 		return isResponseCacheEnable;
 	}
 
 	/**
 	 * @return 是否DUMP请求数据
 	 */
-	public static boolean isIsDumpRequestKbin() {
+	public static boolean isDumpRequestKbin() {
 		return isDumpRequestKbin;
 	}
 
 	/**
 	 * @return 是否DUMP响应数据
 	 */
-	public static boolean isIsDumpResponseKbin() {
+	public static boolean isDumpResponseKbin() {
 		return isDumpResponseKbin;
 	}
 
 	/**
 	 * @return 是否打印请求数据
 	 */
-	public static boolean isIsPrintRequestText() {
+	public static boolean isPrintRequestText() {
 		return isPrintRequestText;
 	}
 
@@ -132,6 +134,28 @@ public class Configs {
 		return cacheResponseNames;
 	}
 
+	/**
+	 * @return 远端协议服务脚本路径
+	 */
+	public static String getRemoteProtocolServerPath() {
+		return remoteProtocolServerPath;
+	}
+
+	/**
+	 * @return 是否打印远程协议端日志
+	 */
+	public static boolean isPrintRemoteClientText() {
+		return isPrintRemoteClientText;
+	}
+
+	public static void setIsPrintRemoteClientText( boolean isPrintRemoteClientText ) {
+		Configs.isPrintRemoteClientText = isPrintRemoteClientText;
+	}
+
+	public static void setRemoteProtocolServerPath( String remoteProtocolServerPath ) {
+		Configs.remoteProtocolServerPath = remoteProtocolServerPath;
+	}
+
 	protected static void setIsPaseliEnable( boolean isPaseliEnable ) {
 		Configs.isPaseliEnable = isPaseliEnable;
 	}
@@ -139,6 +163,7 @@ public class Configs {
 	protected static void setIsForceUnlockAllItems( boolean isForceUnlockAllItems ) {
 		Configs.isForceUnlockAllItems = isForceUnlockAllItems;
 	}
+
 
 	protected static void setIsForceUnlockAllMusic( boolean isForceUnlockAllMusic ) {
 		Configs.isForceUnlockAllMusic = isForceUnlockAllMusic;

@@ -22,11 +22,10 @@ public class RemoteProtocolTest {
 		//testDecode( decodeSample, 1, 1, true );
 
 
-
 		//加密测试
 		final Node encodeSample = NodeHelper.xml2Node( new String( IO.loadFile( "H:\\test.xml" ), usingCharset ) );
 		//benchmarkEncode( encodeSample, 50 );
-		testEncode( encodeSample, 1, 1, true );
+		testEncode( encodeSample, 1, 10, false );
 
 		System.out.println( "处理结束" );
 	}
@@ -68,14 +67,15 @@ public class RemoteProtocolTest {
 			new Thread( () -> {
 				final long startM = System.currentTimeMillis();
 				for ( int j = 0; j < times; j++ ) {
-					final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( sample );
-					System.out.println( "执行结果：" + !result.hasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) );
+					final String tag = "线程编号[" + Thread.currentThread().getName() + "]--任务编号[" + j + "]";
+					final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( sample, tag );
+					System.out.println( "执行结果：" + !result.hasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) + "  一致性：" + tag.equals( result.getTag() ) );
 					if ( result.getResult() != null && outputResult ) {
 						IO.outputFile( true, "H:\\" + System.currentTimeMillis() + ".kbin", result.getResult() );
 					}
 				}
 				System.out.println( "======== 执行耗时：" + ( System.currentTimeMillis() - startM ) );
-			}, "线程 " + i ).start();
+			}, String.valueOf( i ) ).start();
 		}
 	}
 

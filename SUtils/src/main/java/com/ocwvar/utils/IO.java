@@ -6,6 +6,7 @@ import com.ocwvar.utils.annotation.NotNull;
 import com.ocwvar.utils.annotation.Nullable;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.charset.Charset;
 
 public class IO {
@@ -13,7 +14,7 @@ public class IO {
 	/**
 	 * 将文件读取为字节数组
 	 *
-	 * @param filePath  读取文件路径
+	 * @param filePath 读取文件路径
 	 * @return 字节数组，如果读取失败则返回 NULL
 	 */
 	public static @Nullable
@@ -90,15 +91,15 @@ public class IO {
 	}
 
 	/**
-	 * 读取 Resource 下的文件
+	 * 读取 Resource 下的文件流
 	 *
-	 * @param path      文件路径，如 "folder/file.txt
+	 * @param resourcePath 资源文件路径，如 "folder/file.txt
 	 * @return 字节数组，如果读取失败则返回 NULL
 	 */
-	public static byte[] loadResource( String path ) {
+	public static byte[] loadResource( String resourcePath ) {
 		try (
 				final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-				final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( path )
+				final InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream( resourcePath )
 		) {
 			final byte[] buffer = new byte[ 1024 ];
 			int length;
@@ -113,6 +114,26 @@ public class IO {
 		} catch ( Exception ignore ) {
 			return null;
 		}
+	}
+
+	/**
+	 * 读取 Resource 下的文件路径
+	 *
+	 * @param resourcePath 资源文件路径，如 "folder/file.txt
+	 * @return 文件路径，如果读取失败，则返回NULL
+	 */
+	public static String getResourceFilePath( String resourcePath ) {
+		final URL url = Thread.currentThread().getContextClassLoader().getResource( resourcePath );
+		final String path;
+		if ( url == null ) {
+			return null;
+		}
+		path = url.getFile();
+		if ( path.charAt( 0 ) == '/' ) {
+			return path.substring( 1 );
+		}
+
+		return url.getPath();
 	}
 
 	/**

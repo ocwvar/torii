@@ -9,12 +9,14 @@ import com.ocwvar.utils.IO;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationListener;
+import org.springframework.context.event.ContextClosedEvent;
 
 import java.io.File;
 
 @MapperScan( value = "com.ocwvar.torii.db.dao" )
 @SpringBootApplication
-public class ToriiApplication {
+public class ToriiApplication implements ApplicationListener< ContextClosedEvent > {
 
 	public static void main( String[] args ) {
 		loadConfig();
@@ -42,7 +44,7 @@ public class ToriiApplication {
 				throw new RuntimeException( "没有找到配置文件 resources/ServerConfig.json，如果是第一次启动可以从 resources/backupFiles 中获取默认配置" );
 			}
 
-			final JsonObject config = JsonParser.parseString( new String( bytes ) ).getAsJsonObject();
+			final JsonObject config = JsonParser.parseString( new String( bytes, Field.UTF8 ) ).getAsJsonObject();
 
 			Configs.setIsPaseliEnable( config.get( "FUNCTION_PASELI_ENABLE" ).getAsBoolean() );
 			Configs.setIsForceUnlockAllItems( config.get( "FUNCTION_FORCE_UNLOCK_ITEMS" ).getAsBoolean() );
@@ -52,7 +54,9 @@ public class ToriiApplication {
 			Configs.setIsDumpRequestKbin( config.get( "DEBUG_DUMP_KBIN_REQUEST" ).getAsBoolean() );
 			Configs.setIsDumpResponseKbin( config.get( "DEBUG_DUMP_RESPONSE" ).getAsBoolean() );
 			Configs.setIsPrintRequestText( config.get( "IS_PRINT_REQUEST_TEXT" ).getAsBoolean() );
+			Configs.setIsPrintRemoteClientText( config.get( "IS_PRINT_REMOTE_CLIENT_TEXT" ).getAsBoolean() );
 
+			Configs.setRemoteProtocolServerPath( config.get( "REMOTE_PROTOCOL_SERVER_PATH" ).getAsString() );
 			Configs.setShopName( config.get( "SHOP_NAME" ).getAsString() );
 			Configs.setPort( config.get( "PORT" ).getAsString() );
 			Configs.setServerUrl( config.get( "SERVER_URL" ).getAsString() );
@@ -72,4 +76,12 @@ public class ToriiApplication {
 		}
 	}
 
+	/**
+	 * SpringBoot 结束回调
+	 */
+	@Override
+	public void onApplicationEvent( ContextClosedEvent event ) {
+		//终端远端协议服务
+		RemoteKBinClient.getInstance().disconnectRemote();
+	}
 }

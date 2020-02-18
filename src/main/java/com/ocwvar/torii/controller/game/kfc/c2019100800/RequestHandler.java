@@ -718,7 +718,7 @@ public class RequestHandler {
 	 */
 	private static Node common_loadForceMusicInfo() {
 		final Node music_limited = new Node( "music_limited" );
-		if ( !Configs.isIsForceUnlockAllMusic() ) {
+		if ( !Configs.isForceUnlockAllMusic() ) {
 			return music_limited;
 		}
 
@@ -831,9 +831,9 @@ public class RequestHandler {
 			info.addChildNode( new TypeNode( "course_id", course.courseId, "s16" ) );
 			info.addChildNode( new TypeNode( "skill_level", course.skillLevel, "s16" ) );
 			info.addChildNode( new TypeNode( "season_id", course.seasonId, "s32" ) );
-			info.addChildNode( new TypeNode( "season_name", "TEST" ) );
+			info.addChildNode( new TypeNode( "season_name", course.seasonName ) );
 			info.addChildNode( new TypeNode( "season_new_flg", course.seasonNewFlg, "bool" ) );
-			info.addChildNode( new TypeNode( "course_name", "TEST" ) );
+			info.addChildNode( new TypeNode( "course_name", course.courseName ) );
 			info.addChildNode( new TypeNode( "course_type", course.courseType, "s16" ) );
 			info.addChildNode( new TypeNode( "clear_rate", "0", "s32" ) );
 			info.addChildNode( new TypeNode( "avg_score", "0", "u32" ) );
@@ -851,7 +851,6 @@ public class RequestHandler {
 				track.addChildNode( new TypeNode( "music_id", String.valueOf( course.tracks[ i ].key ), "s32" ) );
 				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
 			}
-			break;
 		}
 
 		return skillCourse;
@@ -879,7 +878,7 @@ public class RequestHandler {
 	 * @return 所有段位数据
 	 */
 	private static Course[] loadCourseConfig() {
-		final byte[] bytes = IO.loadResource( "game/kfc/c2019100800/courses_eng.json" );
+		final byte[] bytes = IO.loadResource( "game/kfc/c2019100800/courses.json" );
 		if ( bytes == null || bytes.length <= 0 ) {
 			throw new RuntimeException( "段位数据配置不存在" );
 		}

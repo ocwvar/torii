@@ -9,16 +9,65 @@ import java.io.InputStream;
 public class PyCaller {
 
 	//是否输出日志
-	private static final boolean DEBUG = true;
+	private static final boolean DEBUG = false;
 
 	/**
-	 * 执行调用Python脚本命令
+	 * 执行调用Python脚本命令  (异步)
+	 *
+	 * @param path 脚本文件路径
+	 * @param args 传递的参数，如果没有则为 NULL
+	 */
+	public static void execAsync( String path, String... args ) {
+		new Thread( () -> {
+			try {
+				//执行命令并获得结果码
+				final Process process = createProcess( path, args );
+				if ( process == null ) {
+					return;
+				}
+
+				final int resultCode = process.waitFor();
+
+				//输出错误
+				outputError( resultCode, process );
+			} catch ( Exception ignore ) {
+			}
+		} ).start();
+	}
+
+	/**
+	 * 执行调用Python脚本命令  (同步)
 	 *
 	 * @param path 脚本文件路径
 	 * @param args 传递的参数，如果没有则为 NULL
 	 * @return 是否调用成功
 	 */
-	public static boolean exec( String path, String... args ) {
+	public static boolean execSync( String path, String... args ) {
+		try {
+			//执行命令并获得结果码
+			final Process process = createProcess( path, args );
+			if ( process == null ) {
+				return false;
+			}
+
+			final int resultCode = process.waitFor();
+
+			//输出错误
+			outputError( resultCode, process );
+			return resultCode == 0;
+		} catch ( Exception ignore ) {
+			return false;
+		}
+	}
+
+	/**
+	 * 生成调用脚本的进程对象
+	 *
+	 * @param path 脚本文件路径
+	 * @param args 传递的参数，如果没有则为 NULL
+	 * @return 进程对象，如果执行失败，则返回 NULL
+	 */
+	public static Process createProcess( String path, String... args ) {
 		try {
 			//组装请求参数
 			final String[] command;
@@ -37,15 +86,9 @@ public class PyCaller {
 			//输出执行的指令内容
 			outputCommand( command );
 
-			//执行命令并获得结果码
-			final Process process = Runtime.getRuntime().exec( command );
-			final int resultCode = process.waitFor();
-
-			//输出错误
-			outputError( resultCode, process );
-			return resultCode == 0;
+			return Runtime.getRuntime().exec( command );
 		} catch ( Exception ignore ) {
-			return false;
+			return null;
 		}
 	}
 

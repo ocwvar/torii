@@ -35,7 +35,7 @@ public class PCBTracker {
 		final Node root = new Node( "response" );
 		root.addChildNode(
 				new NodeBuilder( "pcbtracker" )
-						.addAttribute( "ecenable", Configs.isIsPaseliEnable() ? "1" : "0" )
+						.addAttribute( "ecenable", Configs.isPaseliEnable() ? "1" : "0" )
 						.addAttribute( "expire", "600" )
 						.build()
 		);

@@ -19,7 +19,7 @@ public class Cache {
 	 */
 	public static boolean createResponseCache( byte[] data, HttpServletRequest request ) throws Exception {
 		final String requestTag = getRequestTag( request );
-		if ( !Configs.isIsResoponseCacheEnable() || hasResponseCache( requestTag ) ) {
+		if ( !Configs.isResponseCacheEnable() || hasResponseCache( requestTag ) ) {
 			return false;
 		}
 
@@ -34,7 +34,7 @@ public class Cache {
 	 * @return 此请求的响应数据是否需要被缓存
 	 */
 	public static boolean shouldBeCached( HttpServletRequest request ) {
-		if ( !Configs.isIsResoponseCacheEnable() ) {
+		if ( !Configs.isResponseCacheEnable() ) {
 			return false;
 		}
 

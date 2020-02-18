@@ -103,7 +103,7 @@ public class CardMng {
 				new NodeBuilder( "cardmng" )
 						.addAttribute( "binded", "1" )    //账号是否已绑定到当前版本
 						.addAttribute( "dataid", savedCard.getRefId() )    //加密后的卡号
-						.addAttribute( "ecflag", Configs.isIsPaseliEnable() ? "1" : "0" )    //PASELI 支持
+						.addAttribute( "ecflag", Configs.isPaseliEnable() ? "1" : "0" )    //PASELI 支持
 						.addAttribute( "expired", "0" )    //是否已过期需要迁移数据
 						.addAttribute( "newflag", "1" )    //UNKNOWN
 						.addAttribute( "refid", savedCard.getRefId() )    //加密后的卡号

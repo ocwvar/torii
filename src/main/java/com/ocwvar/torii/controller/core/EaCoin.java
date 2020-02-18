@@ -69,7 +69,7 @@ public class EaCoin {
 
 	@PostMapping( path = "/torii/eacoin/**" )
 	public void function( HttpServletRequest request, HttpServletResponse response ) throws Exception {
-		if ( !Configs.isIsPaseliEnable() ) {
+		if ( !Configs.isPaseliEnable() ) {
 			//PASELI 不支持
 			final Node root = new Node( "response" );
 			final Node eacoin = new Node( "eacoin" );

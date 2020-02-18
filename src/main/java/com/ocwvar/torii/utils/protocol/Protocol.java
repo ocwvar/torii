@@ -93,7 +93,7 @@ public class Protocol {
 		}
 
 		//DEBUG：输出请求内容
-		if ( Configs.isIsDumpRequestKbin() | print ) {
+		if ( Configs.isDumpRequestKbin() | print ) {
 			final String content = NodeHelper.xml2Text( NodeHelper.note2Xml( node ) );
 			final String string = "====================================" + "\n" +
 					"URL:" + request.getRequestURL() + "\n" +
@@ -105,7 +105,7 @@ public class Protocol {
 		}
 
 		//DEBUG：DUMP出请求内容
-		if ( Configs.isIsDumpRequestKbin() ) {
+		if ( Configs.isDumpRequestKbin() ) {
 			final String[] paths = request.getRequestURL().toString().split( "/" );
 
 			IO.outputFile( true,
@@ -156,7 +156,7 @@ public class Protocol {
 		final boolean needEncryptRC4 = !TextUtils.isEmpty( eamuseInfo );
 
 		//DEBUG：DUMP 出响应数据
-		if ( Configs.isIsDumpResponseKbin() ) {
+		if ( Configs.isDumpResponseKbin() ) {
 			final String[] paths = request.getRequestURL().toString().split( "/" );
 
 			IO.outputFile( true,
@@ -167,7 +167,7 @@ public class Protocol {
 		}
 
 		//需要缓存数据
-		if ( Configs.isIsResoponseCacheEnable() && Cache.shouldBeCached( request ) && !StaticContainer.getInstance().has( String.valueOf( request.getRequestURL().hashCode() ) ) ) {
+		if ( Configs.isResponseCacheEnable() && Cache.shouldBeCached( request ) && !StaticContainer.getInstance().has( String.valueOf( request.getRequestURL().hashCode() ) ) ) {
 			if ( Cache.createResponseCache( data, request ) ) {
 				StaticContainer.getInstance().set( String.valueOf( request.getRequestURL().hashCode() ), 0 );
 				Log.getInstance().print( "已生成缓存：" + request.getRequestURL() );
@@ -196,7 +196,7 @@ public class Protocol {
 	 */
 	public static boolean commitWithCache( @NotNull HttpServletRequest request, @NotNull HttpServletResponse response ) throws NoSuchAlgorithmException, IOException {
 		final String requestTag = Cache.getRequestTag( request );
-		if ( !Configs.isIsResoponseCacheEnable() || !Cache.hasResponseCache( requestTag ) ) {
+		if ( !Configs.isResponseCacheEnable() || !Cache.hasResponseCache( requestTag ) ) {
 			return false;
 		}
 

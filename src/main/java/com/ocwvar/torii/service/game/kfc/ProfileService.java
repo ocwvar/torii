@@ -243,11 +243,11 @@ public class ProfileService {
 	 * @return 解锁数据节点
 	 */
 	public Node loadUnlockItemNode( String refId ) throws Exception {
-		Log.getInstance().print( "读取用户解锁物品数据，是否强制全解：" + Configs.isIsForceUnlockAllItems() );
+		Log.getInstance().print( "读取用户解锁物品数据，是否强制全解：" + Configs.isForceUnlockAllItems() );
 
 		final Node item;
 
-		if ( Configs.isIsForceUnlockAllItems() ) {
+		if ( Configs.isForceUnlockAllItems() ) {
 			//如果强制全解物品，则这里直接返回全解数据，否则需要根据存入的数据返回
 			item = new Node( "item" );
 

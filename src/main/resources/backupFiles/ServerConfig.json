@@ -1,14 +1,15 @@
 {
   "FUNCTION_PASELI_ENABLE": true,
   "FUNCTION_FORCE_UNLOCK_ITEMS": true,
-  "FUNCTION_FORCE_UNLOCK_ALL_MUSIC": false,
+  "FUNCTION_FORCE_UNLOCK_ALL_MUSIC": true,
   "IS_UNDER_MAINTENANCE": false,
 
 
-  "SHOP_NAME": "TORII 鳥居",
+  "SHOP_NAME": "TORII PROJECT",
   "PORT": "50001",
   "SERVER_URL": "http://127.0.0.1",
-  "REMOTE_PROTOCOL_SERVER_URI": "ws://127.0.0.1:50000/websocket",
+  "REMOTE_PROTOCOL_SERVER_PATH": "script/python/remoteKbin/websocket_core/server.py",
+  "REMOTE_PROTOCOL_SERVER_URI": "ws://127.0.0.1:50000/remote_kbin",
 
 
   "ENABLE_RESPONSE_CACHE": true,
@@ -32,5 +33,6 @@
   "DEBUG_DUMP_KBIN_REQUEST": false,
   "DEBUG_DUMP_RESPONSE": false,
   "IS_PRINT_REQUEST_TEXT": false,
+  "IS_PRINT_REMOTE_CLIENT_TEXT": false,
   "DEBUG_OUTPUT_FOLDER": "H:\\TORII\\DEBUG_OUTPUT\\"
 }

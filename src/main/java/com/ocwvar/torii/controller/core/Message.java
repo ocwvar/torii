@@ -37,7 +37,7 @@ public class Message {
 		root.addChildNode( message );
 
 		//判断处于维护中
-		if ( Configs.isIsUnderMaintenance() ) {
+		if ( Configs.isUnderMaintenance() ) {
 			message.addAttribute( "status", "0" );
 
 			message.addChildNode(
