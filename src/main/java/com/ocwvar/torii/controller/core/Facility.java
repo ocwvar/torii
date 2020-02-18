@@ -50,7 +50,7 @@ public class Facility {
 		final Node facilityNode = new Node( "facility" );
 
 		final Node locationNode = new Node( "location" );
-		locationNode.addChildNode( new TypeNode( "id", Configs.getShopName() ) );
+		locationNode.addChildNode( new TypeNode( "id", "SONY" ) );
 		locationNode.addChildNode( new TypeNode( "country", "JP" ) );
 		locationNode.addChildNode( new TypeNode( "region", "." ) );
 		locationNode.addChildNode( new TypeNode( "type", "0", "u8" ) );
@@ -70,7 +70,6 @@ public class Facility {
 		classNode.addChildNode( new TypeNode( "line", "0", "u8" ) );
 
 		final Node portfwNode = new Node( "portfw" );
-
 		portfwNode.addChildNode( new TypeNode( "globalip", ip, "ip4" ) );
 		portfwNode.addChildNode( new TypeNode( "globalport", Configs.getPort(), "u16" ) );
 		portfwNode.addChildNode( new TypeNode( "privateport", Configs.getPort(), "u16" ) );

@@ -111,7 +111,7 @@ public class Initialization {
 		root.addChildNode( services );
 
 		services.addChildNode( new UrlNode( "ntp", "ntp://pool.ntp.org/" ) );
-		services.addChildNode( new UrlNode( "keepalive", "http://" + selfIpAddress + "/keepalive?pa=" + selfIpAddress + "&amp;ia=" + selfIpAddress + "&amp;ga=" + selfIpAddress + "&amp;ma=" + selfIpAddress + "&amp;t1=2&amp;t2=10" ) );
+		services.addChildNode( new UrlNode( "keepalive", "http://" + selfIpAddress + "/keepalive?pa=" + selfIpAddress + "&ia=" + selfIpAddress + "&ga=" + selfIpAddress + "&ma=" + selfIpAddress + "&t1=2&t2=10" ) );
 		switch ( type ) {
 			default:
 				return null;
@@ -123,34 +123,33 @@ public class Initialization {
 
 					case "2019100800":    //SDVX V
 					case "2019020600":    //SDVX IV
-						services.addChildNode( new UrlNode( "pcbtracker", Configs.getFullServerUrl() + "/torii/pcbtracker" ) );
-						services.addChildNode( new UrlNode( "facility", Configs.getFullServerUrl() + "/torii/facility" ) );
-						services.addChildNode( new UrlNode( "pcbevent", Configs.getFullServerUrl() + "/torii/pcbevent" ) );
-						services.addChildNode( new UrlNode( "package", Configs.getFullServerUrl() + "/torii/package" ) );
-						services.addChildNode( new UrlNode( "message", Configs.getFullServerUrl() + "/torii/message" ) );
-						services.addChildNode( new UrlNode( "dlstatus", Configs.getFullServerUrl() + "/torii/dlstatus" ) );
 						services.addChildNode( new UrlNode( "cardmng", Configs.getFullServerUrl() + "/torii/cardmng" ) );
-						services.addChildNode( new UrlNode( "eacoin", Configs.getFullServerUrl() + "/torii/eacoin" ) );
-						services.addChildNode( new UrlNode( "numbering", Configs.getFullServerUrl() + "/torii/numbering" ) );
+						services.addChildNode( new UrlNode( "facility", Configs.getFullServerUrl() + "/torii/facility" ) );
+						services.addChildNode( new UrlNode( "message", Configs.getFullServerUrl() + "/torii/message" ) );
+						services.addChildNode( new UrlNode( "package", Configs.getFullServerUrl() + "/torii/package" ) );
+						services.addChildNode( new UrlNode( "pcbevent", Configs.getFullServerUrl() + "/torii/pcbevent" ) );
+						services.addChildNode( new UrlNode( "pcbtracker", Configs.getFullServerUrl() + "/torii/pcbtracker" ) );
+						services.addChildNode( new UrlNode( "posevent", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "pkglist", Configs.getFullServerUrl() + "/torii/pkglist" ) );
-						services.addChildNode( new UrlNode( "posevent", Configs.getFullServerUrl() + "/torii/posevent" ) );
-						services.addChildNode( new UrlNode( "userdata", Configs.getFullServerUrl() + "/torii/userdata" ) );
-						services.addChildNode( new UrlNode( "userid", Configs.getFullServerUrl() + "/torii/userid" ) );
-						services.addChildNode( new UrlNode( "netlog", Configs.getFullServerUrl() + "/torii/netlog" ) );
+						services.addChildNode( new UrlNode( "dlstatus", Configs.getFullServerUrl() + "/torii/dlstatus" ) );
+						services.addChildNode( new UrlNode( "netlog", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "info", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "reference", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "userdata", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "userid", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sidmgr", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "slocal", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "slocal2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sglocal", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "sglocal2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "local", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "local2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
+						services.addChildNode( new UrlNode( "eacoin", Configs.getFullServerUrl() + "/torii/eacoin" ) );
+						services.addChildNode( new UrlNode( "lab", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "lobby", Configs.getFullServerUrl() + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "lobby2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
-
-						//不明用途节点
 						services.addChildNode( new UrlNode( "globby", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "slobby", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 						services.addChildNode( new UrlNode( "sglobby", Configs.getFullServerUrl() + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "sglocal", Configs.getFullServerUrl() + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "sglocal2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "slocal", Configs.getFullServerUrl() + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "slocal2", Configs.getFullServerUrl() + "/torii/sdvx" ) );
-						services.addChildNode( new UrlNode( "info", Configs.getFullServerUrl() + "/torii/sdvx" ) );
 						return root;
 				}
 		}

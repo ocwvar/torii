@@ -279,57 +279,6 @@ public class ProfileService {
 	 * @param refId REF_ID
 	 * @return PARAM 节点
 	 */
-	public Node _loadParamNode( String refId ) {
-		Log.getInstance().print( "读取用户 PARAM 参数" );
-
-		//这里目前不清楚用途，先返回默认值
-		final Node param = new Node( "param" );
-
-		final Node info_1 = new Node( "info" );
-		info_1.addChildNode( new TypeNode( "type", "2", "s32" ) );
-		info_1.addChildNode( new TypeNode( "id", "1", "s32" ) );
-		info_1.addChildNode( new ArrayTypeNode( 0, "param", "s32", "0 0 0 1529163586 18011602 18011602 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 59 0 0 0 0 1" ) );
-		param.addChildNode( info_1 );
-
-		final Node info_2 = new Node( "info" );
-		info_2.addChildNode( new TypeNode( "type", "4", "s32" ) );
-		info_2.addChildNode( new TypeNode( "id", "4", "s32" ) );
-		info_2.addChildNode( new ArrayTypeNode( 0, "param", "s32", "8332 8582 2292" ) );
-		param.addChildNode( info_2 );
-
-		final Node info_3 = new Node( "info" );
-		info_3.addChildNode( new TypeNode( "type", "4", "s32" ) );
-		info_3.addChildNode( new TypeNode( "id", "5", "s32" ) );
-		info_3.addChildNode( new ArrayTypeNode( 0, "param", "s32", "416 410 331" ) );
-		param.addChildNode( info_3 );
-
-		final Node info_4 = new Node( "info" );
-		info_4.addChildNode( new TypeNode( "type", "5", "s32" ) );
-		info_4.addChildNode( new TypeNode( "id", "0", "s32" ) );
-		info_4.addChildNode( new ArrayTypeNode( 0, "param", "s32", "1 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 1 400 15 6 5 423 363 186 0 1 4 1 2 2 10 3 5 7 5 29 45 32 19 77 109 48 1 0 0 7 5 1 4 1 1 12 2 12 17 10 7 0 8 5 8 1 13 11 16 11 2 1 2 3" ) );
-		param.addChildNode( info_4 );
-
-		final Node info_5 = new Node( "info" );
-		info_5.addChildNode( new TypeNode( "type", "7", "s32" ) );
-		info_5.addChildNode( new TypeNode( "id", "10", "s32" ) );
-		info_5.addChildNode( new ArrayTypeNode( 0, "param", "s32", "294910 6408064 9429248 0 131328 32 0 1075838976" ) );
-		param.addChildNode( info_5 );
-
-		final Node info_6 = new Node( "info" );
-		info_6.addChildNode( new TypeNode( "type", "8", "s32" ) );
-		info_6.addChildNode( new TypeNode( "id", "2", "s32" ) );
-		info_6.addChildNode( new ArrayTypeNode( 0, "param", "s32", "2528" ) );
-		param.addChildNode( info_6 );
-
-		return param;
-	}
-
-	/**
-	 * 读取 PARAM 数据
-	 *
-	 * @param refId REF_ID
-	 * @return PARAM 节点
-	 */
 	public Node loadParamNode( String refId ) {
 		final List< Sv5ProfileParam > result = this.profileParamDao.getAllByRefId( refId );
 		Log.getInstance().print( "正在读取用户 PARAM 参数数据，数量：" + result.size() );

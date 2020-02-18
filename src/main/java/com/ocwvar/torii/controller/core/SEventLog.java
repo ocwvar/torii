@@ -51,7 +51,7 @@ public class SEventLog {
 		final Node eventlog = new Node( "eventlog" );
 		root.addChildNode( eventlog );
 
-		eventlog.addChildNode( new TypeNode( "eventlog", "1", "s64" ) );
+		eventlog.addChildNode( new TypeNode( "gamesession", "1", "s64" ) );
 		eventlog.addChildNode( new TypeNode( "logsendflg", "0", "s32" ) );
 		eventlog.addChildNode( new TypeNode( "logerrlevel", "0", "s32" ) );
 		eventlog.addChildNode( new TypeNode( "evtidnosendflg", "0", "s32" ) );

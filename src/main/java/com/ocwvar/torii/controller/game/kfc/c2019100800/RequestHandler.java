@@ -431,11 +431,17 @@ public class RequestHandler {
 		} else {
 			//没有数据
 			Log.getInstance().print( "玩家数据不存在：" + refId.getContentValue() );
-			final Node game = new Node( "game_5" );
+			final Node game = new Node( "game" );
 			root.addChildNode( game );
 			game.addChildNode( new TypeNode( "result", "1", "u8" ) );
 		}
 
+		/*
+			result-0	有数据
+			result-1	没有数据，需要注册
+			result-2	有数据，但需要重新继承
+			result-3	游客模式
+		 */
 		return root;
 	}
 
@@ -507,21 +513,21 @@ public class RequestHandler {
 		final Node game = new Node( "game" );
 		root.addChildNode( game );
 
-		//解锁歌曲
-		final Node limitedMusic = common_loadForceMusicInfo();
-		game.addChildNode( limitedMusic );
+		//段位启用
+		final Node skillCourse = common_loadCourse();
+		game.addChildNode( skillCourse );
 
 		//启用的活动
 		final Node event = common_loadEvent();
 		game.addChildNode( event );
 
+		//解锁歌曲
+		final Node limitedMusic = common_loadForceMusicInfo();
+		game.addChildNode( limitedMusic );
+
 		//添加Extend
 		final Node extend = common_loadExtend();
 		game.addChildNode( extend );
-
-		//段位启用
-		final Node skillCourse = common_loadCourse();
-		game.addChildNode( skillCourse );
 
 		return root;
 	}
@@ -544,11 +550,6 @@ public class RequestHandler {
 			</call>
 		 */
 
-		/*final Node root = new Node( "response" );
-		final Node game = new Node( "game_5" );
-		game.addChildNode( new TypeNode( "result", "99", "u8" ) );
-		root.addChildNode( game );
-		return root;*/
 		return RequestHandler.DUMMY_RESPONSE;
 	}
 
@@ -781,7 +782,7 @@ public class RequestHandler {
 		addEnableEvent( event, "EVENT_IDS_SERIALCODE_TOHO_02" );
 		addEnableEvent( event, "PLAYERJUDGEADJ_ENABLE" );
 		addEnableEvent( event, "ACHIEVEMENT_ENABLE" );
-		addEnableEvent( event, "APICAGACHADRAW_30" );
+		addEnableEvent( event, "APICAGACHADRAW\t30" );
 		addEnableEvent( event, "VOLFORCE_ENABLE" );
 		addEnableEvent( event, "AKANAME_ENABLE" );
 		addEnableEvent( event, "EXTRACK_ENABLE" );
@@ -799,10 +800,10 @@ public class RequestHandler {
 		addEnableEvent( event, "BEMANI_VOTING_2019_ENABLE" );
 		addEnableEvent( event, "MIXID_INPUT_ENABLE" );
 		addEnableEvent( event, "OMEGA_ARS_ENABLE" );
-		addEnableEvent( event, "KAC5TH_FINISH" );
-		addEnableEvent( event, "KAC6TH_FINISH" );
-		addEnableEvent( event, "KAC7TH_FINISH" );
-		addEnableEvent( event, "KAC8TH_FINISH" );
+		//addEnableEvent( event, "KAC5TH_FINISH" );
+		//addEnableEvent( event, "KAC6TH_FINISH" );
+		//addEnableEvent( event, "KAC7TH_FINISH" );
+		//addEnableEvent( event, "KAC8TH_FINISH" );
 		addEnableEvent( event, "DISABLE_MONITOR_ID_CHECK" );
 		addEnableEvent( event, "STANDARD_UNLOCK_ENABLE" );
 		addEnableEvent( event, "EVENTDATE_ONIGO" );
@@ -812,7 +813,7 @@ public class RequestHandler {
 	}
 
 	/**
-	 * 读取段位
+	 * 将读取到的段位数据写入Node中
 	 *
 	 * @return 段位数据
 	 */
@@ -835,12 +836,12 @@ public class RequestHandler {
 			info.addChildNode( new TypeNode( "season_new_flg", course.seasonNewFlg, "bool" ) );
 			info.addChildNode( new TypeNode( "course_name", course.courseName ) );
 			info.addChildNode( new TypeNode( "course_type", course.courseType, "s16" ) );
-			info.addChildNode( new TypeNode( "clear_rate", "0", "s32" ) );
-			info.addChildNode( new TypeNode( "avg_score", "0", "u32" ) );
+			info.addChildNode( new TypeNode( "clear_rate", "10000", "s32" ) );
+			info.addChildNode( new TypeNode( "avg_score", "1000000", "u32" ) );
 			info.addChildNode( new TypeNode( "skill_name_id", course.skillNameId, "s16" ) );
 			info.addChildNode( new TypeNode( "matching_assist", course.matchingAssist, "bool" ) );
 			info.addChildNode( new TypeNode( "gauge_type", "1", "s16" ) );
-			info.addChildNode( new TypeNode( "paseli_type", "1", "s16" ) );
+			info.addChildNode( new TypeNode( "paseli_type", "0", "s16" ) );
 
 			//存放段位曲目
 			for ( int i = 0; i < course.tracks.length; i++ ) {
@@ -851,6 +852,8 @@ public class RequestHandler {
 				track.addChildNode( new TypeNode( "music_id", String.valueOf( course.tracks[ i ].key ), "s32" ) );
 				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
 			}
+
+			break;
 		}
 
 		return skillCourse;
@@ -873,7 +876,7 @@ public class RequestHandler {
 	}
 
 	/**
-	 * 读取段位配置
+	 * 从配置文件中读取段位配置
 	 *
 	 * @return 所有段位数据
 	 */
