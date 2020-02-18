@@ -330,7 +330,7 @@ public class RequestHandler {
 	 * 读取玩家数据
 	 * <p>
 	 * TODO 游玩次数统计存储
-	 * TODO	全解领航员和头像卡
+	 * TODO	全解头像卡
 	 *
 	 * @param call    请求的数据
 	 * @param service 账号数据交互服务
@@ -404,6 +404,10 @@ public class RequestHandler {
 			game.addChildNode( new TypeNode( "gamecoin_packet", profile.getPacket_point(), "u32" ) );
 			game.addChildNode( new TypeNode( "gamecoin_block", profile.getBlock_point(), "u32" ) );
 
+			//BLASTER  能量
+			game.addChildNode( new TypeNode( "blaster_energy", profile.getBlaster_energy(), "u32" ) );
+			game.addChildNode( new TypeNode( "blaster_count", profile.getBlaster_count(), "u32" ) );
+
 			//EA_SHOP 这里面的两个东西是能增加获取点数的东西
 			final Node eashop = new Node( "ea_shop" );
 			game.addChildNode( eashop );
@@ -422,7 +426,10 @@ public class RequestHandler {
 			//下面的是不清楚功能的节点
 			final Node eaappli = new Node( "eaappli" );
 			game.addChildNode( eaappli );
-			eaappli.addChildNode( new TypeNode( "relation", "1", "s8" ) );
+			eaappli.addChildNode( new TypeNode( "relation", "0", "s8" ) );
+			eaappli.addChildNode( new TypeNode( "aka_name_first", "10157", "s32" ) );
+			eaappli.addChildNode( new TypeNode( "aka_name_intermidiate", "10267", "s32" ) );
+			eaappli.addChildNode( new TypeNode( "aka_name_second", "10264", "s32" ) );
 
 			final Node cloud = new Node( "cloud" );
 			game.addChildNode( cloud );
@@ -769,7 +776,6 @@ public class RequestHandler {
 		//addEnableEvent( event, "SERIALCODE_KOREA" );
 		//addEnableEvent( event, "SERIALCODE_ASIA" );
 		//addEnableEvent( event, "DISP_PASELI_BANNER" );	//禁用 PASEL 显示文字？
-		//addEnableEvent( event, "FACTORY" );
 		//addEnableEvent( event, "DEMOGAME_PLAY" );
 		//addEnableEvent( event, "TENKAICHI_MODE" );	//天下一
 
@@ -780,9 +786,11 @@ public class RequestHandler {
 		addEnableEvent( event, "ICON_POLICY_BREAK" );
 		addEnableEvent( event, "ICON_FLOOR_INFECTION" );
 		addEnableEvent( event, "EVENT_IDS_SERIALCODE_TOHO_02" );
+		addEnableEvent( event, "OMEGA_ENABLE\t1,2,3,4,5,6,7,8" );
 		addEnableEvent( event, "PLAYERJUDGEADJ_ENABLE" );
 		addEnableEvent( event, "ACHIEVEMENT_ENABLE" );
 		addEnableEvent( event, "APICAGACHADRAW\t30" );
+		addEnableEvent( event, "FACTORY\t10" );
 		addEnableEvent( event, "VOLFORCE_ENABLE" );
 		addEnableEvent( event, "AKANAME_ENABLE" );
 		addEnableEvent( event, "EXTRACK_ENABLE" );
@@ -790,20 +798,22 @@ public class RequestHandler {
 		addEnableEvent( event, "STANDARD_UNLOCK_ENABLE" );
 		addEnableEvent( event, "TOTAL_MEMORIAL_ENABLE" );
 		addEnableEvent( event, "CONTINUATION" );
+		addEnableEvent( event, "EVENT_IDS_SERIALCODE_TOHO_02" );
 		addEnableEvent( event, "APPEAL_CARD_GEN_NEW_PRICE" );
 		addEnableEvent( event, "APPEAL_CARD_GEN_PRICE" );
-		addEnableEvent( event, "FAVORITE_APPEALCARD_MAX" );
-		addEnableEvent( event, "FAVORITE_MUSIC_MAX" );
+		addEnableEvent( event, "FAVORITE_APPEALCARD_MAX\t100" );
+		addEnableEvent( event, "FAVORITE_MUSIC_MAX\t500" );
 		addEnableEvent( event, "EVENTDATE_APRILFOOL" );
 		addEnableEvent( event, "SERIALCODE_JAPAN" );
 		addEnableEvent( event, "OMEGA_ENABLE" );
 		addEnableEvent( event, "BEMANI_VOTING_2019_ENABLE" );
 		addEnableEvent( event, "MIXID_INPUT_ENABLE" );
 		addEnableEvent( event, "OMEGA_ARS_ENABLE" );
-		//addEnableEvent( event, "KAC5TH_FINISH" );
-		//addEnableEvent( event, "KAC6TH_FINISH" );
-		//addEnableEvent( event, "KAC7TH_FINISH" );
-		//addEnableEvent( event, "KAC8TH_FINISH" );
+		addEnableEvent( event, "KAC5TH_FINISH" );
+		addEnableEvent( event, "KAC6TH_FINISH" );
+		addEnableEvent( event, "KAC7TH_FINISH" );
+		addEnableEvent( event, "KAC8TH_FINISH" );
+		addEnableEvent( event, "LEVEL_LIMIT_EASING" );
 		addEnableEvent( event, "DISABLE_MONITOR_ID_CHECK" );
 		addEnableEvent( event, "STANDARD_UNLOCK_ENABLE" );
 		addEnableEvent( event, "EVENTDATE_ONIGO" );
@@ -852,8 +862,6 @@ public class RequestHandler {
 				track.addChildNode( new TypeNode( "music_id", String.valueOf( course.tracks[ i ].key ), "s32" ) );
 				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
 			}
-
-			break;
 		}
 
 		return skillCourse;
@@ -868,9 +876,21 @@ public class RequestHandler {
 	 */
 	private static Node common_loadExtend() {
 		final Node extend = new Node( "extend" );
-		/*for ( int i = 1; i < 100; i++ ) {
-			addExtend( extend, "0", String.valueOf( i ), new String[]{ "0", "0", "0", "0", "1" }, new String[]{ "", "", "", "", "" } );
-		}*/
+
+		//这个玩意是启用  PARADISE
+		addExtend( extend, "91", "17", new String[]{
+				"0",
+				"1",
+				"0",
+				"0",
+				"1"
+		}, new String[]{
+				"1,2,7,8,19,24,25,31,42,47,54,55,59,60,63,64,69,86,87,88,96,101,103,117,120,125,126,127,128,134,135,180,182,192,212,216,224,225,230,241,246,251,252,256,258,259,267,268,269,271,272,286,298,299,304,312,316,324,330,344,349,359,364,365,374,381,422,471,479,519,538,539,540,541,542,543,546,551,552,553,606,611,616,623,626,633,634,669,673,678,684,698,699,704,718,743,788,816,831,855,866,903,939,978,1072,1225,1260,1261,1297,1331,1333,1422,1423",
+				"",
+				"",
+				"",
+				""
+		} );
 
 		return extend;
 	}
