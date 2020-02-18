@@ -6,23 +6,43 @@ import com.google.gson.JsonParser;
 import com.ocwvar.torii.data.StaticContainer;
 import com.ocwvar.torii.utils.protocol.RemoteKBinClient;
 import com.ocwvar.utils.IO;
+import com.ocwvar.utils.Log;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextClosedEvent;
+import org.springframework.context.event.ContextRefreshedEvent;
 
 import java.io.File;
 
 @MapperScan( value = "com.ocwvar.torii.db.dao" )
 @SpringBootApplication
-public class ToriiApplication implements ApplicationListener< ContextClosedEvent > {
+public class ToriiApplication {
 
 	public static void main( String[] args ) {
-		loadConfig();
-		createEnvironment();
-		RemoteKBinClient.getInstance().connectRemote();
-		SpringApplication.run( ToriiApplication.class, args );
+		SpringApplication application = new SpringApplication( ToriiApplication.class );
+
+		//SpringBoot	启动回调
+		application.addListeners( ( ApplicationListener< ContextRefreshedEvent > ) event -> {
+			Log.getInstance().print( "重新读取 ServerConfig.json 文件" );
+			loadConfig();	//必须必须必须 首先调用 ！！！！
+
+			Log.getInstance().print( "重新生成必须目录结构" );
+			createEnvironment();
+
+			Log.getInstance().print( "连接到远端服务" );
+			RemoteKBinClient.getInstance().connectRemote();
+		} );
+
+		//SpringBoot	关闭回调
+		application.addListeners( ( ApplicationListener< ContextClosedEvent > ) event -> {
+			//终端远端协议服务
+			Log.getInstance().print( "SpringBoot 正在关闭，请求关闭远端协议服务" );
+			RemoteKBinClient.getInstance().disconnectRemote();
+		} );
+
+		application.run( args );
 	}
 
 	/**
@@ -76,12 +96,4 @@ public class ToriiApplication implements ApplicationListener< ContextClosedEvent
 		}
 	}
 
-	/**
-	 * SpringBoot 结束回调
-	 */
-	@Override
-	public void onApplicationEvent( ContextClosedEvent event ) {
-		//终端远端协议服务
-		RemoteKBinClient.getInstance().disconnectRemote();
-	}
 }
