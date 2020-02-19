@@ -1,5 +1,5 @@
 # T O R i i　⛩　鳥居界
-　　　　　　　BE🐴NI　FOREVER
+　　　　　　BE🐴NI　　FOREVER
 #### 基础功能
 - PASELI 
 - 新卡新用户注册
