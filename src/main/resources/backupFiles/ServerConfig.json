@@ -5,7 +5,7 @@
   "IS_UNDER_MAINTENANCE": false,
 
 
-  "SHOP_NAME": "TORII PROJECT",
+  "SHOP_NAME": "TORII 鳥居界( ﾟ∀ﾟ)",
   "PORT": "50001",
   "SERVER_URL": "http://127.0.0.1",
   "REMOTE_PROTOCOL_SERVER_PATH": "script/python/remoteKbin/websocket_core/server.py",
