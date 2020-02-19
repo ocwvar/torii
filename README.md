@@ -1,4 +1,5 @@
-# T O R i i　<img width=”300px” src=”https://github.com/ocwvar/torii/blob/master/TORII_ICON.png” />　鳥居界
+# T O R i i　⛩　鳥居界
+　　　　　　　　BE🐴NI　FOREVER
 #### 基础功能
 - PASELI 
 - 新卡新用户注册
