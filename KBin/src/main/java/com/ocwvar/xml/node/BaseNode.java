@@ -5,11 +5,14 @@ import com.ocwvar.xml.node.i.INode;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
 public abstract class BaseNode implements INode {
 
 	private BaseNode parentNode = null;
+	private String encodeCharset = null;
 
 	/**
 	 * 设置父节点
@@ -48,10 +51,34 @@ public abstract class BaseNode implements INode {
 		final StringBuilder builder = new StringBuilder();
 		__toXmlText( builder );
 
-		if ( encodeCharacter ){
-			return builder.toString().replaceAll( "&","&amp;" );
-		}else {
+		if ( encodeCharacter ) {
+			return builder.toString().replaceAll( "&", "&amp;" );
+		} else {
 			return builder.toString();
+		}
+	}
+
+	/**
+	 * @return 编码类型
+	 */
+	public String getEncodeCharset() {
+		return this.encodeCharset == null ? StandardCharsets.UTF_8.name() : this.encodeCharset;
+	}
+
+	/**
+	 * 设置编码类型，在进行KBIN加密时需要使用
+	 *
+	 * @param charset 编码类型，UTF-8 或 CP932
+	 */
+	public void setEncodeCharset( Charset charset ) {
+		if ( charset == null ) {
+			throw new RuntimeException( "未定义编码类型" );
+		} else if ( charset == Charset.forName( "cp932" ) ) {
+			this.encodeCharset = "cp932";
+		} else if ( charset == StandardCharsets.UTF_8 ) {
+			this.encodeCharset = "utf-8";
+		} else {
+			throw new RuntimeException( "不支持的编码类型：" + charset );
 		}
 	}
 

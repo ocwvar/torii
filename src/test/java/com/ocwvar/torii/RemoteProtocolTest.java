@@ -25,7 +25,7 @@ public class RemoteProtocolTest {
 		//加密测试
 		final Node encodeSample = NodeHelper.xml2Node( new String( IO.loadFile( "H:\\test.xml" ), usingCharset ) );
 		//benchmarkEncode( encodeSample, 50 );
-		testEncode( encodeSample, 1, 10, false );
+		testEncode( encodeSample, 1, 1, false );
 
 		System.out.println( "处理结束" );
 	}
@@ -68,6 +68,7 @@ public class RemoteProtocolTest {
 				final long startM = System.currentTimeMillis();
 				for ( int j = 0; j < times; j++ ) {
 					final String tag = "线程编号[" + Thread.currentThread().getName() + "]--任务编号[" + j + "]";
+					sample.setEncodeCharset( Charset.forName( "cp932" ) );
 					final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( sample, tag );
 					System.out.println( "执行结果：" + !result.hasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) + "  一致性：" + tag.equals( result.getTag() ) );
 					if ( result.getResult() != null && outputResult ) {

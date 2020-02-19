@@ -1,6 +1,7 @@
 package com.ocwvar.torii.controller.core;
 
 import com.ocwvar.torii.Configs;
+import com.ocwvar.torii.Field;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.Log;
 import com.ocwvar.xml.node.Node;
@@ -107,6 +108,7 @@ public class Facility {
 		facilityNode.addChildNode( shareNode );
 
 		root.addChildNode( facilityNode );
+		root.setEncodeCharset( Field.SHIFT_JIS );
 		return root;
 	}
 

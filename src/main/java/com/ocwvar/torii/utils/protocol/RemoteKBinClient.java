@@ -7,6 +7,7 @@ import com.ocwvar.utils.Log;
 import com.ocwvar.utils.PyCaller;
 import com.ocwvar.utils.TextUtils;
 import com.ocwvar.utils.annotation.Nullable;
+import com.ocwvar.xml.node.BaseNode;
 import com.ocwvar.xml.node.Node;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
@@ -202,7 +203,24 @@ public class RemoteKBinClient extends WebSocketClient {
 
 				//请求数据
 				if ( object instanceof Node ) {
-					send( ( ( Node ) object ).toXmlText( true ).getBytes( StandardCharsets.UTF_8 ) );
+					//加密请求，第一位数据为编码方式
+					//1: UTF-8
+					//2: CP932 (SHIFT-JIS)
+					byte[] bytes = ( ( Node ) object ).toXmlText( true ).getBytes( StandardCharsets.UTF_8 );    //进行加密的永远为 UTF-8
+					ByteBuffer byteBuffer = ByteBuffer.allocate( bytes.length + 1 );
+					switch ( ( ( BaseNode ) object ).getEncodeCharset().toLowerCase() ) {
+						default:
+						case "utf-8":
+							byteBuffer.put( ( byte ) 0x01 );
+							break;
+						case "cp932":
+							byteBuffer.put( ( byte ) 0x02 );
+							break;
+					}
+					printLog( "编码格式：" + ( ( BaseNode ) object ).getEncodeCharset().toLowerCase() );
+					byteBuffer.put( bytes );
+					bytes = byteBuffer.array();
+					send( bytes );
 				} else {
 					send( ( byte[] ) object );
 				}

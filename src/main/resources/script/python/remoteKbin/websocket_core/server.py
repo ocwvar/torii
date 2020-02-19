@@ -37,7 +37,7 @@ class Torii_WebSocketServer(tornado.websocket.WebSocketHandler):
     def on_message(self, message: Union[str, bytes]):
         try:
 
-            if message == b'\x00':
+            if len(message) == 1 and message == b'\x00':
                 # 拿到 1 个 0字节 数据，则代表结束请求直接关闭
                 logging.info("接收到关闭指令")
                 self.close(reason="主动关闭")
@@ -48,7 +48,10 @@ class Torii_WebSocketServer(tornado.websocket.WebSocketHandler):
                 response_xml = KBinXML(message).to_text()
             else:
                 # 拿到的是 XML 数据，则转成 KBIN
-                response_xml = KBinXML(message).to_binary()
+                if message[0] == 1:
+                    response_xml = KBinXML(message[1:len(message)]).to_binary(encoding="UTF-8")
+                elif message[0] == 2:
+                    response_xml = KBinXML(message[1:len(message)]).to_binary(encoding="cp932")
 
             self.write_message(response_xml, True)
 
