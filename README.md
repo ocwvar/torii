@@ -1,4 +1,4 @@
-# T O R i i　⛩　鳥居界
+# T O R I I　⛩　鳥居界
 　　　　　　BE🐴NI　　FOREVER
 #### 基础功能
 - PASELI 
