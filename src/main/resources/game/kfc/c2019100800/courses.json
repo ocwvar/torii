@@ -3167,6 +3167,36 @@
       ]
     },
     {
+      "course_id": "13",
+      "skill_level": "12",
+      "season_id": "8",
+      "season_name": "一 般 通 過 路 人 課 題",
+      "season_new_flg": "1",
+      "course_name": "一 般 通 過 路 人 課 題",
+      "course_type": "0",
+      "skill_name_id": "12",
+      "matching_assist": "1",
+      "gauge_type": "1",
+      "paseli_type": "0",
+      "track": [
+        {
+          "track_no": "0",
+          "music_id": "4",
+          "music_type": "0"
+        },
+        {
+          "track_no": "1",
+          "music_id": "4",
+          "music_type": "0"
+        },
+        {
+          "track_no": "2",
+          "music_id": "1100",
+          "music_type": "4"
+        }
+      ]
+    },
+    {
       "course_id": "1",
       "skill_level": "1",
       "season_id": "9",

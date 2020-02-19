@@ -777,7 +777,7 @@ public class RequestHandler {
 		//addEnableEvent( event, "SERIALCODE_ASIA" );
 		//addEnableEvent( event, "DISP_PASELI_BANNER" );	//禁用 PASEL 显示文字？
 		//addEnableEvent( event, "DEMOGAME_PLAY" );
-		//addEnableEvent( event, "TENKAICHI_MODE" );	//天下一
+		addEnableEvent( event, "TENKAICHI_MODE" );	//天下一
 
 		addEnableEvent( event, "CREW_SELECT_ABLE" );    //启用领航员功能
 		addEnableEvent( event, "BLASTER_ABLE" );    //启用 BLASTER 功能
@@ -849,9 +849,9 @@ public class RequestHandler {
 			info.addChildNode( new TypeNode( "clear_rate", "10000", "s32" ) );
 			info.addChildNode( new TypeNode( "avg_score", "1000000", "u32" ) );
 			info.addChildNode( new TypeNode( "skill_name_id", course.skillNameId, "s16" ) );
-			info.addChildNode( new TypeNode( "matching_assist", course.matchingAssist, "bool" ) );
+			info.addChildNode( new TypeNode( "matching_assist", "1", "bool" ) );
 			info.addChildNode( new TypeNode( "gauge_type", "1", "s16" ) );
-			info.addChildNode( new TypeNode( "paseli_type", "0", "s16" ) );
+			info.addChildNode( new TypeNode( "paseli_type", "1", "s16" ) );
 
 			//存放段位曲目
 			for ( int i = 0; i < course.tracks.length; i++ ) {
@@ -860,7 +860,7 @@ public class RequestHandler {
 
 				track.addChildNode( new TypeNode( "track_no", String.valueOf( i ), "s16" ) );
 				track.addChildNode( new TypeNode( "music_id", String.valueOf( course.tracks[ i ].key ), "s32" ) );
-				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "u8" ) );
+				track.addChildNode( new TypeNode( "music_type", course.tracks[ i ].value, "s8" ) );
 			}
 		}
 
@@ -956,35 +956,6 @@ public class RequestHandler {
 		}
 
 		return result;
-	}
-
-	/**
-	 * 读取段位配置
-	 *
-	 * @return 所有段位数据
-	 */
-	private static Course[] _loadCourseConfig() {
-
-		final Course result = new Course(
-				"1",
-				"1",
-				"1",
-				"SKILL ANALYZER TEST",
-				"0",
-				"SKILL ANALYZER Level.01",
-				"0",
-				"1",
-				"1",
-				"1",
-				"1",
-				new Pair[]{
-						new Pair( "4", "3" ),
-						new Pair( "4", "2" ),
-						new Pair( "4", "1" )
-				}
-		);
-
-		return new Course[]{ result };
 	}
 
 	/**
