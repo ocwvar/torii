@@ -23,7 +23,6 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.6'
 
     //模块引用
-    implementation project(':KBin')
     implementation project(':SUtils')
 
     runtimeOnly 'mysql:mysql-connector-java'

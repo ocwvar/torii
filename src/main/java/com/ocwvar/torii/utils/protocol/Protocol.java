@@ -1,6 +1,5 @@
 package com.ocwvar.torii.utils.protocol;
 
-import com.ocwvar.kbin.KBinXml;
 import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.data.StaticContainer;
@@ -12,8 +11,8 @@ import com.ocwvar.utils.Log;
 import com.ocwvar.utils.TextUtils;
 import com.ocwvar.utils.annotation.NotNull;
 import com.ocwvar.utils.annotation.Nullable;
-import com.ocwvar.xml.node.Node;
-import com.ocwvar.xml.node.NodeHelper;
+import com.ocwvar.utils.node.Node;
+import com.ocwvar.utils.node.NodeHelper;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -48,8 +47,14 @@ public class Protocol {
 
 		//Kbin解密
 		final Node node;
-		if ( KBinXml.isEncoded( data ) ) {
-			node = KBinXml.decode( data );
+		if ( NodeHelper.isBinary( data ) ) {
+			final Result result = RemoteRequestManager.getInstance().sendKbin( data );
+			if ( result.hasException() ) {
+				Log.getInstance().print( TAG, "远端协议处理失败：" + result.getExceptionMessage() );
+				node = null;
+			} else {
+				node = NodeHelper.xml2Node( NodeHelper.byte2Xml( result.getResult() ) );
+			}
 		} else {
 			node = NodeHelper.xml2Node( NodeHelper.byte2Xml( data ) );
 		}
@@ -90,8 +95,7 @@ public class Protocol {
 
 		//Kbin解密
 		final Node node;
-		if ( KBinXml.isEncoded( data ) ) {
-			//node = KBinXml.decode( data );
+		if ( NodeHelper.isBinary( data ) ) {
 			final Result result = RemoteRequestManager.getInstance().sendKbin( data );
 			if ( result.hasException() ) {
 				Log.getInstance().print( TAG, "远端协议处理失败：" + result.getExceptionMessage() );

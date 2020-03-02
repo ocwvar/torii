@@ -4,7 +4,7 @@ import com.ocwvar.torii.controller.game.kfc.c2019100800.RequestHandler;
 import com.ocwvar.torii.service.game.kfc.ProfileService;
 import com.ocwvar.torii.utils.protocol.Protocol;
 import com.ocwvar.utils.Log;
-import com.ocwvar.xml.node.Node;
+import com.ocwvar.utils.node.Node;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;

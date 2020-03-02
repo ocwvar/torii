@@ -4,8 +4,8 @@ import com.ocwvar.torii.utils.protocol.remote.RemoteRequestManager;
 import com.ocwvar.torii.utils.protocol.remote.RemoteServer;
 import com.ocwvar.torii.utils.protocol.remote.Result;
 import com.ocwvar.utils.IO;
-import com.ocwvar.xml.node.Node;
-import com.ocwvar.xml.node.NodeHelper;
+import com.ocwvar.utils.node.Node;
+import com.ocwvar.utils.node.NodeHelper;
 
 import java.nio.charset.Charset;
 

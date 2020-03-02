@@ -1,7 +1,7 @@
 package com.ocwvar.torii.utils.protocol.remote;
 
 import com.ocwvar.torii.Configs;
-import com.ocwvar.xml.node.Node;
+import com.ocwvar.utils.node.Node;
 
 /**
  * 远程请求管理器

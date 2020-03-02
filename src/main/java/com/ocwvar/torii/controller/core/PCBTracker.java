@@ -2,8 +2,8 @@ package com.ocwvar.torii.controller.core;
 
 import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.utils.protocol.Protocol;
-import com.ocwvar.xml.node.Node;
-import com.ocwvar.xml.node.NodeBuilder;
+import com.ocwvar.utils.node.Node;
+import com.ocwvar.utils.node.NodeBuilder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RestController;
 

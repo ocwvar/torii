@@ -1,8 +1,8 @@
 package com.ocwvar.torii.utils.protocol.remote;
 
 import com.ocwvar.utils.Log;
-import com.ocwvar.xml.node.BaseNode;
-import com.ocwvar.xml.node.Node;
+import com.ocwvar.utils.node.BaseNode;
+import com.ocwvar.utils.node.Node;
 import org.java_websocket.client.WebSocketClient;
 import org.java_websocket.handshake.ServerHandshake;
 
