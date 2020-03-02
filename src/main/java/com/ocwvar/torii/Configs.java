@@ -19,6 +19,7 @@ public class Configs {
 	private static String responseCacheFolder;
 	private static String dumpFileOutputFolder;
 	private static String remoteProtocolServerPath;
+	private static String pinSceneMessage;
 
 	private static String[] cacheResponseNames;
 
@@ -146,6 +147,17 @@ public class Configs {
 	 */
 	public static boolean isPrintRemoteClientText() {
 		return isPrintRemoteClientText;
+	}
+
+	/**
+	 * @return	输入密码界面显示的信息
+	 */
+	public static String getPinSceneMessage() {
+		return pinSceneMessage;
+	}
+
+	public static void setPinSceneMessage( String pinSceneMessage ) {
+		Configs.pinSceneMessage = pinSceneMessage;
 	}
 
 	public static void setIsPrintRemoteClientText( boolean isPrintRemoteClientText ) {

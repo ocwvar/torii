@@ -38,6 +38,29 @@ public class SEventLog {
 		    </eventlog>
 		</call>
 
+
+		投币请求样本：
+		URL:http://127.0.0.1/torii/sdvx/KFC:J:A:A:2019100800/eventlog/write
+		Need decompress:true
+		Need rc4 decode:true
+		<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+		<call model="KFC:J:A:A:2019100800" srcid="012010000000233A0E29" tag="A1gSAANH">
+		    <eventlog method="write">
+		        <retrycnt __type="u32">0</retrycnt>
+		        <data>
+		            <eventid __type="str">G_SVPUSH</eventid>		//这里的标记为类型，投币的是这个	G_SVPUSH
+		            <eventorder __type="s32">3</eventorder>
+		            <pcbtime __type="u64">1583153674306</pcbtime>
+		            <gamesession __type="s64">1</gamesession>
+		            <strdata1 __type="str"/>
+		            <strdata2 __type="str"/>
+		            <numdata1 __type="s64">1</numdata1>
+		            <numdata2 __type="s64">0</numdata2>
+		            <locationid __type="str">SONY</locationid>
+		        </data>
+		    </eventlog>
+		</call>
+
 	 */
 
 	@PostMapping( path = "torii/{game}/{model}/eventlog/*" )

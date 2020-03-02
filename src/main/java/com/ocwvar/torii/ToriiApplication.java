@@ -78,6 +78,7 @@ public class ToriiApplication {
 
 			Configs.setRemoteProtocolServerPath( config.get( "REMOTE_PROTOCOL_SERVER_PATH" ).getAsString() );
 			Configs.setShopName( config.get( "SHOP_NAME" ).getAsString() );
+			Configs.setPinSceneMessage( config.get( "PIN_SCENE_MESSAGE" ).getAsString() );
 			Configs.setPort( config.get( "PORT" ).getAsString() );
 			Configs.setServerUrl( config.get( "SERVER_URL" ).getAsString() );
 			Configs.setRemoteProtocolServerUri( config.get( "REMOTE_PROTOCOL_SERVER_URI" ).getAsString() );

@@ -90,7 +90,7 @@ public class Facility {
 		eapassNode.addChildNode( new TypeNode( "valid", "0", "u16" ) );
 
 		final Node urlNode = new Node( "url" );
-		urlNode.addChildNode( new TypeNode( "eapass", "www.ea-pass.konami.net" ) );
+		urlNode.addChildNode( new TypeNode( "eapass", Configs.getPinSceneMessage() ) );
 		urlNode.addChildNode( new TypeNode( "arcadefan", "'www.konami.jp/am" ) );
 		urlNode.addChildNode( new TypeNode( "konaminetdx", "http://am.573.jp" ) );
 		urlNode.addChildNode( new TypeNode( "konamiid", "https://id.konami.net" ) );

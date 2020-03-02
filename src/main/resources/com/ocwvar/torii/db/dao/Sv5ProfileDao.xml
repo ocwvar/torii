@@ -10,7 +10,7 @@
 
     <!--所有标签名-->
     <sql id="ALL_COLUMN">
-        refId,packet_point,block_point,blaster_energy,blaster_count,appeal_id,skill_level,skill_base_id,skill_name_id,player_name,player_code
+        refId,packet_point,block_point,blaster_energy,blaster_count,appeal_id,skill_level,skill_base_id,skill_name_id,player_name,player_code,akaname_id
     </sql>
 
     <sql id="BASE_COLUMN">
@@ -38,6 +38,7 @@
         skill_base_id = #{skill_base_id},
         skill_name_id = #{skill_name_id},
         player_name = #{player_name}
+        akaname_id = #{akaname_id}
         WHERE refId = #{refId}
     </update>
 

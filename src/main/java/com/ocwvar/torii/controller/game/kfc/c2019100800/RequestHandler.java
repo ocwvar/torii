@@ -102,7 +102,8 @@ public class RequestHandler {
 				call_game.indexChildNode( "skill_base_id" ).getContentValue(),
 				call_game.indexChildNode( "skill_name_id" ).getContentValue(),
 				old.getPlayer_name(),
-				old.getPlayer_code()
+				old.getPlayer_code(),
+				old.getAkaname_id()
 		);
 
 		final Sv5Setting setting = new Sv5Setting(

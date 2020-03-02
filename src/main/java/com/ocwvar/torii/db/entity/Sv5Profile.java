@@ -16,8 +16,9 @@ public class Sv5Profile {
 	private String skill_name_id;
 	private final String player_name;
 	private final String player_code;
+	private final String akaname_id;
 
-	public Sv5Profile( String refId, String packet_point, String block_point, String blaster_energy, String blaster_count, String appeal_id, String skill_level, String skill_base_id, String skill_name_id, String player_name, String player_code ) {
+	public Sv5Profile( String refId, String packet_point, String block_point, String blaster_energy, String blaster_count, String appeal_id, String skill_level, String skill_base_id, String skill_name_id, String player_name, String player_code, String akaname_id ) {
 		this.refId = refId;
 		this.packet_point = packet_point;
 		this.block_point = block_point;
@@ -29,6 +30,7 @@ public class Sv5Profile {
 		this.skill_name_id = skill_name_id;
 		this.player_name = player_name;
 		this.player_code = player_code;
+		this.akaname_id = akaname_id;
 	}
 
 	/**
@@ -108,6 +110,13 @@ public class Sv5Profile {
 	 */
 	public String getPlayer_code() {
 		return player_code;
+	}
+
+	/**
+	 * @return 用户称号ID
+	 */
+	public String getAkaname_id() {
+		return akaname_id;
 	}
 
 	public void setPacket_point( String packet_point ) {

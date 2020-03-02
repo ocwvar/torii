@@ -3,7 +3,6 @@ package com.ocwvar.torii.service.game.kfc;
 import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.db.dao.*;
 import com.ocwvar.torii.db.entity.*;
-import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.annotation.NotNull;
 import com.ocwvar.utils.annotation.Nullable;
@@ -254,6 +253,9 @@ public class ProfileService {
 			//解锁领航员
 			addForceCrewData( item );
 
+			//解锁其他 item
+			addForceItemUnlockData( item );
+
 			return item;
 		} else {
 			item = new Node( "item" );
@@ -291,40 +293,38 @@ public class ProfileService {
 			info.addChildNode( new TypeNode( "id", profileParam.getId(), "s32" ) );
 			info.addChildNode( new ArrayTypeNode( 0, "param", "s32", profileParam.getParam() ) );
 		}
+
+		final Sv5Profile profile = getProfile( refId );
+
+		//下面这部分是 AKANAME 的参数
+		final Node akaName = new Node( "info" );
+		akaName.addChildNode( new TypeNode( "type", "6", "s32" ) );
+		akaName.addChildNode( new TypeNode( "id", "0", "s32" ) );
+		akaName.addChildNode( new ArrayTypeNode( "param", "s32", profile.getAkaname_id() ) );
+		root.addChildNode( akaName );
+/*
+		final Node akaPart_2 = new Node( "info" );
+		akaPart_2.addChildNode( new TypeNode( "type", "6", "s32" ) );
+		akaPart_2.addChildNode( new TypeNode( "id", "1", "s32" ) );
+		akaPart_2.addChildNode( new ArrayTypeNode( "param", "s32", "10013" ) );
+		root.addChildNode( akaPart_2 );
+
+		final Node akaPart_3 = new Node( "info" );
+		akaPart_3.addChildNode( new TypeNode( "type", "6", "s32" ) );
+		akaPart_3.addChildNode( new TypeNode( "id", "2", "s32" ) );
+		akaPart_3.addChildNode( new ArrayTypeNode( "param", "s32", "10014" ) );
+		root.addChildNode( akaPart_3 );*/
+
 		return root;
 	}
 
 	/**
 	 * 添加强制解锁的领航员数据
 	 *
-	 * @param item 添加数据后的 item 节点
+	 * @param item 需要进行添加数据的 item 节点
 	 */
 	private void addForceCrewData( Node item ) throws Exception {
-		byte[] bytes = IO.loadResource( "generator/CharacterUnlockJsonData/data.json" );
-		if ( bytes == null || bytes.length <= 0 ) {
-			Log.getInstance().print( "没有预制领航员解锁数据" );
-			return;
-		}
-
 		//TODO	目前需要清楚领航员的id从哪里能获得，光是靠穷举的方式不可靠
-
-		/*final Node info = new Node( "info" );
-		item.addChildNode( info );
-		info.addChildNode( new TypeNode( "type", "11", "u8" ) );
-		info.addChildNode( new TypeNode( "id", "103", "u32" ) );
-		info.addChildNode( new TypeNode( "param", "1", "u32" ) );*/
-
-		/*final JsonArray crewArray = JsonParser.parseString( new String( bytes ) ).getAsJsonArray();
-		JsonObject jsonObject;
-		for ( JsonElement element : crewArray ) {
-			jsonObject = element.getAsJsonObject();
-
-			final Node info = new Node( "info" );
-			item.addChildNode( info );
-			info.addChildNode( new TypeNode( "type", "11", "u8" ) );
-			info.addChildNode( new TypeNode( "id", jsonObject.get( "id" ).getAsString(), "u32" ) );
-			info.addChildNode( new TypeNode( "param", "1", "u32" ) );
-		}*/
 
 		for ( int i = 0; i < 200; i++ ) {
 			final Node info = new Node( "info" );
@@ -333,6 +333,15 @@ public class ProfileService {
 			info.addChildNode( new TypeNode( "id", String.valueOf( i ), "u32" ) );
 			info.addChildNode( new TypeNode( "param", "1", "u32" ) );
 		}
+	}
+
+	/**
+	 * 添加强制解锁的 item 数据
+	 *
+	 * @param item 需要进行添加数据的 item 节点
+	 */
+	private void addForceItemUnlockData( Node item ) throws Exception {
+		//TODO	未实现，懒
 	}
 
 }
