@@ -1,8 +1,11 @@
-package com.ocwvar.torii.utils.remote;
+package com.ocwvar.torii.utils.protocol.remote;
 
 import com.ocwvar.torii.Configs;
 import com.ocwvar.xml.node.Node;
 
+/**
+ * 远程请求管理器
+ */
 public class RemoteRequestManager {
 
 	private static RemoteRequestManager self;
@@ -105,7 +108,6 @@ public class RemoteRequestManager {
 	private Result send( Object object, boolean isEncodeRequest, String tag ) {
 		final Client client = this.clientPool.getClient();
 		return client.sendRequest( object, isEncodeRequest, tag );
-		//return client.testRequest( tag );
 	}
 
 }

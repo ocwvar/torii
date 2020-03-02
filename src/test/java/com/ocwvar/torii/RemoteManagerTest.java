@@ -1,7 +1,7 @@
 package com.ocwvar.torii;
 
-import com.ocwvar.torii.utils.remote.RemoteRequestManager;
-import com.ocwvar.torii.utils.remote.Result;
+import com.ocwvar.torii.utils.protocol.remote.RemoteRequestManager;
+import com.ocwvar.torii.utils.protocol.remote.Result;
 import com.ocwvar.utils.IO;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.NodeHelper;

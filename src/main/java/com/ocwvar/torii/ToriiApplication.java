@@ -4,7 +4,7 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.ocwvar.torii.data.StaticContainer;
-import com.ocwvar.torii.utils.protocol.RemoteKBinClient;
+import com.ocwvar.torii.utils.protocol.remote.RemoteServer;
 import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
 import org.mybatis.spring.annotation.MapperScan;
@@ -32,14 +32,14 @@ public class ToriiApplication {
 			createEnvironment();
 
 			Log.getInstance().print( "连接到远端服务" );
-			RemoteKBinClient.getInstance().connectRemote();
+			RemoteServer.getInstance().startServer();
 		} );
 
 		//SpringBoot	关闭回调
 		application.addListeners( ( ApplicationListener< ContextClosedEvent > ) event -> {
 			//终端远端协议服务
 			Log.getInstance().print( "SpringBoot 正在关闭，请求关闭远端协议服务" );
-			RemoteKBinClient.getInstance().disconnectRemote();
+			RemoteServer.getInstance().stopServer();
 		} );
 
 		application.run( args );

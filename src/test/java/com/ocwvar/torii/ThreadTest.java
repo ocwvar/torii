@@ -1,33 +1,18 @@
 package com.ocwvar.torii;
 
-import com.ocwvar.torii.utils.remote.Client;
-
-import java.net.URI;
+import com.ocwvar.torii.utils.protocol.remote.RemoteServer;
 
 public class ThreadTest {
 
-	public static void main( String[] args ) {
+	public static void main( String[] args ) throws InterruptedException {
 		ToriiApplication.loadConfig();
 
-		for ( int i = 0; i < 50; i++ ) {
-			Client client = create( i );
-			client.connectRemote();
+		for ( int i = 0; i < 100; i++ ) {
+			new Thread( () -> System.out.println( "执行结果：" + RemoteServer.getInstance().startServer() ) ).start();
 		}
-	}
 
-	/**
-	 * @return 新的客户端
-	 */
-	private static Client create( int clientTag ) {
-		return new Client(
-				2000,
-				2000,
-				2000,
-				true,
-				URI.create( Configs.getRemoteProtocolServerUri() ),
-				clientTag,
-				null
-		);
+		Thread.sleep( 5000L );
+		RemoteServer.getInstance().stopServer();
 	}
 
 }

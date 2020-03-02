@@ -1,12 +1,6 @@
-package com.ocwvar.torii.utils.protocol;
+package com.ocwvar.torii.utils.protocol.remote;
 
-
-import com.ocwvar.torii.Configs;
-import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
-import com.ocwvar.utils.PyCaller;
-import com.ocwvar.utils.TextUtils;
-import com.ocwvar.utils.annotation.Nullable;
 import com.ocwvar.xml.node.BaseNode;
 import com.ocwvar.xml.node.Node;
 import org.java_websocket.client.WebSocketClient;
@@ -17,78 +11,57 @@ import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.util.concurrent.TimeUnit;
 
-public class RemoteKBinClient extends WebSocketClient {
+public class Client extends WebSocketClient {
 
-	private static RemoteKBinClient self;
-
-	public static RemoteKBinClient getInstance() {
-		if ( self != null ) {
-			return self;
-		}
-
-		synchronized ( RemoteKBinClient.class ) {
-			if ( self == null ) {
-				self = new RemoteKBinClient();
-			}
-		}
-
-		return self;
-	}
-
-	/**
-	 * 等待响应超时时间，单位毫秒
-	 */
-	private static final long RESPONSE_TIMEOUT_MS = 10L * 1000L;
-
-	/**
-	 * 连接丢失等待超时，单位毫秒
-	 */
-	private static final int CONNECT_LOST_TIMEOUT_MS = 2000;
-
-	/**
-	 * 连接超时，单位毫秒
-	 */
-	private static final int CONNECT_TIMEOUT_MS = 5000;
-
-	/**
-	 * 调试模式
-	 */
-	private static final boolean DEBUG = Configs.isPrintRemoteClientText();
-
-	/**
-	 * 超时结果
-	 */
-	private static final Result RESULT_TIMEOUT;
-
-	/**
-	 * 未知异常结果
-	 */
-	private static final Result RESULT_UNKNOWN_EXCEPTION;
-
-	static {
-		RESULT_TIMEOUT = new Result( true, false, "等待结果超时", null );
-		RESULT_UNKNOWN_EXCEPTION = new Result( true, false, "未知错误", null );
-	}
+	private final String TAG = "RemoteKBin";
 
 	//锁，别动
 	private final Object LOCK = new Object();
 
+	//等待响应超时时间，单位毫秒
+	private final int RESPONSE_TIMEOUT_MS;
+
+	//连接等待超时，单位毫秒
+	private final int CONNECT_TIMEOUT_MS;
+
+	//调试模式
+	private final boolean DEBUG;
+
+	//客户端序号
+	private final int clientIndex;
+
 	//是否曾经成功连接过
 	private boolean isConnected = false;
+
+	//回调方法
+	private Callback callback;
 
 	//任务TAG
 	private String tag;
 
 	//得到的结果 (回传对象)
-	private volatile Result result = null;
+	private Result result = null;
 
 	//是否是加密请求	(回传参数)
-	private volatile boolean isEncodeRequest = false;
+	private boolean isEncodeRequest = false;
 
-	public RemoteKBinClient() {
-		super( URI.create( Configs.getRemoteProtocolServerUri() ) );
-		setReuseAddr( true );
-		setTcpNoDelay( true );
+	/**
+	 * @param RESPONSE_TIMEOUT_MS     等待响应超时时间，单位毫秒
+	 * @param CONNECT_LOST_TIMEOUT_MS 连接丢失等待超时，单位毫秒
+	 * @param CONNECT_TIMEOUT_MS      连接等待超时，单位毫秒
+	 * @param DEBUG                   调试模式
+	 * @param address                 链接地址
+	 * @param clientIndex             客户端序号
+	 * @param callback                任务完成状态回调方法
+	 */
+	public Client( int RESPONSE_TIMEOUT_MS, int CONNECT_LOST_TIMEOUT_MS, int CONNECT_TIMEOUT_MS, boolean DEBUG, URI address, int clientIndex, Callback callback ) {
+		super( address );
+		this.RESPONSE_TIMEOUT_MS = RESPONSE_TIMEOUT_MS;
+		this.CONNECT_TIMEOUT_MS = CONNECT_TIMEOUT_MS;
+		this.clientIndex = clientIndex;
+		this.DEBUG = DEBUG;
+		this.callback = callback;
+
 		setConnectionLostTimeout( CONNECT_LOST_TIMEOUT_MS );
 	}
 
@@ -104,33 +77,28 @@ public class RemoteKBinClient extends WebSocketClient {
 		}
 
 		try {
-			String path;
 			while ( !isOpen() ) {
 				//服务线程挂了，重新启动
 				printLog( "远程服务没有连接，尝试连接" );
-				path = IO.getResourceFilePath( Configs.getRemoteProtocolServerPath() );
-				if ( TextUtils.isEmpty( path ) ) {
-					throw new RuntimeException( "找不到远端服务脚本，配置路径：" + Configs.getRemoteProtocolServerPath() );
-				}
 
-				//吊起服务端脚本，执行有可能出错，因为已经启动过了服务脚本，不用管
-				printLog( "尝试启动新的服务线程" );
-				PyCaller.execAsync( path );
+				//这里需要再次进行判断，避免重复启动server
+				printLog( "服务脚本启动结果：" + RemoteServer.getInstance().startServer() );
 
-				//等待100ms，确保已启动完全
-				Thread.sleep( 100 );
-
-				printLog( "尝试重连WebSocket" );
-				if ( this.isConnected ) {
-					reconnectBlocking();
-				} else {
-					connectBlocking( CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS );
+				try {
+					printLog( "尝试连接 WebSocket" );
+					if ( this.isConnected ) {
+						printLog( "通过 reconnectBlocking 连接，结果：" + reconnectBlocking() );
+					} else {
+						printLog( "通过 connectBlocking 连接，结果：" + connectBlocking( CONNECT_TIMEOUT_MS, TimeUnit.MILLISECONDS ) );
+					}
+				} catch ( Exception e ) {
+					printLog( e.toString() );
 				}
 			}
 
 			printLog( "已启动完成！" );
 			return true;
-		} catch ( InterruptedException e ) {
+		} catch ( Exception ignore ) {
 			return false;
 		}
 	}
@@ -148,37 +116,6 @@ public class RemoteKBinClient extends WebSocketClient {
 	}
 
 	/**
-	 * 发送XML数据请求进行加密
-	 *
-	 * @param node 数据
-	 * @param tag  任务标记
-	 * @return 结果数据
-	 */
-	public Result sendXML( Node node, String tag ) {
-		return sendRequest( node, true, tag );
-	}
-
-	/**
-	 * 发送XML数据请求进行加密
-	 *
-	 * @param node 数据
-	 * @return 结果数据
-	 */
-	public Result sendXML( Node node ) {
-		return sendRequest( node, true, null );
-	}
-
-	/**
-	 * 发送KBIN数据请求解密
-	 *
-	 * @param kbinData 数据
-	 * @return 结果数据
-	 */
-	public Result sendKbin( byte[] kbinData ) {
-		return sendRequest( kbinData, false, null );
-	}
-
-	/**
 	 * 发送数据
 	 *
 	 * @param object          请求数据
@@ -186,10 +123,9 @@ public class RemoteKBinClient extends WebSocketClient {
 	 * @param tag             任务标记
 	 * @return 结果数据
 	 */
-	private synchronized Result sendRequest( Object object, boolean isEncodeRequest, String tag ) {
+	public synchronized Result sendRequest( Object object, boolean isEncodeRequest, String tag ) {
 		synchronized ( this.LOCK ) {
 			try {
-
 				//重置与更新状态
 				this.tag = tag;
 				this.result = null;
@@ -198,7 +134,7 @@ public class RemoteKBinClient extends WebSocketClient {
 				//连接状态判断，如果断开了则重新连接
 				final boolean connectResult = connectRemote();
 				if ( !connectResult || !isOpen() || isClosed() || isClosing() ) {
-					return RESULT_TIMEOUT;
+					return RemoteRequestManager.RESULT_TIMEOUT;
 				}
 
 				//请求数据
@@ -230,19 +166,43 @@ public class RemoteKBinClient extends WebSocketClient {
 				if ( result == null ) {
 					//没有拿到数据
 					if ( this.tag != null ) {
-						RESULT_TIMEOUT.setTag( this.tag );
+						RemoteRequestManager.RESULT_TIMEOUT.setTag( this.tag );
 					}
-					return RESULT_TIMEOUT;
+					return RemoteRequestManager.RESULT_TIMEOUT;
 				}
+				__taskFinish();
 				return result;
 			} catch ( Exception e ) {
+				e.printStackTrace();
 				//执行异常
 				if ( this.tag != null ) {
-					RESULT_UNKNOWN_EXCEPTION.setTag( this.tag );
+					RemoteRequestManager.RESULT_UNKNOWN_EXCEPTION.setTag( this.tag );
 				}
-				return RESULT_UNKNOWN_EXCEPTION;
+				__taskFinish();
+				return RemoteRequestManager.RESULT_UNKNOWN_EXCEPTION;
 			}
 		}
+	}
+
+	/**
+	 * 并发请求测试
+	 *
+	 * @param tag 请求TAG
+	 * @return 测试结果对象
+	 */
+	public synchronized Result testRequest( String tag ) {
+		this.tag = tag;
+		this.result = null;
+
+		try {
+			Thread.sleep( 10 );
+		} catch ( InterruptedException ignore ) {
+		}
+
+		this.result = new Result( true, true, "并发测试", null );
+		this.result.setTag( this.tag );
+		this.callback.onTaskFinish( clientIndex );
+		return this.result;
 	}
 
 	/**
@@ -315,6 +275,15 @@ public class RemoteKBinClient extends WebSocketClient {
 		}
 	}
 
+	/**
+	 * 任务结束调用此方法
+	 */
+	private void __taskFinish() {
+		if ( this.callback != null ) {
+			this.callback.onTaskFinish( this.clientIndex );
+		}
+	}
+
 	@Override
 	public void onMessage( String message ) {
 
@@ -322,67 +291,22 @@ public class RemoteKBinClient extends WebSocketClient {
 
 	private void printLog( String msg ) {
 		if ( DEBUG ) {
-			Log.getInstance().print( "[RemoteKBin] " + msg );
+			Log.getInstance().print( TAG, msg );
 		}
 	}
 
-	public static class Result {
-		private final boolean hasException;
-		private final boolean isEncodeRequest;
-		private final String exceptionMessage;
-		private final byte[] result;
-		private String tag = null;
-
-		public Result( boolean hasException, boolean isEncodeRequest, String exceptionMessage, byte[] result ) {
-			this.hasException = hasException;
-			this.isEncodeRequest = isEncodeRequest;
-			this.exceptionMessage = exceptionMessage;
-			this.result = result;
-		}
-
-		/**
-		 * @return 任务TAG
-		 */
-		public String getTag() {
-			return tag;
-		}
-
-		/**
-		 * @param tag 任务TAG
-		 */
-		public void setTag( String tag ) {
-			this.tag = tag;
-		}
-
-		/**
-		 * @return 是否出现了异常
-		 */
-		public boolean hasException() {
-			return hasException;
-		}
-
-		/**
-		 * @return 是否为加密请求，否则为解密请求
-		 */
-		public boolean isEncodeRequest() {
-			return isEncodeRequest;
-		}
-
-		/**
-		 * @return 结果数据，如果出现异常则为 NULL
-		 */
-		public @Nullable
-		byte[] getResult() {
-			return result;
-		}
-
-		/**
-		 * @return 异常信息，如果没有异常则为 NULL
-		 */
-		public @Nullable
-		String getExceptionMessage() {
-			return exceptionMessage;
-		}
+	@Override
+	public String toString() {
+		return "Client{index-" + clientIndex + "}";
 	}
 
+	public interface Callback {
+
+		/**
+		 * 当客户端完成了任务时的回调方法
+		 *
+		 * @param clientIndex 客户端序号
+		 */
+		void onTaskFinish( int clientIndex );
+	}
 }

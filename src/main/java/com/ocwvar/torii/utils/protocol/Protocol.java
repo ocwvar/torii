@@ -5,6 +5,8 @@ import com.ocwvar.torii.Configs;
 import com.ocwvar.torii.Field;
 import com.ocwvar.torii.data.StaticContainer;
 import com.ocwvar.torii.utils.Cache;
+import com.ocwvar.torii.utils.protocol.remote.RemoteRequestManager;
+import com.ocwvar.torii.utils.protocol.remote.Result;
 import com.ocwvar.utils.IO;
 import com.ocwvar.utils.Log;
 import com.ocwvar.utils.TextUtils;
@@ -19,6 +21,8 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 
 public class Protocol {
+
+	private static final String TAG = "PROTOCOL";
 
 	/**
 	 * 只输出请求内容
@@ -87,14 +91,21 @@ public class Protocol {
 		//Kbin解密
 		final Node node;
 		if ( KBinXml.isEncoded( data ) ) {
-			node = KBinXml.decode( data );
+			//node = KBinXml.decode( data );
+			final Result result = RemoteRequestManager.getInstance().sendKbin( data );
+			if ( result.hasException() ) {
+				Log.getInstance().print( TAG, "远端协议处理失败：" + result.getExceptionMessage() );
+				node = null;
+			} else {
+				node = NodeHelper.xml2Node( NodeHelper.byte2Xml( result.getResult() ) );
+			}
 		} else {
 			node = NodeHelper.xml2Node( NodeHelper.byte2Xml( data ) );
 		}
 
 		//DEBUG：输出请求内容
-		if ( Configs.isDumpRequestKbin() | print ) {
-			final String content = NodeHelper.xml2Text( NodeHelper.note2Xml( node ) );
+		if ( Configs.isDumpRequestKbin() || print ) {
+			final String content = node == null ? "null" : node.toXmlText();
 			final String string = "====================================" + "\n" +
 					"URL:" + request.getRequestURL() + "\n" +
 					"Need decompress:" + needDeCompress + "\n" +
@@ -143,7 +154,7 @@ public class Protocol {
 
 		//首先必须Kbin加密
 		//byte[] data = KBinXml.encode( node );
-		final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( node );
+		final Result result = RemoteRequestManager.getInstance().sendXML( node );
 		byte[] data = result.getResult();
 		if ( result.hasException() ) {
 			Log.getInstance().print( "处理出现问题:" + result.getExceptionMessage() );

@@ -1,6 +1,8 @@
 package com.ocwvar.torii;
 
-import com.ocwvar.torii.utils.protocol.RemoteKBinClient;
+import com.ocwvar.torii.utils.protocol.remote.RemoteRequestManager;
+import com.ocwvar.torii.utils.protocol.remote.RemoteServer;
+import com.ocwvar.torii.utils.protocol.remote.Result;
 import com.ocwvar.utils.IO;
 import com.ocwvar.xml.node.Node;
 import com.ocwvar.xml.node.NodeHelper;
@@ -25,7 +27,7 @@ public class RemoteProtocolTest {
 		//加密测试
 		final Node encodeSample = NodeHelper.xml2Node( new String( IO.loadFile( "H:\\test.xml" ), usingCharset ) );
 		//benchmarkEncode( encodeSample, 50 );
-		testEncode( encodeSample, 1, 1, false );
+		testEncode( encodeSample, 50, 50, false );
 
 		System.out.println( "处理结束" );
 	}
@@ -43,7 +45,7 @@ public class RemoteProtocolTest {
 			new Thread( () -> {
 				final long startM = System.currentTimeMillis();
 				for ( int j = 0; j < times; j++ ) {
-					final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendKbin( sample );
+					final Result result = RemoteRequestManager.getInstance().sendKbin( sample );
 					System.out.println( "执行结果：" + !result.hasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) );
 					if ( result.getResult() != null && outputResult ) {
 						System.out.println( new String( result.getResult(), usingCharset ) );
@@ -69,7 +71,7 @@ public class RemoteProtocolTest {
 				for ( int j = 0; j < times; j++ ) {
 					final String tag = "线程编号[" + Thread.currentThread().getName() + "]--任务编号[" + j + "]";
 					sample.setEncodeCharset( Charset.forName( "cp932" ) );
-					final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( sample, tag );
+					final Result result = RemoteRequestManager.getInstance().sendXML( sample, tag );
 					System.out.println( "执行结果：" + !result.hasException() + "  数据长度：" + ( result.getResult() != null ? result.getResult().length : "NULL" ) + "  一致性：" + tag.equals( result.getTag() ) );
 					if ( result.getResult() != null && outputResult ) {
 						IO.outputFile( true, "H:\\" + System.currentTimeMillis() + ".kbin", result.getResult() );
@@ -89,7 +91,7 @@ public class RemoteProtocolTest {
 	private static void benchmarkEncode( final Node sample, int times ) {
 		System.out.println( "===========================================" );
 		final long m1 = System.currentTimeMillis();
-		final boolean connected = RemoteKBinClient.getInstance().connectRemote();
+		final boolean connected = RemoteServer.getInstance().startServer();
 		System.out.println( "连接远端结果：" + connected + "  耗时ms：" + ( System.currentTimeMillis() - m1 ) );
 		System.out.println( "===========================================" );
 
@@ -102,7 +104,7 @@ public class RemoteProtocolTest {
 		System.out.println( "开始执行测试..." );
 		for ( int i = 0; i < times; i++ ) {
 			final long m3 = System.currentTimeMillis();
-			final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendXML( sample );
+			final Result result = RemoteRequestManager.getInstance().sendXML( sample );
 			if ( result != null && result.getResult() != null && !result.hasException() ) {
 				sum += System.currentTimeMillis() - m3;
 			} else {
@@ -123,7 +125,7 @@ public class RemoteProtocolTest {
 	private static void benchmarkDecode( final byte[] sample, int times ) {
 		System.out.println( "===========================================" );
 		final long m1 = System.currentTimeMillis();
-		final boolean connected = RemoteKBinClient.getInstance().connectRemote();
+		final boolean connected = RemoteServer.getInstance().startServer();
 		System.out.println( "连接远端结果：" + connected + "  耗时ms：" + ( System.currentTimeMillis() - m1 ) );
 		System.out.println( "===========================================" );
 
@@ -136,7 +138,7 @@ public class RemoteProtocolTest {
 		System.out.println( "开始执行测试..." );
 		for ( int i = 0; i < times; i++ ) {
 			final long m3 = System.currentTimeMillis();
-			final RemoteKBinClient.Result result = RemoteKBinClient.getInstance().sendKbin( sample );
+			final Result result = RemoteRequestManager.getInstance().sendKbin( sample );
 			if ( result != null && result.getResult() != null && !result.hasException() ) {
 				sum += System.currentTimeMillis() - m3;
 			} else {

@@ -1,4 +1,4 @@
-package com.ocwvar.torii.utils.remote;
+package com.ocwvar.torii.utils.protocol.remote;
 
 import com.ocwvar.utils.annotation.Nullable;
 

@@ -37,23 +37,28 @@ class Torii_WebSocketServer(tornado.websocket.WebSocketHandler):
     def on_message(self, message: Union[str, bytes]):
         try:
 
-            if len(message) == 1 and message == b'\x00':
-                # 拿到 1 个 0字节 数据，则代表结束请求直接关闭
+            if len(message) == 1:
+                # 拿到 1 个长度的数据，则代表结束请求直接关闭
                 logging.info("接收到关闭指令")
                 self.close(reason="主动关闭")
                 tornado.ioloop.IOLoop.current().stop()
-
-            if KBinXML.is_binary_xml(message):
-                # 拿到的是 KBIN 数据，则转成 XML
-                response_xml = KBinXML(message).to_text()
             else:
-                # 拿到的是 XML 数据，则转成 KBIN
-                if message[0] == 1:
-                    response_xml = KBinXML(message[1:len(message)]).to_binary(encoding="UTF-8")
-                elif message[0] == 2:
-                    response_xml = KBinXML(message[1:len(message)]).to_binary(encoding="cp932")
+                response_xml = None
 
-            self.write_message(response_xml, True)
+                if KBinXML.is_binary_xml(message):
+                    # 拿到的是 KBIN 数据，则转成 XML
+                    response_xml = KBinXML(message).to_text()
+                else:
+                    # 拿到的是 XML 数据，则转成 KBIN
+                    if message[0] == 1:
+                        response_xml = KBinXML(message[1:len(message)]).to_binary(encoding="UTF-8")
+                    elif message[0] == 2:
+                        response_xml = KBinXML(message[1:len(message)]).to_binary(encoding="cp932")
+                    else:
+                        self.close(reason="没有所需要的编码格式")
+
+                if response_xml is not None:
+                    self.write_message(response_xml, True)
 
         except Exception as e:
             logging.info(e)

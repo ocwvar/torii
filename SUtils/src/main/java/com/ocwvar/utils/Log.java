@@ -12,6 +12,14 @@ public class Log {
 		return self;
 	}
 
+	public void print( String TAG, String message ) {
+		print( "[" + TAG + "] " + message );
+	}
+
+	public void print( String TAG, String message, boolean isError ) {
+		print( "[" + TAG + "] " + message, isError );
+	}
+
 	public void print( String message ) {
 		print( message, false );
 	}
